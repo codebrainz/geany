@@ -2498,17 +2498,23 @@ static gboolean snippets_complete_constructs(GeanyEditor *editor, gint pos, cons
 	gchar *str;
 	const gchar *completion;
 	gint str_len;
-	gint ft_id = editor->document->file_type->id;
+
+	g_return_val_if_fail(editor != NULL, FALSE);
+	g_return_val_if_fail(word != NULL, FALSE);
+
+	/* first lookup snippet in the snippets.conf */
+	completion = snippets_find_completion_by_name(editor->document->file_type->name, word);
+	if (completion == NULL)
+	{
+		/* if no snippet is found in snippets.conf, then check in the
+		 * filetypes.* file */
+		completion = filetype_lookup_snippet(editor->document->file_type, word);
+		if (completion == NULL)
+			return FALSE;
+	}
 
 	str = g_strdup(word);
 	g_strstrip(str);
-
-	completion = snippets_find_completion_by_name(filetypes[ft_id]->name, str);
-	if (completion == NULL)
-	{
-		g_free(str);
-		return FALSE;
-	}
 
 	/* remove the typed word, it will be added again by the used auto completion
 	 * (not really necessary but this makes the auto completion more flexible,

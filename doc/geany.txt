@@ -1047,6 +1047,9 @@ filetype.  Snippets in filetype sections will hide snippets with the
 same name in the "Default" section when used in a file of that
 filetype.
 
+You can alternatively define filetype-specific snippets in the
+`[snippets] section`_ of the filetype's configuration file.
+
 **Substitution sequences for snippets**
 
 To define snippets you can use several special character sequences which
@@ -4165,6 +4168,16 @@ run_cmd
     complete filename, e.g. for shell scripts.
 
     *Example:* ``run_cmd="./%e"``
+
+
+[snippets] section
+``````````````````
+Snippets defined here will be used where a snippet couldn't be found
+in the ``snippets.conf`` file.  This allows some extra flexibility for
+how you can manage snippets.  Those in this section are treated just
+like the filetype-specific snippets in ``snippets.conf`` and the same
+rules apply.  See the `User-definable snippets`_ section for more
+information.
 
 
 Special file filetypes.common

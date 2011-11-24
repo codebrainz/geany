@@ -209,4 +209,6 @@ gboolean filetype_has_tags(GeanyFiletype *ft);
 gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
 		gchar **filename, gint *line);
 
+const gchar *filetype_lookup_snippet(GeanyFiletype *ft, const gchar *name);
+
 #endif

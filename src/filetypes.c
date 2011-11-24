@@ -64,6 +64,7 @@ static void create_radio_menu_item(GtkWidget *menu, GeanyFiletype *ftype);
 
 static gchar *filetypes_get_conf_extension(const GeanyFiletype *ft);
 static void read_filetype_config(void);
+static void filetype_reload_snippets(GeanyFiletype *ft, ...) G_GNUC_NULL_TERMINATED;
 
 
 enum TitleType
@@ -1140,8 +1141,12 @@ static void filetype_free(gpointer data, G_GNUC_UNUSED gpointer user_data)
 	g_free(ft->ftdefcmds);
 	g_free(ft->execcmds);
 	set_error_regex(ft, NULL);
+
 	if (ft->icon)
 		g_object_unref(ft->icon);
+
+	if (ft->priv->snippets != NULL)
+		g_hash_table_destroy(ft->priv->snippets);
 
 	g_strfreev(ft->pattern);
 	g_free(ft->priv);
@@ -1179,6 +1184,74 @@ static void load_indent_settings(GeanyFiletype *ft, GKeyFile *config, GKeyFile *
 			ft->indent_type = -1;
 			break;
 	}
+}
+
+
+/*
+ * Finds the snippet completion for @a name from the filetype's config file.
+ *
+ * @param ft A GeanyFiletype.
+ * @param name The name/key of the snippet to lookup.
+ *
+ * @return The snippet completion if found or NULL otherwise.  The returned
+ * string should not be modified or freed.
+ */
+const gchar *filetype_lookup_snippet(GeanyFiletype *ft, const gchar *name)
+{
+	gchar *result = NULL;
+	g_return_val_if_fail(ft != NULL, NULL);
+	g_return_val_if_fail(name != NULL, NULL);
+	if (ft->priv->snippets != NULL)
+		result = g_hash_table_lookup(ft->priv->snippets, name);
+	return (const gchar *) result;
+}
+
+
+/*
+ * Loads the filetype snippets from the system and user keyfiles.
+ *
+ * Old snippets will be removed before adding the newly-read snippets.
+ *
+ * @param ft A GeanyFiletype.
+ * @param ... Zero or more GKeyFiles to load followed by @c NULL.
+ */
+static void filetype_reload_snippets(GeanyFiletype *ft, ...)
+{
+	gsize length;
+	gchar **keys;
+	GKeyFile *kf;
+	va_list ap;
+
+	g_return_if_fail(ft != NULL);
+
+	va_start(ap, ft);
+
+	if (ft->priv->snippets == NULL)
+		ft->priv->snippets = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
+	else
+		g_hash_table_remove_all(ft->priv->snippets);
+
+	kf = va_arg(ap, GKeyFile *);
+	while (kf != NULL)
+	{
+		keys = g_key_file_get_keys(kf, "snippets", &length, NULL);
+		if (keys != NULL)
+		{
+			gint i;
+			gchar *snippet;
+			for (i = 0; i < length; i++)
+			{
+				snippet = g_key_file_get_string(kf, "snippets", keys[i], NULL);
+				if (!snippet)
+					snippet = g_strdup("");
+				g_hash_table_replace(ft->priv->snippets, g_strdup(keys[i]), snippet);
+			}
+			g_strfreev(keys);
+		}
+		kf = va_arg(ap, GKeyFile *);
+	}
+
+	va_end(ap);
 }
 
 
@@ -1258,6 +1331,8 @@ static void load_settings(guint ft_id, GKeyFile *config, GKeyFile *configh)
 	/* read build settings */
 	build_load_menu(config, GEANY_BCS_FT, (gpointer)ft);
 	build_load_menu(configh, GEANY_BCS_HOME_FT, (gpointer)ft);
+
+	filetype_reload_snippets(ft, config, configh, NULL);
 }
 
 
