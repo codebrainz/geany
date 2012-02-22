@@ -126,7 +126,7 @@ AM_CFLAGS = -DGEANY_DATADIR=\""$(datadir)"\" \
 			-DGTK \
 			-DG_LOG_DOMAIN=\""Geany"\"
 
-geany_LDFLAGS = -Wl,--export-dynamic
+geany_LDFLAGS = -rdynamic
 
 clean-local:
 
