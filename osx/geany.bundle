@@ -108,8 +108,8 @@
 
   <!-- Copy in the themes data. You may want to trim this to save space
        in your bundle. -->
-  <data dest="${bundle}/Contents/Resources/share/themes">
-      ${prefix}/share/themes
+  <data dest="${bundle}/Contents/Resources/share/themes/geany">
+      ${prefix}/share/themes/geany
   </data>
 
   <!-- Copy icons. Note that the .icns file is an Apple format which
@@ -141,7 +141,7 @@
        if you want just the index.theme file but no icons, mostly
        needed for the "hicolor" base theme.
   -->
-  <icon-theme icons="all">
+  <icon-theme icons="auto">
 	hicolor
   </icon-theme>
 
