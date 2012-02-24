@@ -142,6 +142,13 @@ AM_CFLAGS = -DGEANY_DATADIR=\""$(datadir)"\" \
 			-DGTK \
 			-DG_LOG_DOMAIN=\""Geany"\"
 
+if DARWIN
+# headerpad_max_install_names allows for changing the binary later
+# to point to the libraries in the bundle rather than from the build
+# computer
+geany_LDFLAGS = -Wl,-headerpad_max_install_names
+endif
+
 clean-local:
 
 endif
