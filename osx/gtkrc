@@ -1,0 +1,24 @@
+gtk-theme-name = "ElementaryLion"
+gtk-icon-theme-name = "hicolor"
+gtk-enable-mnemonics = 0
+gtk-font-name = "Lucida Grande 13"
+
+style "geany_osx_regular" 
+{
+	font_name = "Lucida Grande 13"
+}
+
+style "geany_osx_small"
+{
+	font_name = "Lucida Grande 11"
+}
+
+widget "GeanyMainWindow" style "geany_osx_regular"
+widget "GeanyEditMenu" style "geany_osx_regular"
+widget "GeanyToolbarMenu" style "geany_osx_regular"
+widget "GeanyDialog" style "geany_osx_regular"
+widget "GeanyDialogPrefs" style "geany_osx_regular"
+widget "GeanyDialogProject" style "geany_osx_regular"
+widget "GeanyDialogSearch" style "geany_osx_regular"
+widget "GeanyMenubar" style "geany_osx_regular"
+widget "GeanyToolbar" style "geany_osx_small"
