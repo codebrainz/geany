@@ -69,7 +69,8 @@ static void read_filetype_config(void);
 enum TitleType
 {
 	TITLE_SOURCE_FILE,
-	TITLE_FILE
+	TITLE_FILE,
+	TITLE_STYLE_SHEET
 };
 
 /* Save adding many translation strings if the filetype name doesn't need translating */
@@ -82,6 +83,7 @@ static void filetype_make_title(GeanyFiletype *ft, enum TitleType type)
 		default:
 		case TITLE_SOURCE_FILE:	fmt = _("%s source file"); break;
 		case TITLE_FILE:		fmt = _("%s file"); break;
+		case TITLE_STYLE_SHEET: fmt = _("%s style sheet"); break;
 	}
 	g_assert(!ft->title);
 	g_assert(ft->name);
@@ -347,9 +349,18 @@ static void init_builtin_filetypes(void)
 	ft = filetypes[GEANY_FILETYPES_CSS];
 	ft->lang = 13;
 	ft->name = g_strdup("CSS");
-	ft->title = g_strdup(_("Cascading StyleSheet"));
+	filetype_make_title(ft, TITLE_STYLE_SHEET);
 	ft->mime_type = g_strdup("text/css");
-	ft->group = GEANY_FILETYPE_GROUP_MARKUP;	/* not really markup but fit quite well to HTML */
+	/* not really markup but fit quite well to HTML */
+	ft->group = GEANY_FILETYPE_GROUP_MARKUP;
+
+#define SCSS
+	ft = filetypes[GEANY_FILETYPES_SCSS];
+	//~ ft->lang = 13;
+	ft->name = g_strdup("SCSS");
+	filetype_make_title(ft, TITLE_STYLE_SHEET);
+	/* like CSS, not really markup but fit quite well to HTML */
+	ft->group = GEANY_FILETYPE_GROUP_MARKUP;
 
 #define SQL
 	ft = filetypes[GEANY_FILETYPES_SQL];
@@ -496,13 +507,6 @@ static void init_builtin_filetypes(void)
 	ft->name = g_strdup("Forth");
 	filetype_make_title(ft, TITLE_SOURCE_FILE);
 	ft->group = GEANY_FILETYPE_GROUP_SCRIPT;
-
-#define SCSS
-	ft = filetypes[GEANY_FILETYPES_SCSS];
-	//~ ft->lang = 13;
-	ft->name = g_strdup("SCSS");
-	ft->title = g_strdup(_("SCSS"));
-	ft->group = GEANY_FILETYPE_GROUP_MARKUP;	/* like CSS, not really markup but fit quite well to HTML */
 }
 
 
