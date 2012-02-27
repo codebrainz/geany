@@ -55,6 +55,10 @@
 
 #include "utils.h"
 
+#ifdef MAC_INTEGRATION
+# include <gtkosxapplication.h>
+#endif
+
 
 /**
  *  Tries to open the given URI in a browser.
@@ -1916,7 +1920,19 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
 /* Gets list of sorted filenames with no path and no duplicates from user and system config */
 GSList *utils_get_config_files(const gchar *subdir)
 {
-	gchar *path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, subdir, NULL);
+	gchar *path;
+#ifndef MAC_INTEGRATION
+	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, subdir, NULL);
+#else
+	gchar *bundle_id = quartz_application_get_bundle_id();
+	if (bundle_id)
+	{
+		gchar *bundle_dir = quartz_application_get_resource_path();
+		path = g_build_filename(bundle_dir, "share", "geany", subdir, NULL);
+		g_free(bundle_dir);
+		g_free(bundle_id);
+	}
+#endif
 	GSList *list = utils_get_file_list_full(path, FALSE, FALSE, NULL);
 	GSList *syslist, *node;
 

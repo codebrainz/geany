@@ -343,12 +343,14 @@ void ui_update_statusbar(GeanyDocument *doc, gint pos)
 /* This sets the window title according to the current filename. */
 void ui_set_window_title(GeanyDocument *doc)
 {
-	GString *str;
 	GeanyProject *project = app->project;
 
 	if (doc == NULL)
 		doc = document_get_current();
 
+#ifndef MAC_INTEGRATION
+	GString *str;
+	/* For non-mac systems use the full window title format. */
 	str = g_string_new(NULL);
 
 	if (doc != NULL)
@@ -383,6 +385,27 @@ void ui_set_window_title(GeanyDocument *doc)
 	}
 	gtk_window_set_title(GTK_WINDOW(main_widgets.window), str->str);
 	g_string_free(str, TRUE);
+#else
+	if (DOC_VALID(doc))
+	{
+		/* On OSX, applications don't show the App name or dirname in the
+		 * window title, they just show the file's basename. If a project
+		 * is open we'll keep the usual [ProjectName] since it's useful. */
+		gchar *win_title;
+		gchar *bn = document_get_basename_for_display(doc, 100);
+		if (project)
+		{
+			win_title = g_strdup_printf("%s [%s]", bn, project->name);
+			g_free(bn);
+		}
+		else
+			win_title = bn;
+		gtk_window_set_title(GTK_WINDOW(main_widgets.window), win_title);
+		g_free(win_title);
+	}
+	else
+		gtk_window_set_title(GTK_WINDOW(main_widgets.window), _("No Document"));
+#endif
 }
 
 
@@ -2204,8 +2227,23 @@ void ui_init_builder(void)
 
 	gtk_builder_set_translation_domain(builder, GETTEXT_PACKAGE);
 
-	error = NULL;
+#ifdef MAC_INTEGRATION
+	gchar *bundle_id = quartz_application_get_bundle_id();
+	if (bundle_id)
+	{
+		/* If we're in a bundle, we need to get the path at run-time. */
+		gchar *res_dir = quartz_application_get_resource_path();
+		interface_file = g_build_filename(res_dir, "share", "geany", "geany.glade", NULL);
+		g_free(res_dir);
+		g_free(bundle_id);
+	}
+	else
+		interface_file = g_build_filename(app->datadir, "geany.glade", NULL);
+#else
 	interface_file = g_build_filename(app->datadir, "geany.glade", NULL);
+#endif
+
+	error = NULL;
 	if (! gtk_builder_add_from_file(builder, interface_file, &error))
 	{
 		/* Show the user this message so they know WTF happened */

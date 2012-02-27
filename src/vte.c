@@ -200,7 +200,8 @@ void vte_init(void)
 	{
 		gint i;
 		const gchar *sonames[] = {  "libvte.so", "libvte.so.4",
-									"libvte.so.8", "libvte.so.9", NULL };
+									"libvte.so.8", "libvte.so.9",
+									"libvte.9.dylib", NULL };
 
 		for (i = 0; sonames[i] != NULL && module == NULL; i++)
 		{

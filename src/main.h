@@ -23,6 +23,11 @@
 #ifndef GEANY_MAIN_H
 #define GEANY_MAIN_H
 
+#ifdef MAC_INTEGRATION
+#include <gtkmacintegration/gtkosxapplication.h>
+extern GtkOSXApplication *mac_app;
+#endif
+
 typedef struct
 {
 	gboolean	new_instance;

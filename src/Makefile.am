@@ -133,6 +133,31 @@ geany_LDADD = \
 	@GTHREAD_LIBS@ \
 	$(INTLLIBS)
 
+# for Mac OSX
+if DARWIN
+
+AM_CFLAGS = -DGEANY_DATADIR=\"\" \
+			-DGEANY_DOCDIR=\"\" \
+			-DGEANY_LIBDIR=\"\" \
+			-DGEANY_LOCALEDIR=\"\" \
+			-DGEANY_PREFIX=\"\" \
+			-DGEANY_PRIVATE \
+			-DGTK \
+			-DG_LOG_DOMAIN=\""Geany"\"
+
+# headerpad_max_install_names allows for changing the binary later
+# to point to the libraries in the bundle rather than from the build
+# computer
+geany_LDFLAGS = -Wl,-headerpad_max_install_names
+
+# Compile/link with the gtk-mac-integration library for things like
+# using the global OSX application menu
+geany_LDADD += @GTK_MAC_LIBS@
+INCLUDES += @GTK_MAC_CFLAGS@
+
+# for everything else besides Windows and OSX
+else
+
 AM_CFLAGS = -DGEANY_DATADIR=\""$(datadir)"\" \
 			-DGEANY_DOCDIR=\""$(docdir)"\" \
 			-DGEANY_LIBDIR=\""$(libdir)"\" \
@@ -142,11 +167,6 @@ AM_CFLAGS = -DGEANY_DATADIR=\""$(datadir)"\" \
 			-DGTK \
 			-DG_LOG_DOMAIN=\""Geany"\"
 
-if DARWIN
-# headerpad_max_install_names allows for changing the binary later
-# to point to the libraries in the bundle rather than from the build
-# computer
-geany_LDFLAGS = -Wl,-headerpad_max_install_names
 endif
 
 clean-local:

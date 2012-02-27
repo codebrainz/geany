@@ -1239,10 +1239,25 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
 	if (!g_file_test(path, G_FILE_TEST_EXISTS))
 	{
-		/* try the system path */
 		g_free(path);
+#ifndef MAC_INTEGRATION
+		/* try the system path */
 		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+#else
+		/* On OSX the colour schemes can be in the Bundle instead of system path */
+		gchar *bundle_id = quartz_application_get_bundle_id();
+		if (bundle_id)
+		{
+			gchar *bundle_dir = quartz_application_get_resource_path();
+			path = g_build_filename(bundle_dir, "share", "geany", GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+			g_free(bundle_dir);
+			g_free(bundle_id);
+		}
+		else
+			path = g_build_path(G_DIR_SEPARATOR_S, app->datadir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+#endif
 	}
+
 	if (g_file_test(path, G_FILE_TEST_EXISTS))
 	{
 		SETPTR(editor_prefs.color_scheme, fname);

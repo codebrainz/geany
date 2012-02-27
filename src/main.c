@@ -80,6 +80,11 @@
 # include "vte.h"
 #endif
 
+#ifdef MAC_INTEGRATION
+# include "gtkmacintegration/gtkosxapplication.h"
+# include "gtkmacintegration/gtk-mac-menu.h"
+#endif
+
 #ifndef N_
 # define N_(String) (String)
 #endif
@@ -92,6 +97,9 @@ GeanyStatus	 main_status;
 CommandLineOptions cl_options;	/* fields initialised in parse_command_line_options */
 gboolean main_use_geany_icon;
 
+#ifdef MAC_INTEGRATION
+GtkOSXApplication *mac_app;
+#endif
 
 static const gchar geany_lib_versions[] = "GTK %u.%u.%u, GLib %u.%u.%u";
 
@@ -249,6 +257,39 @@ static void main_init(void)
 	ui_init_stock_items();
 
 	main_widgets.window = create_window1();
+
+	/* On OSX, put the main menu bar into the global application menu */
+#ifdef MAC_INTEGRATION
+	GtkWidget *main_menu, *menu_quit, *menu_help, *menu_prefs;
+	
+	main_menu = ui_lookup_widget(main_widgets.window, "menubar1");
+	if (GTK_IS_MENU_SHELL(main_menu))
+	{
+		/* On OSX, put the main menu bar into the global application menu */
+		gtk_widget_hide(main_menu);
+		gtk_osxapplication_set_menu_bar(mac_app, GTK_MENU_SHELL(main_menu));
+		menu_quit = ui_lookup_widget(main_widgets.window, "menu_separatormenuitem1");
+		
+		/* OSX provides the Quit item, so hide ours */
+		menu_quit = ui_lookup_widget(main_widgets.window, "menu_quit1");
+		gtk_widget_hide(menu_quit);
+		menu_quit = ui_lookup_widget(main_widgets.window, "menu_separatormenuitem1");
+		gtk_widget_hide(menu_quit);
+		/* TODO: hookup to signal so we know when quitting */
+		
+		menu_prefs = ui_lookup_widget(main_widgets.window, "preferences1");
+		gtk_osxapplication_insert_app_menu_item(mac_app, menu_prefs, 6);
+		menu_prefs = gtk_separator_menu_item_new();
+		gtk_osxapplication_insert_app_menu_item(mac_app, menu_prefs, 6);
+		
+		menu_help = ui_lookup_widget(main_widgets.window, "menu_help1");
+		gtk_osxapplication_set_help_menu(mac_app, GTK_MENU_ITEM(menu_help));
+		
+		gtk_osxapplication_set_window_menu(mac_app, NULL);
+		
+		gtk_osxapplication_set_use_quartz_accelerators(mac_app, FALSE);
+	}
+#endif
 
 	/* add recent projects to the Project menu */
 	ui_widgets.recent_projects_menuitem = ui_lookup_widget(main_widgets.window, "recent_projects1");
@@ -977,8 +1018,14 @@ gint main(gint argc, gchar **argv)
 	 * dependencies (e.g. WebKit, Soup, ...) */
 	if (!g_thread_supported())
 		g_thread_init(NULL);
+
+#ifdef MAC_INTEGRATION
+	mac_app = g_object_new(GTK_TYPE_OSX_APPLICATION, NULL);
+#endif
+
     /* removed as signal handling was wrong, see signal_cb()
 	signal(SIGTERM, signal_cb); */
+
 #ifdef G_OS_UNIX
 	/* SIGQUIT is used to kill spawned children and we get also this signal, so ignore */
 	signal(SIGQUIT, SIG_IGN);
@@ -1164,6 +1211,10 @@ gint main(gint argc, gchar **argv)
 		win32_set_working_directory(dir);
 		g_free(dir);
 	}
+#endif
+
+#ifdef MAC_INTEGRATION
+	gtk_osxapplication_ready(mac_app);
 #endif
 
 	/* when we are really done with setting everything up and the main event loop is running,

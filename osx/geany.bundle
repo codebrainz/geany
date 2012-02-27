@@ -68,13 +68,12 @@
        to get. -->
   <binary>
       ${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/engines/*.so
-      <!--${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/engines/murrine.so-->
   </binary>
   <binary>
       ${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/printbackends/*.so
   </binary>
 
-<!-- Starting with 2.24, gdk-pixbuf installs into its own directory. -->
+  <!-- Starting with 2.24, gdk-pixbuf installs into its own directory. -->
   <binary>
       ${prefix}/lib/gdk-pixbuf-2.0/${pkg:${gtk}:gtk_binary_version}/*.so
   </binary>
@@ -123,6 +122,10 @@
   <data dest="${bundle}/Contents/Resources">
 	${project}/geany.conf
   </data>
+  
+  <data dest="${bundle}/Contents/Resources">
+	${project}/keybindings.conf
+  </data>
 
   <!-- This is where theme commands go. You can copy them in from your
        theme of choice if they provide and example, or you can just
@@ -141,7 +144,7 @@
        if you want just the index.theme file but no icons, mostly
        needed for the "hicolor" base theme.
   -->
-  <icon-theme icons="auto">
+  <icon-theme icons="all">
 	hicolor
   </icon-theme>
 

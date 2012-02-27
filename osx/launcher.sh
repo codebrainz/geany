@@ -165,13 +165,11 @@ if /bin/expr "x$1" : '^x-psn_' > /dev/null; then
     shift 1
 fi
 
-# Copy initial OSX-specific default geany.conf file into home dir
-# if it doesn't already exist (ie. first run). It seems like a bad
-# idea, but there's some OSX customizations that can be made to make
-# it fit into the environment better and such
+# Copy initial OSX-specific default geany.conf and keybindings.conf file 
+# into home dir if they doesn't already exist (ie. first run).
 GEANY_USER_CONF_DIR="$HOME/.config/geany"
-GEANY_USER_CONF_FILE="$GEANY_USER_CONF_DIR/geany.conf"
 test -d "$GEANY_USER_CONF_DIR" || mkdir -p "$GEANY_USER_CONF_DIR"
-test -f "$GEANY_USER_CONF_FILE" || cp "$bundle_res/geany.conf" "$GEANY_USER_CONF_DIR/"
+test -f "$GEANY_USER_CONF_DIR/geany.conf" || cp "$bundle_res/geany.conf" "$GEANY_USER_CONF_DIR/"
+test -f "$GEANY_USER_CONF_DIR/keybindings.conf" || cp "$bundle_res/keybindings.conf" "$GEANY_USER_CONF_DIR/"
 
 $EXEC "$bundle_contents/MacOS/$name-bin" "$@" $EXTRA_ARGS

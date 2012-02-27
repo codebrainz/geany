@@ -37,6 +37,8 @@ elif _jhb == "FW":
 # The moduleset can be overridden.
 #
 # moduleset = "gtk-osx"
+#moduleset = "http://git.gnome.org/browse/gtk-osx/plain/modulesets-stable/gtk-osx.modules"
+moduleset = "http://git.gnome.org/browse/gtk-osx/plain/modulesets/gtk-osx.modules"
 
 # As can the default modules to build.
 #
