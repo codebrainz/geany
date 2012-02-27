@@ -16,13 +16,13 @@ attribute=attribute
 value=value
 id=number
 identifier2=keyword_2
-important=extra
+important=decorator
 directive=preprocessor
 identifier3=keyword_3
-pseudoelement=element
+pseudoelement=tag
 extended_identifier=keyword_4
 extended_pseudoclass=class
-extended_pseudoelement=element
+extended_pseudoelement=tag
 media=string_3
 # extended styles for languages such as SCSS, Less
 variable=keyword_4
