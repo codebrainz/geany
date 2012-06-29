@@ -170,6 +170,16 @@ attribute_unknown=attribute,bold
 value=string_1
 entity=default
 
+strong=;;true
+emphasis=;;;true
+heading=0x007f7f
+list_item=0xff8000
+strikeout=0xd00000
+hrule=0x991111
+link=0x00007f
+block_quote=comment
+code=;0xDADADA
+
 line_added=0x34b034;0xffffff;false;false
 line_removed=0xff2727;0xffffff;false;false
 line_changed=0x7f007f;0xffffff;false;false
