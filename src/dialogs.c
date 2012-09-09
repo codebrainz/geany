@@ -864,7 +864,6 @@ gboolean dialogs_show_unsaved_file(GeanyDocument *doc)
 }
 
 
-#ifndef G_OS_WIN32
 static void
 on_font_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 {
@@ -890,15 +889,18 @@ on_font_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 	if (close)
 		gtk_widget_hide(ui_widgets.open_fontsel);
 }
-#endif
 
 
 /* This shows the font selection dialog to choose a font. */
 void dialogs_show_open_font()
 {
 #ifdef G_OS_WIN32
-	win32_show_font_dialog();
-#else
+	if (interface_prefs.use_native_windows_dialogs)
+	{
+		win32_show_font_dialog();
+		return;
+	}
+#endif
 
 	if (ui_widgets.open_fontsel == NULL)
 	{
@@ -932,7 +934,6 @@ void dialogs_show_open_font()
 		GTK_FONT_SELECTION_DIALOG(ui_widgets.open_fontsel), interface_prefs.editor_font);
 	/* We make sure the dialog is visible. */
 	gtk_window_present(GTK_WINDOW(ui_widgets.open_fontsel));
-#endif
 }
 
 
