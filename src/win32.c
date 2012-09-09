@@ -524,33 +524,6 @@ gchar *win32_show_file_dialog(GtkWindow *parent, const gchar *title, const gchar
 }
 
 
-void win32_show_font_dialog(void)
-{
-	gint retval;
-	CHOOSEFONT cf;
-	LOGFONT lf;        /* logical font structure */
-
-	memset(&lf, 0, sizeof lf);
-	/* TODO: init lf members */
-
-	memset(&cf, 0, sizeof cf);
-	cf.lStructSize = sizeof cf;
-	cf.hwndOwner = GDK_WINDOW_HWND(gtk_widget_get_window(main_widgets.window));
-	cf.lpLogFont = &lf;
-	/* support CF_APPLY? */
-	cf.Flags = CF_NOSCRIPTSEL | CF_FORCEFONTEXIST | CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS;
-
-	retval = ChooseFont(&cf);
-
-	if (retval)
-	{
-		gchar *editorfont = g_strdup_printf("%s %d", lf.lfFaceName, (cf.iPointSize / 10));
-		ui_set_editor_font(editorfont);
-		g_free(editorfont);
-	}
-}
-
-
 static void win32_logfont_from_string(LOGFONT *lf, const gchar *font_spec)
 {
 	const gchar *family;
@@ -582,7 +555,7 @@ static void win32_logfont_from_string(LOGFONT *lf, const gchar *font_spec)
 }
 
 
-gchar *win32_show_font_dialog2(const gchar *initial_font)
+gchar *win32_show_font_dialog(const gchar *initial_font)
 {
 	gint retval;
 	CHOOSEFONT cf;

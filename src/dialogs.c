@@ -55,6 +55,7 @@
 #include "build.h"
 #include "main.h"
 #include "project.h"
+#include "ScintillaWidget.h"
 
 
 enum
@@ -897,7 +898,35 @@ void dialogs_show_open_font()
 #ifdef G_OS_WIN32
 	if (interface_prefs.use_native_windows_dialogs)
 	{
-		win32_show_font_dialog();
+		gchar *selfont;
+		gchar *initfont = NULL;
+		GeanyDocument *doc = document_get_current();
+
+		if (DOC_VALID(doc))
+		{
+			gsize fntlen;
+			gchar *fntname = NULL;
+			gint fntsize;
+			ScintillaObject *sci = doc->editor->sci;
+			fntlen = (gsize) scintilla_send_message(sci, SCI_STYLEGETFONT, STYLE_DEFAULT, 0);
+			fntname = g_malloc0(fntlen+1);
+			scintilla_send_message(sci, SCI_STYLEGETFONT, STYLE_DEFAULT, (sptr_t) fntname);
+			if (fntname[0] == '!')
+				memmove(fntname, fntname+1, fntlen);
+			fntsize = (gint) scintilla_send_message(sci, SCI_STYLEGETSIZE, STYLE_DEFAULT, 0);
+			initfont = g_strdup_printf("%s %d", fntname, fntsize);
+			g_free(fntname);
+		}
+
+		selfont = win32_show_font_dialog(initfont);
+		g_free(initfont);
+
+		if (selfont != NULL)
+		{
+			ui_set_editor_font(selfont);
+			g_free(selfont);
+		}
+
 		return;
 	}
 #endif

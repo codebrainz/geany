@@ -32,9 +32,7 @@ gboolean win32_show_document_open_dialog(GtkWindow *parent, const gchar *title, 
 gchar *win32_show_document_save_as_dialog(GtkWindow *parent, const gchar *title,
 										  const gchar *initial_file);
 
-void win32_show_font_dialog(void);
-
-gchar *win32_show_font_dialog2(const gchar *initial_font);
+gchar *win32_show_font_dialog(const gchar *initial_font);
 
 void win32_show_color_dialog(const gchar *colour);
 

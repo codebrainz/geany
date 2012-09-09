@@ -1363,7 +1363,7 @@ static gboolean on_prefs_font_button_release_event(GtkButton *widget, GdkEvent *
 	const gchar *initfont = gtk_font_button_get_font_name(GTK_FONT_BUTTON(widget));
 	UIFont fnt = (UIFont) GPOINTER_TO_INT(user_data);
 
-	selfont = win32_show_font_dialog2(initfont);
+	selfont = win32_show_font_dialog(initfont);
 
 	if (selfont == NULL)
 		return TRUE;
