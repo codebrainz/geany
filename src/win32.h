@@ -34,6 +34,8 @@ gchar *win32_show_document_save_as_dialog(GtkWindow *parent, const gchar *title,
 
 void win32_show_font_dialog(void);
 
+gchar *win32_show_font_dialog2(const gchar *initial_font);
+
 void win32_show_color_dialog(const gchar *colour);
 
 gboolean win32_message_dialog(GtkWidget *parent, GtkMessageType type, const gchar *msg);

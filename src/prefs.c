@@ -105,6 +105,15 @@ typedef enum PrefCallbackAction
 PrefCallbackAction;
 
 
+typedef enum UIFont
+{
+	UI_FONT_TAGBAR=1,
+	UI_FONT_MSGWIN,
+	UI_FONT_EDITOR
+}
+UIFont;
+
+
 /* Synchronize Stash settings with widgets (see keyfile.c - init_pref_groups()). */
 static void prefs_action(PrefCallbackAction action)
 {
@@ -1293,19 +1302,19 @@ static void on_color_button_choose_cb(GtkColorButton *widget, gpointer user_data
 }
 
 
-static void on_prefs_font_choosed(GtkFontButton *widget, gpointer user_data)
+static void prefs_set_font(UIFont ui_font, const gchar *font)
 {
-	const gchar *fontbtn = gtk_font_button_get_font_name(widget);
-	guint i;
+	g_return_if_fail(font != NULL);
 
-	switch (GPOINTER_TO_INT(user_data))
+	switch (ui_font)
 	{
-		case 1:
+		case UI_FONT_TAGBAR:
 		{
-			if (strcmp(fontbtn, interface_prefs.tagbar_font) == 0)
+			guint i;
+			if (strcmp(font, interface_prefs.tagbar_font) == 0)
 				break;
 
-			SETPTR(interface_prefs.tagbar_font, g_strdup(fontbtn));
+			SETPTR(interface_prefs.tagbar_font, g_strdup(font));
 			for (i = 0; i < documents_array->len; i++)
 			{
 				GeanyDocument *doc = documents[i];
@@ -1319,24 +1328,53 @@ static void on_prefs_font_choosed(GtkFontButton *widget, gpointer user_data)
 			ui_widget_modify_font_from_string(tv.tree_openfiles, interface_prefs.tagbar_font);
 			break;
 		}
-		case 2:
+		case UI_FONT_MSGWIN:
 		{
-			if (strcmp(fontbtn, interface_prefs.msgwin_font) == 0)
+			if (strcmp(font, interface_prefs.msgwin_font) == 0)
 				break;
-			SETPTR(interface_prefs.msgwin_font, g_strdup(fontbtn));
+			SETPTR(interface_prefs.msgwin_font, g_strdup(font));
 			ui_widget_modify_font_from_string(msgwindow.tree_compiler, interface_prefs.msgwin_font);
 			ui_widget_modify_font_from_string(msgwindow.tree_msg, interface_prefs.msgwin_font);
 			ui_widget_modify_font_from_string(msgwindow.tree_status, interface_prefs.msgwin_font);
 			ui_widget_modify_font_from_string(msgwindow.scribble, interface_prefs.msgwin_font);
 			break;
 		}
-		case 3:
+		case UI_FONT_EDITOR:
 		{
-			ui_set_editor_font(fontbtn);
+			ui_set_editor_font(font);
 			break;
 		}
 	}
 }
+
+
+static void on_prefs_font_chosen(GtkFontButton *widget, gpointer user_data)
+{
+	const gchar *selfont = gtk_font_button_get_font_name(widget);
+	UIFont fnt = (UIFont) GPOINTER_TO_INT(user_data);
+	prefs_set_font(fnt, selfont);
+}
+
+
+#ifdef G_OS_WIN32
+static gboolean on_prefs_font_button_release_event(GtkButton *widget, GdkEvent *event, gpointer user_data)
+{
+	gchar *selfont;
+	const gchar *initfont = gtk_font_button_get_font_name(GTK_FONT_BUTTON(widget));
+	UIFont fnt = (UIFont) GPOINTER_TO_INT(user_data);
+
+	selfont = win32_show_font_dialog2(initfont);
+
+	if (selfont == NULL)
+		return TRUE;
+
+	prefs_set_font(fnt, selfont);
+	gtk_font_button_set_font_name(GTK_FONT_BUTTON(widget), selfont);
+	g_free(selfont);
+
+	return TRUE;
+}
+#endif
 
 
 static void kb_change_iter_shortcut(GtkTreeIter *iter, const gchar *new_text)
@@ -1633,6 +1671,7 @@ void prefs_show_dialog(void)
 		guint i;
 		gchar *encoding_string;
 		GdkPixbuf *pb;
+		gboolean fontbtn_connected = FALSE;
 
 		ui_widgets.prefs_dialog = create_prefs_dialog();
 		gtk_widget_set_name(ui_widgets.prefs_dialog, "GeanyPrefsDialog");
@@ -1730,14 +1769,34 @@ void prefs_show_dialog(void)
 		g_signal_connect(ui_widgets.prefs_dialog, "delete-event",
 			G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
-		g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "tagbar_font"),
-				"font-set", G_CALLBACK(on_prefs_font_choosed), GINT_TO_POINTER(1));
-		g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "msgwin_font"),
-				"font-set", G_CALLBACK(on_prefs_font_choosed), GINT_TO_POINTER(2));
-		g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "editor_font"),
-				"font-set", G_CALLBACK(on_prefs_font_choosed), GINT_TO_POINTER(3));
+#ifdef G_OS_WIN32
+		if (interface_prefs.use_native_windows_dialogs)
+		{
+			g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "tagbar_font"),
+				"button-release-event", G_CALLBACK(on_prefs_font_button_release_event),
+				GINT_TO_POINTER(UI_FONT_TAGBAR));
+			g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "msgwin_font"),
+				"button-release-event", G_CALLBACK(on_prefs_font_button_release_event),
+				GINT_TO_POINTER(UI_FONT_MSGWIN));
+			g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "editor_font"),
+				"button-release-event", G_CALLBACK(on_prefs_font_button_release_event),
+				GINT_TO_POINTER(UI_FONT_EDITOR));
+			fontbtn_connected = TRUE;
+		}
+#endif
+		if (!fontbtn_connected)
+		{
+			g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "tagbar_font"),
+					"font-set", G_CALLBACK(on_prefs_font_chosen), GINT_TO_POINTER(UI_FONT_TAGBAR));
+			g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "msgwin_font"),
+					"font-set", G_CALLBACK(on_prefs_font_chosen), GINT_TO_POINTER(UI_FONT_MSGWIN));
+			g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "editor_font"),
+					"font-set", G_CALLBACK(on_prefs_font_chosen), GINT_TO_POINTER(UI_FONT_EDITOR));
+		}
+
 		g_signal_connect(ui_lookup_widget(ui_widgets.prefs_dialog, "long_line_color"),
 				"color-set", G_CALLBACK(on_color_button_choose_cb), NULL);
+
 		/* file chooser buttons in the tools tab */
 		ui_setup_open_button_callback(ui_lookup_widget(ui_widgets.prefs_dialog, "button_term"),
 			NULL,

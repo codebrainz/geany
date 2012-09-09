@@ -551,6 +551,65 @@ void win32_show_font_dialog(void)
 }
 
 
+static void win32_logfont_from_string(LOGFONT *lf, const gchar *font_spec)
+{
+	const gchar *family;
+	gint size;
+	PangoStyle style;
+	PangoFontDescription *pfd;
+
+	pfd = pango_font_description_from_string(font_spec);
+
+	family = pango_font_description_get_family(pfd);
+	if (family != NULL)
+		strncpy(lf->lfFaceName, family, 32);
+
+	size = pango_font_description_get_size(pfd);
+	if (size > 0)
+	{
+		HWND hWnd = GDK_WINDOW_HWND(gtk_widget_get_window(main_widgets.window));
+		lf->lfHeight = -MulDiv(size / PANGO_SCALE,
+			GetDeviceCaps(GetDC(hWnd), LOGPIXELSY), 72);
+	}
+
+	lf->lfWeight = (LONG) pango_font_description_get_weight(pfd);
+
+	style = pango_font_description_get_style(pfd);
+	if (style == PANGO_STYLE_ITALIC)
+		lf->lfItalic = TRUE;
+
+	pango_font_description_free(pfd);
+}
+
+
+gchar *win32_show_font_dialog2(const gchar *initial_font)
+{
+	gint retval;
+	CHOOSEFONT cf;
+	LOGFONT lf;        /* logical font structure */
+	gchar *selfont = NULL;
+
+	memset(&lf, 0, sizeof lf);
+
+	if (initial_font != NULL)
+		win32_logfont_from_string(&lf, initial_font);
+
+	memset(&cf, 0, sizeof cf);
+	cf.lStructSize = sizeof cf;
+	cf.hwndOwner = GDK_WINDOW_HWND(gtk_widget_get_window(main_widgets.window));
+	cf.lpLogFont = &lf;
+	/* support CF_APPLY? */
+	cf.Flags = CF_NOSCRIPTSEL | CF_FORCEFONTEXIST | CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS;
+
+	retval = ChooseFont(&cf);
+
+	if (retval)
+		selfont = g_strdup_printf("%s %d", lf.lfFaceName, (cf.iPointSize / 10));
+
+	return selfont;
+}
+
+
 void win32_show_color_dialog(const gchar *colour)
 {
 	CHOOSECOLOR cc;
