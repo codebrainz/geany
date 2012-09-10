@@ -234,6 +234,37 @@ free_pointers(gsize arg_count, ...)
 }
 
 
+static gchar *
+ensure_consistent_line_endings(const gchar *text, gint eol_mode)
+{
+	GString *str = g_string_new(text);
+	const gchar *eol_str;
+
+	switch (eol_mode)
+	{
+		case SC_EOL_CRLF:
+			eol_str = "\r\n";
+			break;
+		case SC_EOL_CR:
+			eol_str = "\r";
+			break;
+		case SC_EOL_LF:
+		default:
+			eol_str = "\n";
+			eol_mode = SC_EOL_LF;
+			break;
+	}
+
+	utils_string_replace_all(str, "\r\n", "\n");
+	utils_string_replace_all(str, "\r", "\n");
+
+	if (eol_mode != SC_EOL_LF)
+		utils_string_replace_all(str, "\n", eol_str);
+
+	return g_string_free(str, FALSE);
+}
+
+
 static gchar*
 get_template_class_header(ClassInfo *class_info)
 {
@@ -1027,19 +1058,25 @@ static gboolean create_class(CreateClassDialog *cc_dlg)
 	/* only create the files if the filename is not empty */
 	if (! utils_str_equal(class_info->source, ""))
 	{
+		gchar *text_eol;
 		doc = document_new_file(class_info->source, NULL, NULL);
 		text = get_template_class_source(class_info);
-		editor_insert_text_block(doc->editor, text, 0, -1, 0, TRUE);
+		text_eol = ensure_consistent_line_endings(text, editor_get_eol_char_mode(doc->editor));
 		g_free(text);
+		editor_insert_text_block(doc->editor, text_eol, 0, -1, 0, FALSE);
+		g_free(text_eol);
 		sci_set_current_position(doc->editor->sci, 0, TRUE);
 	}
 
 	if (! utils_str_equal(class_info->header, "") && class_info->type != GEANY_CLASS_TYPE_PHP)
 	{
+		gchar *text_eol;
 		doc = document_new_file(class_info->header, NULL, NULL);
 		text = get_template_class_header(class_info);
-		editor_insert_text_block(doc->editor, text, 0, -1, 0, TRUE);
+		text_eol = ensure_consistent_line_endings(text, editor_get_eol_char_mode(doc->editor));
 		g_free(text);
+		editor_insert_text_block(doc->editor, text_eol, 0, -1, 0, FALSE);
+		g_free(text_eol);
 		sci_set_current_position(doc->editor->sci, 0, TRUE);
 	}
 
