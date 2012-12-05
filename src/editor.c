@@ -74,13 +74,10 @@ static GtkAccelGroup *snippet_accel_group = NULL;
 
 static const gchar geany_cursor_marker[] = "__GEANY_CURSOR_MARKER__";
 
-/* holds word under the mouse or keyboard cursor */
-static gchar current_word[GEANY_MAX_WORD_LENGTH];
 
 /* Initialised in keyfile.c. */
 GeanyEditorPrefs editor_prefs;
 
-EditorInfo editor_info = {current_word, -1};
 
 static struct
 {
@@ -302,10 +299,10 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 	 * fake event to show the editor menu triggered by a key event where we want to use the
 	 * text cursor position. */
 	if (event->x > 0.0 && event->y > 0.0)
-		editor_info.click_pos = sci_get_position_from_xy(editor->sci,
+		editor->click_pos = sci_get_position_from_xy(editor->sci,
 			(gint)event->x, (gint)event->y, FALSE);
 	else
-		editor_info.click_pos = sci_get_current_position(editor->sci);
+		editor->click_pos = sci_get_current_position(editor->sci);
 
 	if (event->button == 1)
 	{
@@ -318,12 +315,12 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 		}
 		if (event->type == GDK_BUTTON_PRESS && state == GDK_CONTROL_MASK)
 		{
-			sci_set_current_position(editor->sci, editor_info.click_pos, FALSE);
+			sci_set_current_position(editor->sci, editor->click_pos, FALSE);
 
-			editor_find_current_word(editor, editor_info.click_pos,
-				current_word, sizeof current_word, NULL);
-			if (*current_word)
-				return symbols_goto_tag(current_word, TRUE);
+			editor_find_current_word(editor, editor->click_pos,
+				editor->current_word, sizeof editor->current_word, NULL);
+			if (*(editor->current_word))
+				return symbols_goto_tag(editor->current_word, TRUE);
 			else
 				keybindings_send_command(GEANY_KEY_GROUP_GOTO, GEANY_KEYS_GOTO_MATCHINGBRACE);
 			return TRUE;
@@ -339,16 +336,16 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 		/* ensure the editor widget has the focus after this operation */
 		gtk_widget_grab_focus(widget);
 
-		editor_find_current_word(editor, editor_info.click_pos,
-			current_word, sizeof current_word, NULL);
+		editor_find_current_word(editor, editor->click_pos,
+			editor->current_word, sizeof editor->current_word, NULL);
 
-		can_goto = sci_has_selection(editor->sci) || current_word[0] != '\0';
+		can_goto = sci_has_selection(editor->sci) || editor->current_word[0] != '\0';
 		ui_update_popup_goto_items(can_goto);
 		ui_update_popup_copy_items(doc);
 		ui_update_insert_include_item(doc, 0);
 
 		g_signal_emit_by_name(geany_object, "update-editor-menu",
-			current_word, editor_info.click_pos, doc);
+			editor->current_word, editor->click_pos, doc);
 
 		gtk_menu_popup(GTK_MENU(main_widgets.editor_menu),
 			NULL, NULL, NULL, NULL, event->button, event->time);
@@ -965,8 +962,8 @@ static gboolean check_partial_completion(GeanyEditor *editor, const gchar *entry
 {
 	gchar *stem, *ptr, *text = utils_strdupa(entry);
 
-	read_current_word(editor, -1, current_word, sizeof current_word, NULL, TRUE);
-	stem = current_word;
+	read_current_word(editor, -1, editor->current_word, sizeof editor->current_word, NULL, TRUE);
+	stem = editor->current_word;
 	if (strstr(text, stem) != text)
 		return FALSE;	/* shouldn't happen */
 	if (strlen(text) <= strlen(stem))
@@ -3534,7 +3531,7 @@ void editor_insert_multiline_comment(GeanyEditor *editor)
 	doc = editor->document;
 
 	/* insert three lines one line above of the current position */
-	line = sci_get_line_from_position(editor->sci, editor_info.click_pos);
+	line = sci_get_line_from_position(editor->sci, editor->click_pos);
 	pos = sci_get_position_from_line(editor->sci, line);
 
 	/* use the indent on the current line but only when comment indentation is used
@@ -3542,7 +3539,7 @@ void editor_insert_multiline_comment(GeanyEditor *editor)
 	if (editor->auto_indent &&
 		! have_multiline_comment &&	doc->file_type->comment_use_indent)
 	{
-		read_indent(editor, editor_info.click_pos);
+		read_indent(editor, editor->click_pos);
 		text = g_strdup_printf("%s\n%s\n%s\n", indent, indent, indent);
 		text_len = strlen(text);
 	}
@@ -4776,6 +4773,8 @@ GeanyEditor *editor_create(GeanyDocument *doc)
 	editor->line_wrapping = editor_prefs.line_wrapping;
 	editor->scroll_percent = -1.0F;
 	editor->line_breaking = FALSE;
+	editor->current_word[0] = '\0';
+	editor->click_pos = -1;
 
 	editor->sci = editor_create_widget(editor);
 	return editor;

@@ -1549,15 +1549,15 @@ static gboolean read_current_word(GeanyDocument *doc, gboolean sci_word)
 	if (sci_word)
 	{
 		editor_find_current_word_sciwc(doc->editor, -1,
-			editor_info.current_word, GEANY_MAX_WORD_LENGTH);
+			doc->editor->current_word, GEANY_MAX_WORD_LENGTH);
 	}
 	else
 	{
 		editor_find_current_word(doc->editor, -1,
-			editor_info.current_word, GEANY_MAX_WORD_LENGTH, NULL);
+			doc->editor->current_word, GEANY_MAX_WORD_LENGTH, NULL);
 	}
 
-	return (*editor_info.current_word != 0);
+	return (*doc->editor->current_word != 0);
 }
 
 
@@ -1579,7 +1579,7 @@ static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 	if (sci_has_selection(sci))
 		return sci_get_selection_contents(sci);
 
-	return read_current_word(doc, sci_word) ? g_strdup(editor_info.current_word) : NULL;
+	return read_current_word(doc, sci_word) ? g_strdup(doc->editor->current_word) : NULL;
 }
 
 

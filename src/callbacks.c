@@ -76,11 +76,6 @@
 #endif
 
 
-
-/* flag to indicate that an insert callback was triggered from the file menu,
- * so we need to store the current cursor position in editor_info.click_pos. */
-static gboolean insert_callback_from_menu = FALSE;
-
 /* represents the state at switching a notebook page(in the left treeviews widget), to not emit
  * the selection-changed signal from tv.tree_openfiles */
 /*static gboolean switch_tv_notebook_page = FALSE; */
@@ -101,14 +96,14 @@ static gboolean check_no_unsaved(void)
 }
 
 
-/* set editor_info.click_pos to the current cursor position if insert_callback_from_menu is TRUE
+/* set editor->click_pos to the current cursor position if insert_callback_from_menu is TRUE
  * to prevent invalid cursor positions which can cause segfaults */
 static void verify_click_pos(GeanyDocument *doc)
 {
-	if (insert_callback_from_menu)
+	if (doc->editor->insert_callback_from_menu)
 	{
-		editor_info.click_pos = sci_get_current_position(doc->editor->sci);
-		insert_callback_from_menu = FALSE;
+		doc->editor->click_pos = sci_get_current_position(doc->editor->sci);
+		doc->editor->insert_callback_from_menu = FALSE;
 	}
 }
 
@@ -917,8 +912,8 @@ static void find_usage(gboolean in_session)
 	else
 	{
 		editor_find_current_word_sciwc(doc->editor, -1,
-			editor_info.current_word, GEANY_MAX_WORD_LENGTH);
-		search_text = g_strdup(editor_info.current_word);
+			doc->editor->current_word, GEANY_MAX_WORD_LENGTH);
+		search_text = g_strdup(doc->editor->current_word);
 		flags = SCFIND_MATCHCASE | SCFIND_WHOLEWORD;
 	}
 
@@ -947,7 +942,7 @@ static void goto_tag(gboolean definition)
 
 	/* update cursor pos for navigating back afterwards */
 	if (!sci_has_selection(doc->editor->sci))
-		sci_set_current_position(doc->editor->sci, editor_info.click_pos, FALSE);
+		sci_set_current_position(doc->editor->sci, doc->editor->click_pos, FALSE);
 
 	/* use the keybinding callback as it checks for selections as well as current word */
 	if (definition)
@@ -1214,7 +1209,7 @@ G_MODULE_EXPORT void on_comments_gpl_activate(GtkMenuItem *menuitem, gpointer us
 	verify_click_pos(doc); /* make sure that the click_pos is valid */
 
 	sci_start_undo_action(doc->editor->sci);
-	sci_insert_text(doc->editor->sci, editor_info.click_pos, text);
+	sci_insert_text(doc->editor->sci, doc->editor->click_pos, text);
 	sci_end_undo_action(doc->editor->sci);
 	g_free(text);
 }
@@ -1232,7 +1227,7 @@ G_MODULE_EXPORT void on_comments_bsd_activate(GtkMenuItem *menuitem, gpointer us
 	verify_click_pos(doc); /* make sure that the click_pos is valid */
 
 	sci_start_undo_action(doc->editor->sci);
-	sci_insert_text(doc->editor->sci, editor_info.click_pos, text);
+	sci_insert_text(doc->editor->sci, doc->editor->click_pos, text);
 	sci_end_undo_action(doc->editor->sci);
 	g_free(text);
 
@@ -1325,8 +1320,8 @@ G_MODULE_EXPORT void on_insert_date_activate(GtkMenuItem *menuitem, gpointer use
 		verify_click_pos(doc); /* make sure that the click_pos is valid */
 
 		sci_start_undo_action(doc->editor->sci);
-		sci_insert_text(doc->editor->sci, editor_info.click_pos, time_str);
-		sci_goto_pos(doc->editor->sci, editor_info.click_pos + strlen(time_str), FALSE);
+		sci_insert_text(doc->editor->sci, doc->editor->click_pos, time_str);
+		sci_goto_pos(doc->editor->sci, doc->editor->click_pos + strlen(time_str), FALSE);
 		sci_end_undo_action(doc->editor->sci);
 		g_free(time_str);
 	}
@@ -1353,7 +1348,7 @@ G_MODULE_EXPORT void on_insert_include_activate(GtkMenuItem *menuitem, gpointer 
 	if (utils_str_equal(user_data, "blank"))
 	{
 		text = g_strdup("#include \"\"\n");
-		pos = editor_info.click_pos + 10;
+		pos = doc->editor->click_pos + 10;
 	}
 	else
 	{
@@ -1361,7 +1356,7 @@ G_MODULE_EXPORT void on_insert_include_activate(GtkMenuItem *menuitem, gpointer 
 	}
 
 	sci_start_undo_action(doc->editor->sci);
-	sci_insert_text(doc->editor->sci, editor_info.click_pos, text);
+	sci_insert_text(doc->editor->sci, doc->editor->click_pos, text);
 	sci_end_undo_action(doc->editor->sci);
 	g_free(text);
 	if (pos >= 0)
@@ -1541,35 +1536,40 @@ G_MODULE_EXPORT void on_previous_message1_activate(GtkMenuItem *menuitem, gpoint
 
 G_MODULE_EXPORT void on_menu_comments_multiline_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	insert_callback_from_menu = TRUE;
+	GeanyDocument *doc = document_get_current();
+	doc->editor->insert_callback_from_menu = TRUE;
 	on_comments_multiline_activate(menuitem, user_data);
 }
 
 
 G_MODULE_EXPORT void on_menu_comments_gpl_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	insert_callback_from_menu = TRUE;
+	GeanyDocument *doc = document_get_current();
+	doc->editor->insert_callback_from_menu = TRUE;
 	on_comments_gpl_activate(menuitem, user_data);
 }
 
 
 G_MODULE_EXPORT void on_menu_comments_bsd_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	insert_callback_from_menu = TRUE;
+	GeanyDocument *doc = document_get_current();
+	doc->editor->insert_callback_from_menu = TRUE;
 	on_comments_bsd_activate(menuitem, user_data);
 }
 
 
 G_MODULE_EXPORT void on_menu_insert_include_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	insert_callback_from_menu = TRUE;
+	GeanyDocument *doc = document_get_current();
+	doc->editor->insert_callback_from_menu = TRUE;
 	on_insert_include_activate(menuitem, user_data);
 }
 
 
 G_MODULE_EXPORT void on_menu_insert_date_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	insert_callback_from_menu = TRUE;
+	GeanyDocument *doc = document_get_current();
+	doc->editor->insert_callback_from_menu = TRUE;
 	on_insert_date_activate(menuitem, user_data);
 }
 
@@ -1714,7 +1714,7 @@ G_MODULE_EXPORT void on_context_action1_activate(GtkMenuItem *menuitem, gpointer
 	}
 	else
 	{
-		word = g_strdup(editor_info.current_word);
+		word = g_strdup(doc->editor->current_word);
 	}
 
 	/* use the filetype specific command if available, fallback to global command otherwise */

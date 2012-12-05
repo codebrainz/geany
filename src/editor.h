@@ -79,16 +79,15 @@ struct GeanyEditor
 	GeanyIndentType	 indent_type;	/* Use editor_get_indent_prefs() instead. */
 	gboolean		 line_breaking;	/**< Whether to split long lines as you type. */
 	gint			 indent_width;
+	/* holds word under the mouse or keyboard cursor */
+	gchar			 current_word[GEANY_MAX_WORD_LENGTH];
+	gint			 click_pos;		/* text position where the mouse was clicked */
+	/* flag to indicate that an insert callback was triggered from the editing
+	 * widget's context menu, so we need to store the current cursor position
+	 * in editor->click_pos amongst other things */
+	gboolean		 insert_callback_from_menu;
 };
 
-
-typedef struct
-{
-	gchar	*current_word;	/* holds word under the mouse or keyboard cursor */
-	gint	click_pos;		/* text position where the mouse was clicked */
-} EditorInfo;
-
-extern EditorInfo editor_info;
 
 typedef struct SCNotification SCNotification;
 
