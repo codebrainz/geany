@@ -55,6 +55,7 @@
 #include "search.h"
 #include "project.h"
 #include "editor.h"
+#include "editorprefs.h"
 #include "printing.h"
 #include "templates.h"
 #include "toolbar.h"

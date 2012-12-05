@@ -14,6 +14,7 @@ SRCS = \
 	dialogs.c dialogs.h \
 	document.c document.h \
 	editor.c editor.h \
+	editorprefs.h \
 	encodings.c encodings.h \
 	filetypes.c filetypes.h \
 	geanyentryaction.c geanyentryaction.h \
@@ -56,6 +57,7 @@ geany_include_HEADERS = \
 	build.h \
 	document.h \
 	editor.h \
+	editorprefs.h \
 	encodings.h \
 	filetypes.h \
 	geany.h \
