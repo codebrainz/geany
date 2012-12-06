@@ -8844,7 +8844,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Convert and Set to _CR/LF (Win)</property>
                                     <property name="use_underline">True</property>
-                                    <signal name="activate" handler="on_crlf_activate" swapped="no"/>
+                                    <signal name="activate" handler="on_convert_line_endings_activate" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
@@ -8856,7 +8856,7 @@
                                     <property name="use_underline">True</property>
                                     <property name="active">True</property>
                                     <property name="group">crlf</property>
-                                    <signal name="activate" handler="on_lf_activate" swapped="no"/>
+                                    <signal name="activate" handler="on_convert_line_endings_activate" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
@@ -8867,7 +8867,7 @@
                                     <property name="label" translatable="yes">Convert and Set to CR (_Mac)</property>
                                     <property name="use_underline">True</property>
                                     <property name="group">crlf</property>
-                                    <signal name="activate" handler="on_cr_activate" swapped="no"/>
+                                    <signal name="activate" handler="on_convert_line_endings_activate" swapped="no"/>
                                   </object>
                                 </child>
                               </object>

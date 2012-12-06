@@ -663,30 +663,31 @@ static void convert_eol(gint mode)
 }
 
 
-G_MODULE_EXPORT void on_crlf_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+G_MODULE_EXPORT void on_convert_line_endings_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
+	GeanyDocument *doc;
+	const gchar *name;
+
+	g_return_if_fail(GTK_IS_BUILDABLE(menuitem));
+
 	if (ignore_callback || ! gtk_check_menu_item_get_active(menuitem))
 		return;
 
-	convert_eol(SC_EOL_CRLF);
-}
+	doc = document_get_current();
+	/* bail out because this callback should only be triggered when there's a
+	 * current document. */
+	g_return_if_fail(doc != NULL);
 
+	/* Grab the widget name to use as a comparison to see which of the 3 eol
+	 * mode menu items triggered the callback. */
+	name = g_intern_string(gtk_buildable_get_name(GTK_BUILDABLE(menuitem)));
 
-G_MODULE_EXPORT void on_lf_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
-{
-	if (ignore_callback || ! gtk_check_menu_item_get_active(menuitem))
-		return;
-
-	convert_eol(SC_EOL_LF);
-}
-
-
-G_MODULE_EXPORT void on_cr_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
-{
-	if (ignore_callback || ! gtk_check_menu_item_get_active(menuitem))
-		return;
-
-	convert_eol(SC_EOL_CR);
+	if (name == g_intern_string("crlf"))
+		convert_eol(SC_EOL_CRLF);
+	else if (name == g_intern_string("lf"))
+		convert_eol(SC_EOL_LF);
+	else if (name == g_intern_string("cr"))
+		convert_eol(SC_EOL_CR);
 }
 
 
