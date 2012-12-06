@@ -86,21 +86,6 @@
 /*static gboolean switch_tv_notebook_page = FALSE; */
 
 
-static gboolean check_no_unsaved(void)
-{
-	guint i;
-
-	for (i = 0; i < documents_array->len; i++)
-	{
-		if (documents[i]->is_valid && documents[i]->changed)
-		{
-			return FALSE;
-		}
-	}
-	return TRUE;	/* no unsaved edits */
-}
-
-
 /* should only be called from on_exit_clicked */
 static void quit_app(void)
 {
@@ -122,7 +107,7 @@ G_MODULE_EXPORT gboolean on_exit_clicked(GtkWidget *widget, gpointer gdata)
 {
 	main_status.quitting = TRUE;
 
-	if (! check_no_unsaved())
+	if (document_have_unsaved_edits(NULL))
 	{
 		if (document_account_for_unsaved())
 		{

@@ -279,6 +279,8 @@ gint document_compare_by_tab_order_reverse(gconstpointer a, gconstpointer b);
 
 void document_grab_focus(GeanyDocument *doc);
 
+gboolean document_have_unsaved_edits(GeanyDocument *doc);
+
 G_END_DECLS
 
 #endif
