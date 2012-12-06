@@ -583,9 +583,6 @@ G_MODULE_EXPORT void on_tv_notebook_switch_page_after(GtkNotebook *notebook, gpo
 G_MODULE_EXPORT void on_convert_line_endings_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc;
-	const gchar *name;
-
-	g_return_if_fail(GTK_IS_BUILDABLE(menuitem));
 
 	if (ignore_callback || ! gtk_check_menu_item_get_active(menuitem))
 		return;
@@ -595,15 +592,11 @@ G_MODULE_EXPORT void on_convert_line_endings_activate(GtkCheckMenuItem *menuitem
 	 * current document. */
 	g_return_if_fail(doc != NULL);
 
-	/* Grab the widget name to use as a comparison to see which of the 3 eol
-	 * mode menu items triggered the callback. */
-	name = g_intern_string(gtk_buildable_get_name(GTK_BUILDABLE(menuitem)));
-
-	if (name == g_intern_string("crlf"))
+	if (WID_NAME_EQ(menuitem, "crlf"))
 		editor_convert_line_endings(doc->editor, SC_EOL_CRLF);
-	else if (name == g_intern_string("lf"))
+	else if (WID_NAME_EQ(menuitem, "lf"))
 		editor_convert_line_endings(doc->editor, SC_EOL_LF);
-	else if (name == g_intern_string("cr"))
+	else if (WID_NAME_EQ(menuitem, "cr"))
 		editor_convert_line_endings(doc->editor, SC_EOL_CR);
 }
 
