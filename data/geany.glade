@@ -275,7 +275,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Insert _GPL Notice</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="on_comments_gpl_activate" swapped="no"/>
+                        <signal name="activate" handler="on_comments_insert_license_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -285,7 +285,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Insert _BSD License Notice</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="on_comments_bsd_activate" swapped="no"/>
+                        <signal name="activate" handler="on_comments_insert_license_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -7928,7 +7928,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Insert _Multiline Comment</property>
                                     <property name="use_underline">True</property>
-                                    <signal name="activate" handler="on_menu_comments_multiline_activate" swapped="no"/>
+                                    <signal name="activate" handler="on_comments_multiline_activate" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
@@ -7954,7 +7954,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Insert _GPL Notice</property>
                                     <property name="use_underline">True</property>
-                                    <signal name="activate" handler="on_menu_comments_gpl_activate" swapped="no"/>
+                                    <signal name="activate" handler="on_comments_insert_license_activate" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
@@ -7964,7 +7964,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Insert _BSD License Notice</property>
                                     <property name="use_underline">True</property>
-                                    <signal name="activate" handler="on_menu_comments_bsd_activate" swapped="no"/>
+                                    <signal name="activate" handler="on_comments_insert_license_activate" swapped="no"/>
                                   </object>
                                 </child>
                               </object>

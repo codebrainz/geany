@@ -76,6 +76,11 @@
 #endif
 
 
+/* Convenience macro to compare a widget's buildable name against a provided name */
+#define WID_NAME_EQ(wid, name) \
+	(g_intern_string(gtk_buildable_get_name(GTK_BUILDABLE(wid))) == g_intern_string(name))
+
+
 /* represents the state at switching a notebook page(in the left treeviews widget), to not emit
  * the selection-changed signal from tv.tree_openfiles */
 /*static gboolean switch_tv_notebook_page = FALSE; */
@@ -1165,6 +1170,12 @@ G_MODULE_EXPORT void on_comments_multiline_activate(GtkMenuItem *menuitem, gpoin
 		return;
 	}
 
+	/* When not one of the editor menu's items, save the current click_pos
+	 * since we don't know if the last one saved is valid any more which
+	 * could cause segfaults. */
+	if (! WID_NAME_EQ(menuitem, "insert_multiline_comment1"))
+		editor_save_click_pos(doc->editor, -1);
+
 	if (doc->file_type->comment_open || doc->file_type->comment_single)
 		editor_insert_multiline_comment(doc->editor);
 	else
@@ -1172,36 +1183,37 @@ G_MODULE_EXPORT void on_comments_multiline_activate(GtkMenuItem *menuitem, gpoin
 }
 
 
-G_MODULE_EXPORT void on_comments_gpl_activate(GtkMenuItem *menuitem, gpointer user_data)
+G_MODULE_EXPORT void on_comments_insert_license_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	GeanyDocument *doc = document_get_current();
 	gchar *text;
+	GeanyDocument *doc = document_get_current();
 
 	g_return_if_fail(doc != NULL);
 
-	text = templates_get_template_licence(doc, GEANY_TEMPLATE_GPL);
+	/* When not one of the editor menu's items, save the current click_pos
+	 * since we don't know if the last one saved is valid any more which
+	 * could cause segfaults. */
+	if (! WID_NAME_EQ(menuitem, "insert_gpl_notice1") &&
+		! WID_NAME_EQ(menuitem, "insert_bsd_license_notice1"))
+	{
+		editor_save_click_pos(doc->editor, -1);
+	}
+
+	if (WID_NAME_EQ(menuitem, "insert_gpl_notice1") ||
+		WID_NAME_EQ(menuitem, "insert_gpl_notice2"))
+	{
+		text = templates_get_template_licence(doc, GEANY_TEMPLATE_GPL);
+	}
+	else if (WID_NAME_EQ(menuitem, "insert_bsd_license_notice1") ||
+			WID_NAME_EQ(menuitem, "insert_bsd_license_notice2"))
+	{
+		text = templates_get_template_licence(doc, GEANY_TEMPLATE_BSD);
+	}
 
 	sci_start_undo_action(doc->editor->sci);
 	sci_insert_text(doc->editor->sci, doc->editor->click_pos, text);
 	sci_end_undo_action(doc->editor->sci);
 	g_free(text);
-}
-
-
-G_MODULE_EXPORT void on_comments_bsd_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GeanyDocument *doc = document_get_current();
-	gchar *text;
-
-	g_return_if_fail(doc != NULL);
-
-	text = templates_get_template_licence(doc, GEANY_TEMPLATE_BSD);
-
-	sci_start_undo_action(doc->editor->sci);
-	sci_insert_text(doc->editor->sci, doc->editor->click_pos, text);
-	sci_end_undo_action(doc->editor->sci);
-	g_free(text);
-
 }
 
 
@@ -1498,42 +1510,6 @@ G_MODULE_EXPORT void on_previous_message1_activate(GtkMenuItem *menuitem, gpoint
 	if (! ui_tree_view_find_previous(GTK_TREE_VIEW(msgwindow.tree_msg),
 		msgwin_goto_messages_file_line))
 		ui_set_statusbar(FALSE, _("No more message items."));
-}
-
-
-G_MODULE_EXPORT void on_menu_comments_multiline_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GeanyDocument *doc = document_get_current();
-
-	if (DOC_VALID(doc))
-	{
-		editor_save_click_pos(doc->editor, -1);
-		on_comments_multiline_activate(menuitem, user_data);
-	}
-}
-
-
-G_MODULE_EXPORT void on_menu_comments_gpl_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GeanyDocument *doc = document_get_current();
-
-	if (DOC_VALID(doc))
-	{
-		editor_save_click_pos(doc->editor, -1);
-		on_comments_gpl_activate(menuitem, user_data);
-	}
-}
-
-
-G_MODULE_EXPORT void on_menu_comments_bsd_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GeanyDocument *doc = document_get_current();
-
-	if (DOC_VALID(doc))
-	{
-		editor_save_click_pos(doc->editor, -1);
-		on_comments_bsd_activate(menuitem, user_data);
-	}
 }
 
 
