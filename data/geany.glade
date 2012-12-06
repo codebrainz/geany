@@ -9494,6 +9494,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="buffer">textbuffer1</property>
+                                <signal name="motion-notify-event" handler="on_motion_event" swapped="no"/>
                               </object>
                             </child>
                           </object>

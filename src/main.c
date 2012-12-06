@@ -1078,9 +1078,6 @@ gint main(gint argc, gchar **argv)
 		g_object_unref(pb);	/* free our reference */
 	}
 
-	/* registering some basic events */
-	g_signal_connect(msgwindow.scribble, "motion-notify-event", G_CALLBACK(on_motion_event), NULL);
-
 #ifdef HAVE_VTE
 	vte_init();
 #endif
