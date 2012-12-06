@@ -23,8 +23,7 @@
 #include "geany.h" /* necessary for interface.c */
 
 
-G_MODULE_EXPORT gboolean
-on_exit_clicked						(GtkWidget *widget, gpointer gdata);
+G_MODULE_EXPORT void on_exit_geany(GObject *object, gpointer user_data);
 
 G_MODULE_EXPORT void
 on_new1_activate					   (GtkMenuItem	 *menuitem,
@@ -36,10 +35,6 @@ on_save1_activate					  (GtkMenuItem	 *menuitem,
 
 G_MODULE_EXPORT void
 on_save_as1_activate				   (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_quit1_activate					  (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
@@ -244,10 +239,6 @@ on_toolbutton_save_clicked			 (GtkAction	   *action,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_toolbutton_quit_clicked			 (GtkAction	   *action,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
 on_toolbutton_preferences_clicked	  (GtkAction	   *action,
 										gpointer		 user_data);
 
@@ -293,11 +284,11 @@ on_comments_multiline_activate		 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_comments_changelog_activate		 (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
+on_comments_insert_license_activate(GtkMenuItem *menuitem,
+									gpointer user_data);
 
 G_MODULE_EXPORT void
-on_comments_gpl_activate			   (GtkMenuItem	 *menuitem,
+on_comments_changelog_activate		 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
@@ -439,10 +430,6 @@ on_menu_insert_include_activate		(GtkMenuItem	 *menuitem,
 
 G_MODULE_EXPORT void
 on_menu_insert_date_activate		   (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_menu_comments_bsd_activate		  (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void

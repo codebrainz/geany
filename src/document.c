@@ -3060,22 +3060,3 @@ void document_grab_focus(GeanyDocument *doc)
 
 	gtk_widget_grab_focus(GTK_WIDGET(doc->editor->sci));
 }
-
-
-/* Document can be NULL to check if any open documents have unsaved edits */
-gboolean document_have_unsaved_edits(GeanyDocument *doc)
-{
-	guint i;
-
-	if (doc != NULL)
-		return doc->changed;
-
-	for (i = 0; i < documents_array->len; i++)
-	{
-		if (documents[i]->is_valid && documents[i]->changed)
-		{
-			return TRUE;
-		}
-	}
-	return FALSE;	/* have unsaved edits */
-}

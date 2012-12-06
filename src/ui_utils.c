@@ -2810,3 +2810,41 @@ const gchar *ui_lookup_stock_label(const gchar *stock_id)
 	g_warning("No stock id '%s'!", stock_id);
 	return NULL;
 }
+
+
+/* should only be called from ui_quit */
+static void ui_quit_internal(void)
+{
+	configuration_save();
+
+	if (app->project != NULL)
+		project_close(FALSE);	/* save project session files */
+
+	/* account for other documents after project was closed */
+	document_close_all();
+
+	main_status.quitting = TRUE;
+
+	main_quit();
+}
+
+
+void ui_quit(void)
+{
+	main_status.quitting = TRUE;
+
+	if (document_close_all())
+	{
+		ui_quit_internal();
+		return;
+	}
+	else if (! prefs.confirm_exit ||
+				dialogs_show_question_full(NULL, GTK_STOCK_QUIT, GTK_STOCK_CANCEL, NULL,
+				_("Do you really want to quit?")))
+	{
+		ui_quit_internal();
+		return;
+	}
+
+	main_status.quitting = FALSE;
+}

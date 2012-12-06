@@ -349,6 +349,8 @@ GdkPixbuf *ui_get_mime_icon(const gchar *mime_type, GtkIconSize size);
 
 void ui_focus_current_document(void);
 
+void ui_quit(void);
+
 G_END_DECLS
 
 #endif

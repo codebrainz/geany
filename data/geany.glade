@@ -7227,6 +7227,8 @@
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Geany</property>
+    <signal name="delete-event" handler="on_exit_geany" swapped="no"/>
+    <signal name="window-state-event" handler="on_window_state_event" swapped="no"/>
     <child internal-child="accessible">
       <object class="AtkObject" id="window1-atkobject">
         <property name="AtkObject::accessible-name" translatable="yes">Geany</property>
@@ -7499,7 +7501,7 @@
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                             <property name="accel_group">accelgroup1</property>
-                            <signal name="activate" handler="on_quit1_activate" swapped="no"/>
+                            <signal name="activate" handler="on_exit_geany" swapped="no"/>
                           </object>
                         </child>
                       </object>
