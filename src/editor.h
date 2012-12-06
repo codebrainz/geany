@@ -82,10 +82,6 @@ struct GeanyEditor
 	/* holds word under the mouse or keyboard cursor */
 	gchar			 current_word[GEANY_MAX_WORD_LENGTH];
 	gint			 click_pos;		/* text position where the mouse was clicked */
-	/* flag to indicate that an insert callback was triggered from the editing
-	 * widget's context menu, so we need to store the current cursor position
-	 * in editor->click_pos amongst other things */
-	gboolean		 insert_callback_from_menu;
 };
 
 
@@ -232,6 +228,8 @@ void editor_toggle_fold(GeanyEditor *editor, gint line, gint modifiers);
 const gchar *editor_find_snippet(GeanyEditor *editor, const gchar *snippet_name);
 
 void editor_insert_snippet(GeanyEditor *editor, gint pos, const gchar *snippet);
+
+void editor_save_click_pos(GeanyEditor *editor, gint pos);
 
 G_END_DECLS
 

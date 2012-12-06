@@ -299,10 +299,12 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 	 * fake event to show the editor menu triggered by a key event where we want to use the
 	 * text cursor position. */
 	if (event->x > 0.0 && event->y > 0.0)
-		editor->click_pos = sci_get_position_from_xy(editor->sci,
-			(gint)event->x, (gint)event->y, FALSE);
+	{
+		editor_save_click_pos(editor,
+			sci_get_position_from_xy(editor->sci, (gint)event->x, (gint)event->y, FALSE));
+	}
 	else
-		editor->click_pos = sci_get_current_position(editor->sci);
+		editor_save_click_pos(editor, -1);
 
 	if (event->button == 1)
 	{
@@ -5101,4 +5103,18 @@ void editor_insert_snippet(GeanyEditor *editor, gint pos, const gchar *snippet)
 	snippets_make_replacements(editor, pattern);
 	editor_insert_text_block(editor, pattern->str, pos, -1, -1, TRUE);
 	g_string_free(pattern, TRUE);
+}
+
+
+/* Updates the current click position with @a click_pos if it's valid for
+ * the editor and non-negative, otherwise saves the current position. */
+void editor_save_click_pos(GeanyEditor *editor, gint click_pos)
+{
+	g_return_if_fail(editor != NULL);
+
+	/* use current position for invalid click_pos */
+	if (click_pos < 0 || click_pos > sci_get_length(editor->sci))
+		editor->click_pos = sci_get_current_position(editor->sci);
+	else
+		editor->click_pos = click_pos;
 }

@@ -96,18 +96,6 @@ static gboolean check_no_unsaved(void)
 }
 
 
-/* set editor->click_pos to the current cursor position if insert_callback_from_menu is TRUE
- * to prevent invalid cursor positions which can cause segfaults */
-static void verify_click_pos(GeanyDocument *doc)
-{
-	if (doc->editor->insert_callback_from_menu)
-	{
-		doc->editor->click_pos = sci_get_current_position(doc->editor->sci);
-		doc->editor->insert_callback_from_menu = FALSE;
-	}
-}
-
-
 /* should only be called from on_exit_clicked */
 static void quit_app(void)
 {
@@ -1177,8 +1165,6 @@ G_MODULE_EXPORT void on_comments_multiline_activate(GtkMenuItem *menuitem, gpoin
 		return;
 	}
 
-	verify_click_pos(doc); /* make sure that the click_pos is valid */
-
 	if (doc->file_type->comment_open || doc->file_type->comment_single)
 		editor_insert_multiline_comment(doc->editor);
 	else
@@ -1195,8 +1181,6 @@ G_MODULE_EXPORT void on_comments_gpl_activate(GtkMenuItem *menuitem, gpointer us
 
 	text = templates_get_template_licence(doc, GEANY_TEMPLATE_GPL);
 
-	verify_click_pos(doc); /* make sure that the click_pos is valid */
-
 	sci_start_undo_action(doc->editor->sci);
 	sci_insert_text(doc->editor->sci, doc->editor->click_pos, text);
 	sci_end_undo_action(doc->editor->sci);
@@ -1212,8 +1196,6 @@ G_MODULE_EXPORT void on_comments_bsd_activate(GtkMenuItem *menuitem, gpointer us
 	g_return_if_fail(doc != NULL);
 
 	text = templates_get_template_licence(doc, GEANY_TEMPLATE_BSD);
-
-	verify_click_pos(doc); /* make sure that the click_pos is valid */
 
 	sci_start_undo_action(doc->editor->sci);
 	sci_insert_text(doc->editor->sci, doc->editor->click_pos, text);
@@ -1306,8 +1288,6 @@ G_MODULE_EXPORT void on_insert_date_activate(GtkMenuItem *menuitem, gpointer use
 	time_str = utils_get_date_time(format, NULL);
 	if (time_str != NULL)
 	{
-		verify_click_pos(doc); /* make sure that the click_pos is valid */
-
 		sci_start_undo_action(doc->editor->sci);
 		sci_insert_text(doc->editor->sci, doc->editor->click_pos, time_str);
 		sci_goto_pos(doc->editor->sci, doc->editor->click_pos + strlen(time_str), FALSE);
@@ -1331,8 +1311,6 @@ G_MODULE_EXPORT void on_insert_include_activate(GtkMenuItem *menuitem, gpointer 
 
 	g_return_if_fail(doc != NULL);
 	g_return_if_fail(user_data != NULL);
-
-	verify_click_pos(doc); /* make sure that the click_pos is valid */
 
 	if (utils_str_equal(user_data, "blank"))
 	{
@@ -1526,40 +1504,60 @@ G_MODULE_EXPORT void on_previous_message1_activate(GtkMenuItem *menuitem, gpoint
 G_MODULE_EXPORT void on_menu_comments_multiline_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	doc->editor->insert_callback_from_menu = TRUE;
-	on_comments_multiline_activate(menuitem, user_data);
+
+	if (DOC_VALID(doc))
+	{
+		editor_save_click_pos(doc->editor, -1);
+		on_comments_multiline_activate(menuitem, user_data);
+	}
 }
 
 
 G_MODULE_EXPORT void on_menu_comments_gpl_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	doc->editor->insert_callback_from_menu = TRUE;
-	on_comments_gpl_activate(menuitem, user_data);
+
+	if (DOC_VALID(doc))
+	{
+		editor_save_click_pos(doc->editor, -1);
+		on_comments_gpl_activate(menuitem, user_data);
+	}
 }
 
 
 G_MODULE_EXPORT void on_menu_comments_bsd_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	doc->editor->insert_callback_from_menu = TRUE;
-	on_comments_bsd_activate(menuitem, user_data);
+
+	if (DOC_VALID(doc))
+	{
+		editor_save_click_pos(doc->editor, -1);
+		on_comments_bsd_activate(menuitem, user_data);
+	}
 }
 
 
 G_MODULE_EXPORT void on_menu_insert_include_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	doc->editor->insert_callback_from_menu = TRUE;
-	on_insert_include_activate(menuitem, user_data);
+
+	if (DOC_VALID(doc))
+	{
+		editor_save_click_pos(doc->editor, -1);
+		on_insert_include_activate(menuitem, user_data);
+	}
 }
 
 
 G_MODULE_EXPORT void on_menu_insert_date_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	doc->editor->insert_callback_from_menu = TRUE;
-	on_insert_date_activate(menuitem, user_data);
+
+	if (DOC_VALID(doc))
+	{
+		editor_save_click_pos(doc->editor, -1);
+		on_insert_date_activate(menuitem, user_data);
+	}
 }
 
 
