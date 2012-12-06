@@ -185,6 +185,8 @@ gint editor_get_eol_char_len(GeanyEditor *editor);
 
 const gchar *editor_get_eol_char(GeanyEditor *editor);
 
+void editor_convert_line_endings(GeanyEditor *editor, gint sci_eol_mode);
+
 void editor_fold_all(GeanyEditor *editor);
 
 void editor_unfold_all(GeanyEditor *editor);

@@ -651,18 +651,6 @@ G_MODULE_EXPORT void on_tv_notebook_switch_page_after(GtkNotebook *notebook, gpo
 }
 
 
-static void convert_eol(gint mode)
-{
-	GeanyDocument *doc = document_get_current();
-
-	g_return_if_fail(doc != NULL);
-
-	sci_convert_eols(doc->editor->sci, mode);
-	sci_set_eol_mode(doc->editor->sci, mode);
-	ui_update_statusbar(doc, -1);
-}
-
-
 G_MODULE_EXPORT void on_convert_line_endings_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc;
@@ -683,11 +671,11 @@ G_MODULE_EXPORT void on_convert_line_endings_activate(GtkCheckMenuItem *menuitem
 	name = g_intern_string(gtk_buildable_get_name(GTK_BUILDABLE(menuitem)));
 
 	if (name == g_intern_string("crlf"))
-		convert_eol(SC_EOL_CRLF);
+		editor_convert_line_endings(doc->editor, SC_EOL_CRLF);
 	else if (name == g_intern_string("lf"))
-		convert_eol(SC_EOL_LF);
+		editor_convert_line_endings(doc->editor, SC_EOL_LF);
 	else if (name == g_intern_string("cr"))
-		convert_eol(SC_EOL_CR);
+		editor_convert_line_endings(doc->editor, SC_EOL_CR);
 }
 
 

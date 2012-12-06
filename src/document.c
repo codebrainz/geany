@@ -1716,7 +1716,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 		editor_ensure_final_newline(doc->editor);
 	/* ensure newlines are consistent */
 	if (fp->ensure_convert_new_lines)
-		sci_convert_eols(doc->editor->sci, sci_get_eol_mode(doc->editor->sci));
+		editor_convert_line_endings(doc->editor, editor_get_eol_char_mode(doc->editor));
 
 	/* notify plugins which may wish to modify the document before it's saved */
 	g_signal_emit_by_name(geany_object, "document-before-save", doc);

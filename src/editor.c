@@ -4255,6 +4255,17 @@ const gchar *editor_get_eol_char(GeanyEditor *editor)
 }
 
 
+/* Changes the line endings in the Scintilla buffer to sci_eol_mode
+ * which one of SC_EOL_CRLF, SC_EOL_LF or SC_EOL_CR constants. */
+void editor_convert_line_endings(GeanyEditor *editor, gint sci_eol_mode)
+{
+	g_return_if_fail(editor != NULL);
+	sci_convert_eols(editor->sci, sci_eol_mode);
+	sci_set_eol_mode(editor->sci, sci_eol_mode);
+	ui_update_statusbar(NULL, -1);
+}
+
+
 static void fold_all(GeanyEditor *editor, gboolean want_fold)
 {
 	gint lines, first, i;
