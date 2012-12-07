@@ -77,8 +77,8 @@
 
 
 /* Convenience macro to compare a widget's buildable name against a provided name */
-#define WID_NAME_EQ(wid, name) \
-	(g_intern_string(gtk_buildable_get_name(GTK_BUILDABLE(wid))) == g_intern_string(name))
+#define WIDGET_IS_NAMED(wid, name) \
+	(g_strcmp0(gtk_buildable_get_name(GTK_BUILDABLE(wid)), name) == 0)
 
 
 /* represents the state at switching a notebook page(in the left treeviews widget), to not emit
@@ -592,11 +592,11 @@ G_MODULE_EXPORT void on_convert_line_endings_activate(GtkCheckMenuItem *menuitem
 	 * current document. */
 	g_return_if_fail(doc != NULL);
 
-	if (WID_NAME_EQ(menuitem, "crlf"))
+	if (WIDGET_IS_NAMED(menuitem, "crlf"))
 		editor_convert_line_endings(doc->editor, SC_EOL_CRLF);
-	else if (WID_NAME_EQ(menuitem, "lf"))
+	else if (WIDGET_IS_NAMED(menuitem, "lf"))
 		editor_convert_line_endings(doc->editor, SC_EOL_LF);
-	else if (WID_NAME_EQ(menuitem, "cr"))
+	else if (WIDGET_IS_NAMED(menuitem, "cr"))
 		editor_convert_line_endings(doc->editor, SC_EOL_CR);
 }
 
@@ -1102,7 +1102,7 @@ G_MODULE_EXPORT void on_comments_multiline_activate(GtkMenuItem *menuitem, gpoin
 	/* When not one of the editor menu's items, save the current click_pos
 	 * since we don't know if the last one saved is valid any more which
 	 * could cause segfaults. */
-	if (! WID_NAME_EQ(menuitem, "insert_multiline_comment1"))
+	if (! WIDGET_IS_NAMED(menuitem, "insert_multiline_comment1"))
 		editor_save_click_pos(doc->editor, -1);
 
 	if (doc->file_type->comment_open || doc->file_type->comment_single)
@@ -1122,19 +1122,19 @@ G_MODULE_EXPORT void on_comments_insert_license_activate(GtkMenuItem *menuitem, 
 	/* When not one of the editor menu's items, save the current click_pos
 	 * since we don't know if the last one saved is valid any more which
 	 * could cause segfaults. */
-	if (! WID_NAME_EQ(menuitem, "insert_gpl_notice1") &&
-		! WID_NAME_EQ(menuitem, "insert_bsd_license_notice1"))
+	if (! WIDGET_IS_NAMED(menuitem, "insert_gpl_notice1") &&
+		! WIDGET_IS_NAMED(menuitem, "insert_bsd_license_notice1"))
 	{
 		editor_save_click_pos(doc->editor, -1);
 	}
 
-	if (WID_NAME_EQ(menuitem, "insert_gpl_notice1") ||
-		WID_NAME_EQ(menuitem, "insert_gpl_notice2"))
+	if (WIDGET_IS_NAMED(menuitem, "insert_gpl_notice1") ||
+		WIDGET_IS_NAMED(menuitem, "insert_gpl_notice2"))
 	{
 		text = templates_get_template_licence(doc, GEANY_TEMPLATE_GPL);
 	}
-	else if (WID_NAME_EQ(menuitem, "insert_bsd_license_notice1") ||
-			WID_NAME_EQ(menuitem, "insert_bsd_license_notice2"))
+	else if (WIDGET_IS_NAMED(menuitem, "insert_bsd_license_notice1") ||
+			WIDGET_IS_NAMED(menuitem, "insert_bsd_license_notice2"))
 	{
 		text = templates_get_template_licence(doc, GEANY_TEMPLATE_BSD);
 	}
