@@ -55,10 +55,17 @@ typedef struct GeanyPluginPrivate
 	GeanyAutoSeparator	toolbar_separator;
 	GArray			*signal_ids;			/* SignalConnection's to disconnect when unloading */
 	GList			*sources;				/* GSources to destroy when unloading */
+	GList			*free_pointers;			/* Pointers to free when unloading the plugin */
 }
 GeanyPluginPrivate;
 
 typedef GeanyPluginPrivate Plugin;	/* shorter alias */
 
+typedef struct GeanyPluginFreePointer
+{
+	gpointer ptr;
+	GDestroyNotify free_func;
+}
+GeanyPluginFreePointer;
 
 #endif /* GEANY_PLUGINPRIVATE_H */

@@ -53,5 +53,8 @@ struct GeanyKeyGroup *plugin_set_key_group(struct GeanyPlugin *plugin,
 
 void plugin_show_configure(struct GeanyPlugin *plugin);
 
+void plugin_register_free_pointer(struct GeanyPlugin *plugin, gpointer free_ptr,
+	GDestroyNotify free_func);
+
 #endif /* HAVE_PLUGINS */
 #endif /* GEANY_PLUGINUTILS_H */

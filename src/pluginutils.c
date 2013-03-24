@@ -394,5 +394,51 @@ void plugin_show_configure(GeanyPlugin *plugin)
 	}
 }
 
+/**
+ * Register pointer for cleanup.
+ *
+ * Registers a pointer, GObject or GtkWidget for freeing, unreffing, or
+ * destruction when the plugin is unloaded. This function should be
+ * called once for each reference of GObjects or GtkWidgets and only
+ * ever once for normal pointers. If @a free_ptr is not a GObject or
+ * GtkWidget and you do not want it to be freed using g_free(), then
+ * you MUST supply a @free_func otherwise the fallback will be g_free().
+ *
+ * @param plugin Must be @ref geany_plugin.
+ * @param free_ptr A pointer to allocated memory to free when unloading the @a plugin.
+ * @param free_func A pointer to a function to be used to free @a free_ptr when
+ * unloading the plugin. Can be NULL if @a free_ptr is a GObject, GtkWidget or
+ * can safely be freed using the g_free() function, otherwise it MUST be specified.
+ *
+ * @since 1.24, plugin API 216.
+ */
+void plugin_register_free_pointer(struct GeanyPlugin *plugin, gpointer free_ptr,
+	GDestroyNotify free_func)
+{
+	Plugin *p;
+	GeanyPluginFreePointer *fp;
 
-#endif
+	g_return_if_fail(plugin != NULL);
+	g_return_if_fail(free_ptr != NULL);
+
+	p = plugin->priv;
+	if (free_func == NULL)
+	{
+		if (GTK_IS_WIDGET(free_ptr))
+			free_func = (GDestroyNotify) gtk_widget_destroy;
+		else if (G_IS_OBJECT(free_ptr))
+			free_func = (GDestroyNotify) g_object_unref;
+		else
+			free_func = (GDestroyNotify) g_free;
+	}
+	g_warn_if_fail(free_func != NULL);
+
+	fp = g_new0(GeanyPluginFreePointer, 1);
+	fp->ptr = free_ptr;
+	fp->free_func = free_func;
+
+	p->free_pointers = g_list_prepend(p->free_pointers, fp);
+}
+
+
+#endif /* HAVE_PLUGINS */

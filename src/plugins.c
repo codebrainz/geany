@@ -805,6 +805,38 @@ static gboolean is_active_plugin(Plugin *plugin)
 }
 
 
+static void cleanup_free_pointers(Plugin *plugin)
+{
+	GList *iter;
+
+	for (iter = plugin->free_pointers; iter != NULL; iter = g_list_next(iter))
+	{
+		GeanyPluginFreePointer *fp = iter->data;
+		if (G_LIKELY(fp != NULL))
+		{
+			if (G_LIKELY(fp->free_func != NULL))
+				fp->free_func(fp->ptr);
+			else
+			{
+				g_warn_if_reached();
+				if (GTK_IS_WIDGET(fp->ptr))
+					gtk_widget_destroy(GTK_WIDGET(fp->ptr));
+				else if (G_IS_OBJECT(fp->ptr))
+					g_object_unref(G_OBJECT(fp->ptr));
+				else
+					g_free(fp->ptr);
+			}
+			g_free(fp);
+		}
+		else
+			g_warn_if_reached();
+	}
+
+	g_list_free(plugin->free_pointers);
+	plugin->free_pointers = NULL;
+}
+
+
 /* Clean up anything used by an active plugin  */
 static void
 plugin_cleanup(Plugin *plugin)
@@ -816,6 +848,7 @@ plugin_cleanup(Plugin *plugin)
 
 	remove_callbacks(plugin);
 	remove_sources(plugin);
+	cleanup_free_pointers(plugin);
 
 	if (plugin->key_group)
 		keybindings_free_group(plugin->key_group);
