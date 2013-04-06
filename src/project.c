@@ -384,6 +384,8 @@ void project_close(gboolean open_default)
 	g_free(app->project);
 	app->project = NULL;
 
+	g_free(priv.base_path_saved);
+
 	foreach_slist(node, stash_groups)
 		stash_group_free(node->data);
 
@@ -520,7 +522,7 @@ static void show_project_properties(gboolean show_build)
 	/* fill the elements with the appropriate data */
 	gtk_entry_set_text(GTK_ENTRY(e.name), p->name);
 	gtk_label_set_text(GTK_LABEL(e.file_name), p->file_name);
-	gtk_entry_set_text(GTK_ENTRY(e.base_path), p->base_path);
+	gtk_entry_set_text(GTK_ENTRY(e.base_path), priv.base_path_saved);
 
 	radio_long_line_custom = ui_lookup_widget(e.dialog, "radio_long_line_custom_project");
 	switch (p->long_line_behaviour)
@@ -590,6 +592,31 @@ void project_properties(void)
 void project_build_properties(void)
 {
 	show_project_properties(TRUE);
+}
+
+
+static gchar *get_absolute_base_path(const gchar *base_path, const gchar *project_file)
+{
+	if (g_path_is_absolute(base_path))
+		return g_strdup(base_path);
+	else
+	{	/* build base_path out of project file name's dir and base_path */
+		gchar *path, *ret;
+		gchar *dir = g_path_get_dirname(project_file);
+
+		path = g_strconcat(dir, G_DIR_SEPARATOR_S, base_path, NULL);
+		SETPTR(path, utils_get_locale_from_utf8(path));
+		ret = tm_get_real_path(path);
+		if (!ret)
+		{
+			ret = g_strdup(path);
+			utils_tidy_path(ret);
+		}
+		SETPTR(ret, utils_get_utf8_from_locale(ret));
+		g_free(dir);
+		g_free(path);
+		return ret;
+	}
 }
 
 
@@ -732,7 +759,8 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 	SETPTR(p->name, g_strdup(name));
 	SETPTR(p->file_name, g_strdup(file_name));
 	/* use "." if base_path is empty */
-	SETPTR(p->base_path, g_strdup(!EMPTY(base_path) ? base_path : "./"));
+	SETPTR(priv.base_path_saved, g_strdup(!EMPTY(base_path) ? base_path : "./"));
+	p->base_path = get_absolute_base_path(priv.base_path_saved, p->file_name);
 
 	if (! new_project)	/* save properties specific fields */
 	{
@@ -990,7 +1018,8 @@ static gboolean load_config(const gchar *filename)
 	p->name = utils_get_setting_string(config, "project", "name", GEANY_STRING_UNTITLED);
 	p->description = utils_get_setting_string(config, "project", "description", "");
 	p->file_name = utils_get_utf8_from_locale(filename);
-	p->base_path = utils_get_setting_string(config, "project", "base_path", "");
+	priv.base_path_saved = utils_get_setting_string(config, "project", "base_path", "");
+	p->base_path = get_absolute_base_path(priv.base_path_saved, p->file_name);
 	p->file_patterns = g_key_file_get_string_list(config, "project", "file_patterns", NULL, NULL);
 
 	p->long_line_behaviour = utils_get_setting_integer(config, "long line marker",
@@ -1054,7 +1083,7 @@ static gboolean write_config(gboolean emit_signal)
 		stash_group_save_to_key_file(node->data, config);
 
 	g_key_file_set_string(config, "project", "name", p->name);
-	g_key_file_set_string(config, "project", "base_path", p->base_path);
+	g_key_file_set_string(config, "project", "base_path", priv.base_path_saved);
 
 	if (p->description)
 		g_key_file_set_string(config, "project", "description", p->description);

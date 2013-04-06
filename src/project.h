@@ -34,7 +34,7 @@ typedef struct GeanyProject
 	gchar *name; 			/**< The name of the project. */
 	gchar *description; 	/**< Short description of the project. */
 	gchar *file_name; 		/**< Where the project file is stored (in UTF-8). */
-	gchar *base_path;		/**< Base path of the project directory (in UTF-8, maybe relative). */
+	gchar *base_path;		/**< Absolute base path of the project directory (in UTF-8). */
 	/** Identifier whether it is a pure Geany project or modified/extended
 	 * by a plugin. */
 	gint type;
@@ -82,8 +82,6 @@ gboolean project_ask_close(void);
 gboolean project_load_file(const gchar *locale_file_name);
 
 gboolean project_load_file_with_session(const gchar *locale_file_name);
-
-gchar *project_get_base_path(void);
 
 
 const struct GeanyFilePrefs *project_get_file_prefs(void);

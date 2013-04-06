@@ -31,6 +31,7 @@ typedef struct GeanyProjectPrivate
 	gboolean	strip_trailing_spaces;
 	gboolean	replace_tabs;
 	gboolean	ensure_convert_new_lines;
+	gchar		*base_path_saved;  /* absolute or relative */
 }
 GeanyProjectPrivate;
 
