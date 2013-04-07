@@ -223,6 +223,18 @@ PLUGIN_SET_INFO("HelloWorld", "Just another tool to say hello world",
 				"1.0", "John Doe <john.doe@example.org>");
  *  @endcode
  *
+ *  Since Geany 1.24 it is possible to combine all of the above code (except the #include)
+ *  into a single macro invocation like this:
+ *  @code
+PLUGIN_REGISTER(
+	1, 24, 0,
+	"Hello World",
+	"Just another tool to say hello world",
+	"1.0",
+	"John Doe <john.doe@example.org>"
+);
+ *  @endcode
+ *
  *  Once this is done, you will need to implement the function which will be executed when the
  *  plugin is loaded. Part of that function could be adding and removing of an item to
  *  Geany's Tools menu, setting up keybindings or registering some callbacks. Also you will
@@ -230,10 +242,14 @@ PLUGIN_SET_INFO("HelloWorld", "Just another tool to say hello world",
  *  These functions are called plugin_init() and plugin_cleanup(). Let's see what this
  *  looks like:
  *  @code
-PLUGIN_VERSION_CHECK(211)
 
-PLUGIN_SET_INFO("HelloWorld", "Just another tool to say hello world",
-				"1.0", "Joe Doe <joe.doe@example.org>");
+PLUGIN_REGISTER(
+	1, 24, 0,
+	"HelloWorld",
+	"Just another tool to say hello world",
+	"1.0",
+	"Joe Doe <joe.doe@example.org>"
+);
 
 void plugin_init(GeanyData *data)
 {
@@ -362,15 +378,13 @@ void plugin_cleanup(void)
  *  @code
 #include <geanyplugin.h>
 
-GeanyPlugin		*geany_plugin;
-GeanyData		*geany_data;
-GeanyFunctions	*geany_functions;
-
-PLUGIN_VERSION_CHECK(211)
-
-PLUGIN_SET_INFO("HelloWorld", "Just another tool to say hello world",
-				"1.0", "John Doe <john.doe@example.org>");
-
+PLUGIN_REGISTER(
+	1, 24, 0,
+	"HelloWorld",
+	"Just another tool to say hello world",
+	"1.0",
+	"John Doe <john.doe@example.org>"
+);
 
 static GtkWidget *main_menu_item = NULL;
 
@@ -441,6 +455,13 @@ PLUGIN_SET_TRANSLATABLE_INFO(
  * this example.  The community has agreed that the best practice here is to
  * use, if possible, the latin version of the author's name followed by the
  * native spelling inside parenthesis, where applicable.
+ *
+ * Since Geany 1.24, if your build system/headers defines @c LOCALEDIR
+ * and @c GETTEXT_PACKAGE, you can instead use the PLUGIN_REGISTER macro
+ * and the initialization will be done for you automatically. As in the
+ * above example for PLUGIN_SET_TRANSLATABLE_INFO, the PLUGIN_REGISTER
+ * does not mark the author name as translatable, so if you're putting
+ * something that needs translating there you need to mark it yourself.
  *
  * @subsection plugin_i18n Using i18n/l10n inside Plugin
  *
