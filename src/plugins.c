@@ -499,10 +499,14 @@ plugin_check_version(GModule *module)
 				"release of Geany - recompile it.", g_module_name(module));
 			return FALSE;
 		}
-		if (result > GEANY_API_VERSION)
+		if ((guint) result > GEANY_API_VERSION)
 		{
-			geany_debug("Plugin \"%s\" requires a newer version of Geany (API >= v%d).",
-				g_module_name(module), result);
+			geany_debug("Plugin \"%s\" requires a newer version of Geany "
+						"(version >= v%u.%u.%u).",
+						g_module_name(module),
+						GEANY_DECODE_API_MAJOR(result),
+						GEANY_DECODE_API_MINOR(result),
+						GEANY_DECODE_API_MICRO(result));
 			return FALSE;
 		}
 	}

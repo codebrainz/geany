@@ -44,18 +44,73 @@ G_BEGIN_DECLS
 #include "gtkcompat.h"
 
 
-/** The Application Programming Interface (API) version, incremented
- * whenever any plugin data types are modified or appended to.
+#define GEANY_MAJOR_VERSION 1  /*<! Major version number of Geany headers */
+#define GEANY_MINOR_VERSION 24 /*<! Minor version number of Geany headers */
+#define GEANY_MICRO_VERSION 0  /*<! Micro version number of Geany headers */
+
+
+#define GEANY_ENCODE_API_VERSION(major, minor, micro)	\
+	((guint32)(((guint8)(major) << 16) | \
+		((guint8)(minor) << 8)  | \
+		(guint8)(micro)))
+
+#define GEANY_DECODE_API_MAJOR(api_ver) ((guint8)((guint32)(api_ver) >> 16))
+#define GEANY_DECODE_API_MINOR(api_ver) ((guint8)((guint32)(api_ver) >> 8))
+#define GEANY_DECODE_API_MICRO(api_ver) ((guint8)(api_ver))
+
+
+/** The Application Programming Interface (API) version
  *
  * You can protect code that needs a higher API than e.g. 200 with:
  * @code #if GEANY_API_VERSION >= 200
  * 	some_newer_function();
  * #endif @endcode
  *
+ * @note Since Geany 1.24, you can also use GEANY_CHECK_VERSION to
+ * check at compile time if the API is new enough:
+ * @code #if GEANY_CHECK_VERSION(1,28,2)
+ *   some_newer_function();
+ * #endif @endcode
+ *
  * @warning You should not test for values below 200 as previously
  * @c GEANY_API_VERSION was defined as an enum value, not a macro.
- */
-#define GEANY_API_VERSION 216
+ *
+ * @warning Since 1.24 the value of this constant is no longer an
+ * incrementing number but rather it's the Geany major, minor and micro
+ * version numbers packed into it.
+ *
+ * @see GEANY_CHECK_VERSION
+ **/
+#define GEANY_API_VERSION \
+	GEANY_ENCODE_API_VERSION(GEANY_MAJOR_VERSION, \
+	                         GEANY_MINOR_VERSION, \
+	                         GEANY_MICRO_VERSION)
+
+
+/** Checks if the plugin API at compile-time is new enough.
+ *
+ * You can use this to guard code that requires a higher API than a
+ * specific Geany version number, for example:
+ * @code
+ * #if GEANY_CHECK_VERSION(2,20,0)
+ *   use_some_newer_function();
+ * #endif
+ * @endcode
+ *
+ * @param major The major version number (ex. 1 in 1.23.4)
+ * @param minor The minor version number (ex. 23 in 1.23.4)
+ * @param micro The micro version number (ex. 4 in 1.23.4)
+ *
+ * @return @c TRUE if the headers are new enough, @c FALSE otherwise.
+ *
+ * @since 1.24
+ **/
+#define GEANY_CHECK_VERSION(major, minor, micro) \
+	(GEANY_MAJOR_VERSION > (major) || \
+		(GEANY_MAJOR_VERSION == (major) && GEANY_MINOR_VERSION > (minor)) || \
+		(GEANY_MAJOR_VERSION == (major) && GEANY_MINOR_VERSION == (minor) && \
+			GEANY_MICRO_VERSION >= (micro)))
+
 
 /* hack to have a different ABI when built with GTK3 because loading GTK2-linked plugins
  * with GTK3-linked Geany leads to crash */
@@ -64,6 +119,8 @@ G_BEGIN_DECLS
 #else
 #	define GEANY_ABI_SHIFT 0
 #endif
+
+
 /** The Application Binary Interface (ABI) version, incremented whenever
  * existing fields in the plugin data types have to be changed or reordered.
  * Changing this forces all plugins to be recompiled before Geany can load them. */
@@ -124,7 +181,8 @@ GeanyPlugin;
  * @code PLUGIN_SET_INFO("Cool Feature", "Adds cool feature support.", "0.1", "Joe Author") @endcode */
 /* plugin_set_info() could be written manually for plugins if we want to add any
  * extra PluginInfo features (such as an icon), so we don't need to break API
- * compatibility. Alternatively just add a new macro, PLUGIN_SET_INFO_FULL(). -ntrel */
+ * compatibility. Alternatively just add a new macro, PLUGIN_SET_INFO_FULL(). -ntrel
+ * @see PLUGIN_REGISTER */
 #define PLUGIN_SET_INFO(p_name, p_description, p_version, p_author) \
 	void plugin_set_info(PluginInfo *info) \
 	{ \
@@ -134,6 +192,85 @@ GeanyPlugin;
 		info->author = (p_author); \
 	}
 
+
+/* Same as PLUGIN_VERSION_CHECK except takes major, minor, micro versions.
+ * Called from PLUGIN_REGISTER. */
+#define PLUGIN_REQUIRE_GEANY_VERSION_(major, minor, micro) \
+	gint plugin_version_check(gint abi_ver) \
+	{ \
+		if (abi_ver != GEANY_ABI_VERSION) \
+			return -1; \
+		return GEANY_ENCODE_API_VERSION(major, minor, micro); \
+	}
+
+
+#ifdef _
+# define PLUGIN_TRANS_(s) _(s)
+#else
+# define PLUGIN_TRANS_(s) (s)
+#endif
+
+
+/* Try to automatically initialize localization. */
+#if defined(LOCALEDIR) && defined(GETTEXT_PACKAGE)
+# define PLUGIN_REGISTER_INFO_(p_name, p_desc, p_version, p_author) \
+	void plugin_set_info(PluginInfo *info) \
+	{ \
+		main_locale_init((LOCALEDIR), (GETTEXT_PACKAGE)); \
+		info->name = PLUGIN_TRANS_(p_name); \
+		info->description = PLUGIN_TRANS_(p_desc); \
+		info->version = p_version; \
+		info->author = p_author; \
+	}
+#else
+# define PLUGIN_REGISTER_INFO_(p_name, p_desc, p_version, p_author) \
+	void plugin_set_info(PluginInfo *info) \
+	{ \
+		info->name = PLUGIN_TRANS_(p_name); \
+		info->description = PLUGIN_TRANS_(p_desc); \
+		info->version = p_version; \
+		info->author = p_author; \
+	}
+#endif
+
+
+/** Adds the code needed to make the plugin loadable by Geany.
+ *
+ * Adds the needed functions and variables to the file. If you use this
+ * macro, you don't need to use PLUGIN_SET_INFO,
+ * PLUGIN_SET_TRANSLATABLE_INFO, PLUGIN_VERSION_CHECK or declare
+ * `geany_plugin`, `geany_functions` or `geany_data` global variables
+ * (they'll be defined for you).
+ *
+ * If @c LOCALEDIR and @c GETTEXT_PACKAGE are defined, localization
+ * is initialized for you by calling main_locale_init with them.
+ *
+ * If the @c _ macro is defined, the @a p_name and @a p_description
+ * will be wrapped in it to have those strings replaced with translated
+ * versions of them. The p_author argument is not passed to the _
+ * macro automatically.
+ *
+ * @note This macro must be terminated by a semicolon.
+ *
+ * @param p_major Minimum required Geany major version.
+ * @param p_minor Minimum required Geany minor version.
+ * @param p_micro Minimum required Geany micro version.
+ * @param p_name Name of the plugin.
+ * @param p_description Description of the plugin.
+ * @param p_version The plugin's version number.
+ * @param p_author The author of the plugin.
+ *
+ * @since 1.24
+ **/
+#define PLUGIN_REGISTER(p_major, p_minor, p_micro, \
+                        p_name, p_description, p_version, p_author) \
+	PLUGIN_REQUIRE_GEANY_VERSION_(p_major, p_minor, p_micro) \
+	PLUGIN_REGISTER_INFO_(p_name, p_description, p_version, p_author) \
+	GeanyPlugin *geany_plugin; \
+	GeanyFunctions *geany_functions; \
+	GeanyData *geany_data
+
+
 /** Sets the plugin name and some other basic information about a plugin.
  * This macro is like @ref PLUGIN_SET_INFO() but allows the passed information to be translated
  * by setting up the translation mechanism with @ref main_locale_init().
@@ -142,7 +279,8 @@ GeanyPlugin;
  * Example:
  * @code PLUGIN_SET_TRANSLATABLE_INFO(LOCALEDIR, GETTEXT_PACKAGE, _("Cool Feature"), _("Adds a cool feature."), "0.1", "John Doe") @endcode
  *
- * @since 0.19 */
+ * @since 0.19
+ * @see PLUGIN_REGISTER */
 #define PLUGIN_SET_TRANSLATABLE_INFO(localedir, package, p_name, p_description, p_version, p_author) \
 	void plugin_set_info(PluginInfo *info) \
 	{ \
