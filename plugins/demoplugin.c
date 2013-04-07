@@ -36,18 +36,16 @@
 #include "Scintilla.h"	/* for the SCNotification struct */
 
 
-/* These items are set by Geany before plugin_init() is called. */
-GeanyPlugin		*geany_plugin;
-GeanyData		*geany_data;
-GeanyFunctions	*geany_functions;
-
-
-/* Check that the running Geany supports the plugin API version used below, and check
- * for binary compatibility. */
-PLUGIN_VERSION_CHECK(147)
-
-/* All plugins must set name, description, version and author. */
-PLUGIN_SET_INFO(_("Demo"), _("Example plugin."), "0.1" , _("The Geany developer team"))
+/* Initializes plugin to be loaded by Geany, checking for a minimum
+ * version and supplying plugin information such as name, description,
+ * version and author. */
+PLUGIN_REGISTER(
+	1, 24, 0,
+	"Demo",
+	"Example plugin.",
+	"0.1",
+	_("The Geany developer team")
+);
 
 
 static GtkWidget *main_menu_item = NULL;

@@ -28,14 +28,16 @@
 
 #include "geanyplugin.h"
 
-GeanyData		*geany_data;
-GeanyFunctions	*geany_functions;
 
-
-PLUGIN_VERSION_CHECK(GEANY_API_VERSION)
-
-PLUGIN_SET_INFO(_("Class Builder"), _("Creates source files for new class types."), VERSION,
-	"Alexander Rodin, Ondrej Donek, the Geany developer team")
+PLUGIN_REGISTER(
+	GEANY_MAJOR_VERSION,
+	GEANY_MINOR_VERSION,
+	GEANY_MICRO_VERSION,
+	"Class Builder",
+	"Creates source files for new class types.",
+	VERSION,
+	_("Alexander Rodin, Ondrej Donek, the Geany developer team")
+);
 
 
 static GtkWidget *main_menu_item = NULL;

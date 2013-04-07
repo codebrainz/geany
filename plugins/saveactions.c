@@ -32,14 +32,15 @@
 #include <glib/gstdio.h>
 
 
-GeanyData		*geany_data;
-GeanyFunctions	*geany_functions;
-
-
-PLUGIN_VERSION_CHECK(GEANY_API_VERSION)
-
-PLUGIN_SET_INFO(_("Save Actions"), _("This plugin provides different actions related to saving of files."),
-	VERSION, _("The Geany developer team"))
+PLUGIN_REGISTER(
+	GEANY_MAJOR_VERSION,
+	GEANY_MINOR_VERSION,
+	GEANY_MICRO_VERSION,
+	"Save Actions",
+	"This plugin provides different actions related to saving of files.",
+	VERSION,
+	_("The Geany developer team")
+);
 
 
 enum

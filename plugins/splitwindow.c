@@ -30,14 +30,15 @@
 #include <string.h>
 
 
-PLUGIN_VERSION_CHECK(GEANY_API_VERSION)
-PLUGIN_SET_INFO(_("Split Window"), _("Splits the editor view into two windows."),
-	VERSION, _("The Geany developer team"))
-
-
-GeanyData		*geany_data;
-GeanyFunctions	*geany_functions;
-GeanyPlugin		*geany_plugin;
+PLUGIN_REGISTER(
+	GEANY_MAJOR_VERSION,
+	GEANY_MINOR_VERSION,
+	GEANY_MICRO_VERSION,
+	"Split Window",
+	"Splits the editor view into two windows.",
+	VERSION,
+	_("The Geany developer team")
+);
 
 
 /* Keybinding(s) */

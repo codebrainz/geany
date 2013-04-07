@@ -31,14 +31,15 @@
 #include "SciLexer.h"
 
 
-GeanyData		*geany_data;
-GeanyFunctions	*geany_functions;
-
-
-PLUGIN_VERSION_CHECK(GEANY_API_VERSION)
-
-PLUGIN_SET_INFO(_("HTML Characters"), _("Inserts HTML character entities like '&amp;'."), VERSION,
-	_("The Geany developer team"))
+PLUGIN_REGISTER(
+	GEANY_MAJOR_VERSION,
+	GEANY_MINOR_VERSION,
+	GEANY_MICRO_VERSION,
+	"HTML Characters",
+	"Inserts HTML character entities like '&amp;'.",
+	VERSION,
+	_("The Geany developer team")
+);
 
 
 /* Keybinding(s) */
