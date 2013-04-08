@@ -32,6 +32,12 @@
 	geany_functions->p_plugin->plugin_timeout_add_seconds
 #define plugin_idle_add \
 	geany_functions->p_plugin->plugin_idle_add
+#define plugin_set_field \
+	geany_functions->p_plugin->plugin_set_field
+#define plugin_get_field \
+	geany_functions->p_plugin->plugin_get_field
+#define plugin_remove_field \
+	geany_functions->p_plugin->plugin_remove_field
 #define plugin_unload_thyself \
 	geany_functions->p_plugin->plugin_unload_thyself
 #define document_new_file \

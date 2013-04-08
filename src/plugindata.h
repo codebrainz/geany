@@ -807,6 +807,11 @@ typedef struct PluginFuncs
 	guint	(*plugin_timeout_add_seconds) (GeanyPlugin *plugin, guint interval,
 		GSourceFunc function, gpointer data);
 	guint	(*plugin_idle_add) (GeanyPlugin *plugin, GSourceFunc function, gpointer data);
+	void	(*plugin_set_field) (GeanyPlugin *plugin, const gchar *field_name,
+		gpointer data, GDestroyNotify free_func);
+	gpointer	(*plugin_get_field) (GeanyPlugin *plugin, const gchar *field_name);
+	gpointer	(*plugin_remove_field) (GeanyPlugin *plugin, const gchar *field,
+		gboolean call_free_func);
 	gboolean	(*plugin_unload_thyself) (GeanyPlugin *plugin);
 }
 PluginFuncs;

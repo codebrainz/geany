@@ -53,6 +53,14 @@ struct GeanyKeyGroup *plugin_set_key_group(struct GeanyPlugin *plugin,
 
 void plugin_show_configure(struct GeanyPlugin *plugin);
 
+void plugin_set_field(struct GeanyPlugin *plugin, const gchar *field_name,
+	gpointer data, GDestroyNotify free_func);
+
+gpointer plugin_remove_field(struct GeanyPlugin *plugin, const gchar *field_name,
+	gboolean call_free_func);
+
+gpointer plugin_get_field(struct GeanyPlugin *plugin, const gchar *field_name);
+
 gboolean plugin_unload_thyself(struct GeanyPlugin *plugin);
 
 #endif /* HAVE_PLUGINS */

@@ -409,6 +409,157 @@ void plugin_show_configure(GeanyPlugin *plugin)
 }
 
 
+typedef struct
+{
+	gpointer data;
+	GDestroyNotify free_func;
+}
+PluginFieldData;
+
+
+/* Data field hash table value free function */
+static void plugin_free_field(PluginFieldData *field_data)
+{
+	/* Guard against calling if data is NULL, this will prevent assertion
+	 * warnings for functions like gtk_destroy_widget() where, unlike g_free(),
+	 * it's not expected to pass a NULL pointer to it. */
+	if (field_data->free_func && field_data->data)
+		field_data->free_func(field_data->data);
+	g_free(field_data);
+}
+
+
+/**
+ * Set arbitrary data on the plugin by name.
+ *
+ * Each plugin structure provides a hash table of fields you can use
+ * to store various types of things. Probably an example will explain
+ * it best:
+ *
+ * @code
+ * void plugin_load(GeanyPlugin *plugin)
+ * {
+ *   GtkWidget *win;
+ *   // Normally you'd have to destroy this in plugin_cleanup() or
+ *   // plugin_unload() since it's a top level.
+ *   win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+ *   // But if you attach it to a field, when the plugin is unloaded,
+ *   // "win" will be passed to gtk_widget_destroy automatically.
+ *   plugin_set_field(plugin, "plugin-window", win, gtk_widget_destroy);
+ *   ...
+ * }
+ * @endcode
+ *
+ * This can help reducing cleanup code by attaching a destroy function
+ * with the pointer, you can have top-levels, strings, etc automatically
+ * freed when the plugin is unloaded.
+ *
+ * @note If you set a field that has already been set, it's @a free_func
+ * will be called on the stored @a data pointer before it's replaced
+ * with the new @a data pointer. If you don't want this behaviour, pass
+ * @c NULL for the @a free_func and manage freeing it yourself.
+ *
+ * @param plugin The plugin to set the field on.
+ * @param field_name The name of the field to set.
+ * @param data A pointer to store in the field.
+ * @param free_func A function to be called to free the @a data
+ * pointer or @c NULL to not free the @a data pointer automatically.
+ *
+ * @since 1.24
+ **/
+void plugin_set_field(struct GeanyPlugin *plugin, const gchar *field_name,
+	gpointer data, GDestroyNotify free_func)
+{
+	PluginFieldData *field_data;
+
+	g_return_if_fail(plugin);
+	g_return_if_fail(field_name);
+
+	if (plugin->priv->data_fields == NULL)
+	{
+		plugin->priv->data_fields = g_hash_table_new_full(g_str_hash, g_str_equal,
+			g_free, (GDestroyNotify) plugin_free_field);
+	}
+
+	field_data = g_new0(PluginFieldData, 1);
+	field_data->data = data;
+	field_data->free_func = free_func;
+
+	g_hash_table_insert(plugin->priv->data_fields, g_strdup(field_name), field_data);
+}
+
+
+/**
+ * Remove a field from the plugin.
+ *
+ * This function can be used to retrieve and/or remove the data field
+ * from the plugin. If @a call_free_func is @c TRUE, the field data's
+ * free_func will be called and @c NULL is returned, otherwise the
+ * free_func is not called and a pointer to the data is returned.
+ *
+ * @param plugin The plugin to remove the field from.
+ * @param field_name The name of the field to remove.
+ * @param call_free_func Whether to invoke the free_func set for the field.
+ *
+ * @return The field's data pointer if @a call_free_func is @c FALSE and
+ * the field exists on the plugin, otherwise @c NULL is returned.
+ **/
+gpointer plugin_remove_field(struct GeanyPlugin *plugin, const gchar *field_name,
+	gboolean call_free_func)
+{
+	PluginFieldData *field_data;
+	gpointer data_ptr = NULL;
+
+	g_return_val_if_fail(plugin, NULL);
+	g_return_val_if_fail(field_name, NULL);
+
+	field_data = g_hash_table_lookup(plugin->priv->data_fields, field_name);
+	if (field_data == NULL)
+		return NULL;
+
+	if (call_free_func && field_data->free_func)
+		field_data->free_func(field_data->data);
+	else
+		data_ptr = field_data->data;
+
+	g_free(field_data);
+
+	return data_ptr;
+}
+
+
+/**
+ * Look up field data on the plugin by name.
+ *
+ * You can retrieve the pointer previously stored with the given field
+ * name with plugin_set_field() by calling this function.
+ *
+ * @param plugin The plugin the field is set on.
+ * @param field_name The name of the data field to retrieve.
+ *
+ * @return The stored pointer or @c NULL if there is nothing stored for
+ * the given @a field_name.
+ *
+ * @since 1.24
+ **/
+gpointer plugin_get_field(struct GeanyPlugin *plugin, const gchar *field_name)
+{
+	PluginFieldData *field_data;
+
+	g_return_val_if_fail(plugin, NULL);
+	g_return_val_if_fail(field_name, NULL);
+
+	if (plugin->priv->data_fields == NULL)
+		return NULL;
+
+	field_data = g_hash_table_lookup(plugin->priv->data_fields, field_name);
+	if (field_data)
+		return field_data->data;
+
+	return NULL;
+}
+
+
 /**
  * Allows a plugin to request unloading itself.
  *

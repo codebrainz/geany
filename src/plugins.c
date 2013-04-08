@@ -87,6 +87,9 @@ static PluginFuncs plugin_funcs = {
 	&plugin_timeout_add,
 	&plugin_timeout_add_seconds,
 	&plugin_idle_add,
+	&plugin_set_field,
+	&plugin_get_field,
+	&plugin_remove_field,
 	&plugin_unload_thyself
 };
 
@@ -891,6 +894,9 @@ plugin_cleanup(Plugin *plugin)
 		plugin->cleanup();
 	else if (prompt_keep_loaded(plugin))
 		return FALSE;
+
+	if (plugin->data_fields != NULL)
+		g_hash_table_destroy(plugin->data_fields);
 
 	remove_callbacks(plugin);
 	remove_sources(plugin);

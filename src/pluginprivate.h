@@ -66,6 +66,7 @@ typedef struct GeanyPluginPrivate
 
 	/* extra stuff */
 	PluginFields	fields;
+	GHashTable*		data_fields;			/* Arbitrary data fields attached to the plugin by the user. */
 	GeanyKeyGroup	*key_group;
 	GeanyAutoSeparator	toolbar_separator;
 	GArray			*signal_ids;			/* SignalConnection's to disconnect when unloading */
