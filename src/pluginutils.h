@@ -53,5 +53,7 @@ struct GeanyKeyGroup *plugin_set_key_group(struct GeanyPlugin *plugin,
 
 void plugin_show_configure(struct GeanyPlugin *plugin);
 
+gboolean plugin_unload_thyself(struct GeanyPlugin *plugin);
+
 #endif /* HAVE_PLUGINS */
 #endif /* GEANY_PLUGINUTILS_H */

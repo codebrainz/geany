@@ -76,5 +76,8 @@ GeanyPluginPrivate;
 
 typedef GeanyPluginPrivate Plugin;	/* shorter alias */
 
+/* Used in plugins.c and pluginutils.c */
+G_GNUC_INTERNAL
+gboolean plugin_free(Plugin *plugin);
 
 #endif /* GEANY_PLUGINPRIVATE_H */

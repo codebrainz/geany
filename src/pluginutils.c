@@ -35,6 +35,7 @@
 #include "utils.h"
 #include "support.h"
 #include "plugins.h"
+#include "dialogs.h"
 
 
 /** Inserts a toolbar item before the Quit button, or after the previous plugin toolbar item.
@@ -405,6 +406,51 @@ void plugin_show_configure(GeanyPlugin *plugin)
 		p->configure_single(main_widgets.window);
 	else if (p->configure_begin)
 		configure_plugins(p);
+}
+
+
+/**
+ * Allows a plugin to request unloading itself.
+ *
+ * This could be useful if a plugin has detected it cannot function
+ * properly, it can request to be unloaded, or if its upgrading itself
+ * and needs to be reloaded.
+ *
+ * Unless the application is sutting down, in which case the plugin is
+ * unloaded always, then the user will be prompted to accept letting
+ * the plugin unload itself.
+ *
+ * @todo Add ability for plugin to communicate the reason for unloading.
+ * @todo Add a plugin_reload_thyself() function.
+ * @param plugin The plugin that wants to be unloaded.
+ * @return @c TRUE if the plugin was actually unloaded or @c FALSE if not.
+ * @since 1.24
+ **/
+gboolean plugin_unload_thyself(struct GeanyPlugin *plugin)
+{
+	gboolean allow_unload;
+
+	g_return_val_if_fail(plugin, FALSE);
+
+	/* Prevent the plugin from calling this function from plugin_cleanup()
+	 * or plugin_unload(). */
+	if (plugin->priv->unload_flags & PLUGIN_UNLOAD_FLAG_UNLOADING)
+		return FALSE;
+
+	allow_unload = dialogs_show_question("The plugin '%s' has "
+		"requested to unload itself, do you want to allow it?",
+		plugin->info->name);
+
+	if (allow_unload)
+	{
+		/* Let the freeing code know that the plugin is unloading
+		 * itself so that it doesn't prompt the user if the plugin
+		 * then tries to remain loaded. */
+		plugin->priv->unload_flags |= PLUGIN_UNLOAD_FLAG_SELF_UNLOADING;
+		return plugin_free(plugin->priv);
+	}
+
+	return FALSE;
 }
 
 
