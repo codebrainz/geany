@@ -40,6 +40,8 @@
 	geany_functions->p_plugin->plugin_remove_field
 #define plugin_unload_thyself \
 	geany_functions->p_plugin->plugin_unload_thyself
+#define plugin_get_config_dir \
+	geany_functions->p_plugin->plugin_get_config_dir
 #define document_new_file \
 	geany_functions->p_document->document_new_file
 #define document_get_current \

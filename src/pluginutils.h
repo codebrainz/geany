@@ -63,5 +63,7 @@ gpointer plugin_get_field(struct GeanyPlugin *plugin, const gchar *field_name);
 
 gboolean plugin_unload_thyself(struct GeanyPlugin *plugin);
 
+const gchar *plugin_get_config_dir(struct GeanyPlugin *plugin);
+
 #endif /* HAVE_PLUGINS */
 #endif /* GEANY_PLUGINUTILS_H */

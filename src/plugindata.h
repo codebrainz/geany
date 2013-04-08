@@ -813,6 +813,7 @@ typedef struct PluginFuncs
 	gpointer	(*plugin_remove_field) (GeanyPlugin *plugin, const gchar *field,
 		gboolean call_free_func);
 	gboolean	(*plugin_unload_thyself) (GeanyPlugin *plugin);
+	const gchar*(*plugin_get_config_dir) (GeanyPlugin *plugin);
 }
 PluginFuncs;
 

@@ -605,4 +605,20 @@ gboolean plugin_unload_thyself(struct GeanyPlugin *plugin)
 }
 
 
+const gchar *plugin_get_config_dir(GeanyPlugin *plugin)
+{
+	gchar *conf;
+
+	conf = plugin_get_field(plugin, "geany-plugin-configdir");
+	if (conf == NULL)
+	{
+		conf = g_build_filename(plugin->data->app->configdir,
+			"plugins", plugin->info->name, NULL);
+		plugin_set_field(plugin, "geany-plugin-configdir", conf, g_free);
+	}
+
+	return conf;
+}
+
+
 #endif

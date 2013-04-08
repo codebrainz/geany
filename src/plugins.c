@@ -90,7 +90,8 @@ static PluginFuncs plugin_funcs = {
 	&plugin_set_field,
 	&plugin_get_field,
 	&plugin_remove_field,
-	&plugin_unload_thyself
+	&plugin_unload_thyself,
+	&plugin_get_config_dir
 };
 
 static DocumentFuncs doc_funcs = {
