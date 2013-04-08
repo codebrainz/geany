@@ -585,7 +585,7 @@ static gint cmp_plugin_names(gconstpointer a, gconstpointer b)
 }
 
 
-static void
+static gboolean
 plugin_init(Plugin *plugin)
 {
 	GeanyPlugin **p_geany_plugin;
@@ -607,8 +607,18 @@ plugin_init(Plugin *plugin)
 	read_key_group(plugin);
 
 	/* start the plugin */
-	g_return_if_fail(plugin->init);
-	plugin->init(&geany_data);
+	if (plugin->init)
+		plugin->init(&geany_data);
+	else if (plugin->load)
+	{
+		if (! plugin->load(&plugin->public))
+			return FALSE;
+	}
+	else /* no way to load, signal failure */
+	{
+		g_warn_if_reached();
+		return FALSE;
+	}
 
 	/* store some function pointers for later use */
 	g_module_symbol(plugin->module, "plugin_configure", (void *) &plugin->configure);
@@ -618,13 +628,33 @@ plugin_init(Plugin *plugin)
 			"only plugin_configure() will be used!",
 			plugin->info.name);
 
+	if (! plugin->configure && ! plugin->configure_single)
+	{
+		g_module_symbol(plugin->module, "plugin_configure_begin",
+			(void *) &plugin->configure_begin);
+	}
+
 	g_module_symbol(plugin->module, "plugin_help", (void *) &plugin->help);
+	if (! plugin->help)
+	{
+		g_module_symbol(plugin->module, "plugin_help_requested",
+			(void*) &plugin->help_requested);
+	}
+
 	g_module_symbol(plugin->module, "plugin_cleanup", (void *) &plugin->cleanup);
 	if (plugin->cleanup == NULL)
 	{
-		if (app->debug_mode)
-			g_warning("Plugin '%s' has no plugin_cleanup() function - there may be memory leaks!",
-				plugin->info.name);
+		g_module_symbol(plugin->module, "plugin_unload", (void *) &plugin->unload);
+		if (plugin->unload == NULL)
+		{
+			if (app->debug_mode)
+			{
+				g_warning("Plugin '%s' has no plugin_cleanup() or "
+				          "plugin_unload() function - there may be "
+				          "memory leaks!",
+				          plugin->info.name);
+			}
+		}
 	}
 
 	/* now read any plugin-owned data that might have been set in plugin_init() */
@@ -645,6 +675,8 @@ plugin_init(Plugin *plugin)
 
 	geany_debug("Loaded:   %s (%s)", plugin->filename,
 		NVL(plugin->info.name, "<Unknown>"));
+
+	return TRUE;
 }
 
 
@@ -747,13 +779,17 @@ plugin_new(const gchar *fname, gboolean init_plugin, gboolean add_to_list)
 	g_module_symbol(module, "plugin_init", (void *) &plugin->init);
 	if (plugin->init == NULL)
 	{
-		geany_debug("Plugin '%s' has no plugin_init() function - ignoring plugin!",
-			plugin->info.name);
-
-		if (! g_module_close(module))
-			g_warning("%s: %s", fname, g_module_error());
-		g_free(plugin);
-		return NULL;
+		g_module_symbol(module, "plugin_load", (void *) &plugin->load);
+		if (plugin->load == NULL)
+		{
+			geany_debug("Plugin '%s' has no plugin_init() or "
+			            "plugin_load() function - ignoring plugin!",
+			            plugin->info.name);
+			if (! g_module_close(module))
+				g_warning("%s: %s", fname, g_module_error());
+			g_free(plugin);
+			return NULL;
+		}
 	}
 	/*geany_debug("Initializing plugin '%s'", plugin->info.name);*/
 
@@ -761,9 +797,20 @@ plugin_new(const gchar *fname, gboolean init_plugin, gboolean add_to_list)
 	plugin->module = module;
 	plugin->public.info = &plugin->info;
 	plugin->public.priv = plugin;
+	plugin->public.data = &geany_data;
 
 	if (init_plugin)
-		plugin_init(plugin);
+	{
+		if (! plugin_init(plugin))
+		{
+			geany_debug("Plugin '%s' decided not to load", plugin->filename);
+			if (! g_module_close(module))
+				g_warning("%s: %s", plugin->filename, g_module_error());
+			g_free(plugin->filename);
+			g_free(plugin);
+			return NULL;
+		}
+	}
 
 	if (add_to_list)
 		plugin_list = g_list_prepend(plugin_list, plugin);
@@ -809,14 +856,40 @@ static gboolean is_active_plugin(Plugin *plugin)
 }
 
 
-/* Clean up anything used by an active plugin  */
-static void
+/* Returns TRUE if the plugin should stay loaded. */
+static gboolean
+prompt_keep_loaded(Plugin *plugin)
+{
+	gboolean keep_loaded = FALSE;
+	gboolean self_unloading;
+
+	self_unloading = plugin->unload_flags & PLUGIN_UNLOAD_FLAG_SELF_UNLOADING;
+
+	/* Guard against prompting the user if the plugin is unloading itself. */
+	if (!self_unloading &&
+		plugin->unload && ! plugin->unload(&plugin->public) &&
+		! main_status.quitting)
+	{
+		keep_loaded = dialogs_show_question("The plugin '%s' "
+			"has requested to remain loaded, do you want to "
+			"allow it?", plugin->info.name);
+	}
+
+	return keep_loaded;
+}
+
+
+/* Clean up anything used by an active plugin, return FALSE if
+ * cleanup didn't happen (ex. the plugin wanted to stay loaded).  */
+static gboolean
 plugin_cleanup(Plugin *plugin)
 {
 	GtkWidget *widget;
 
 	if (plugin->cleanup)
 		plugin->cleanup();
+	else if (prompt_keep_loaded(plugin))
+		return FALSE;
 
 	remove_callbacks(plugin);
 	remove_sources(plugin);
@@ -829,17 +902,29 @@ plugin_cleanup(Plugin *plugin)
 		gtk_widget_destroy(widget);
 
 	geany_debug("Unloaded: %s", plugin->filename);
+
+	return TRUE;
 }
 
 
-static void
+/* Returns FALSE if the plugin wasn't freed (ex. if the plugin wanted
+ * to stay open) or TRUE if it was. */
+gboolean
 plugin_free(Plugin *plugin)
 {
-	g_return_if_fail(plugin);
-	g_return_if_fail(plugin->module);
+	g_return_val_if_fail(plugin, FALSE);
+	g_return_val_if_fail(plugin->module, FALSE);
 
 	if (is_active_plugin(plugin))
-		plugin_cleanup(plugin);
+	{
+		plugin->unload_flags |= PLUGIN_UNLOAD_FLAG_UNLOADING;
+		if (! plugin_cleanup(plugin))
+		{
+			plugin->unload_flags &= ~PLUGIN_UNLOAD_FLAG_UNLOADING;
+			plugin->unload_flags &= ~PLUGIN_UNLOAD_FLAG_SELF_UNLOADING;
+			return FALSE;
+		}
+	}
 
 	active_plugin_list = g_list_remove(active_plugin_list, plugin);
 
@@ -851,6 +936,8 @@ plugin_free(Plugin *plugin)
 	g_free(plugin->filename);
 	g_free(plugin);
 	plugin = NULL;
+
+	return TRUE;
 }
 
 
@@ -1147,8 +1234,12 @@ gboolean plugins_have_preferences(void)
 	foreach_list(item, active_plugin_list)
 	{
 		Plugin *plugin = item->data;
-		if (plugin->configure != NULL || plugin->configure_single != NULL)
+		if (plugin->configure != NULL ||
+			plugin->configure_single != NULL ||
+			plugin->configure_begin != NULL)
+		{
 			return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -1187,11 +1278,15 @@ static PluginManagerWidgets pm_widgets;
 static void pm_update_buttons(Plugin *p)
 {
 	gboolean is_active;
+	gboolean has_config;
+	gboolean has_help;
 
 	is_active = is_active_plugin(p);
-	gtk_widget_set_sensitive(pm_widgets.configure_button,
-		(p->configure || p->configure_single) && is_active);
-	gtk_widget_set_sensitive(pm_widgets.help_button, p->help != NULL && is_active);
+	has_config = (p->configure || p->configure_single || p->configure_begin);
+	has_help = (p->help || p->help_requested);
+
+	gtk_widget_set_sensitive(pm_widgets.configure_button, has_config && is_active);
+	gtk_widget_set_sensitive(pm_widgets.help_button, has_help && is_active);
 }
 
 
@@ -1358,8 +1453,20 @@ static void pm_on_plugin_button_clicked(GtkButton *button, gpointer user_data)
 		{
 			if (GPOINTER_TO_INT(user_data) == PM_BUTTON_CONFIGURE)
 				plugin_show_configure(&p->public);
-			else if (GPOINTER_TO_INT(user_data) == PM_BUTTON_HELP && p->help != NULL)
-				p->help();
+			else if (GPOINTER_TO_INT(user_data) == PM_BUTTON_HELP)
+			{
+				if (p->help != NULL)
+					p->help();
+				else if (p->help_requested != NULL)
+				{
+					if (! p->help_requested(&p->public))
+					{
+						dialogs_show_msgbox(GTK_MESSAGE_INFO,
+							"The plugin '%s' was not able to show its "
+							"help documentation.", p->info.name);
+					}
+				}
+			}
 		}
 	}
 }

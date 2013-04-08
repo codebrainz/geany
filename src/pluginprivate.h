@@ -36,6 +36,15 @@ typedef struct SignalConnection
 SignalConnection;
 
 
+typedef enum
+{
+	PLUGIN_UNLOAD_FLAG_NONE=0,
+	PLUGIN_UNLOAD_FLAG_SELF_UNLOADING=(1<<1),
+	PLUGIN_UNLOAD_FLAG_UNLOADING=(1<<2)
+}
+PluginUnloadFlags;
+
+
 typedef struct GeanyPluginPrivate
 {
 	GModule 		*module;
@@ -49,12 +58,19 @@ typedef struct GeanyPluginPrivate
 	void		(*help) (void);						/* Called when the plugin should show some help, optional */
 	void		(*cleanup) (void);					/* Called when the plugin is disabled or when Geany exits */
 
+	/* Alternative to older API above, called only if other function isn't defined. */
+	gboolean		(*load) (GeanyPlugin *plugin);		/* Analog to "init" above. */
+	gboolean		(*unload) (GeanyPlugin *plugin);	/* Analog to "cleanup". */
+	GtkWidget*		(*configure_begin) (GeanyPlugin *plugin, GtkDialog *dialog); /* Analog to "configure" above. */
+	gboolean		(*help_requested) (GeanyPlugin *plugin); /* Analog to "help" above. */
+
 	/* extra stuff */
 	PluginFields	fields;
 	GeanyKeyGroup	*key_group;
 	GeanyAutoSeparator	toolbar_separator;
 	GArray			*signal_ids;			/* SignalConnection's to disconnect when unloading */
 	GList			*sources;				/* GSources to destroy when unloading */
+	gint			unload_flags;			/* Flags used while the plugin is unloading */
 }
 GeanyPluginPrivate;
 

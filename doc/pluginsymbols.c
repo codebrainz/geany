@@ -107,3 +107,66 @@ void plugin_cleanup();
  * Can be omitted when not needed. */
 void plugin_help();
 
+/** Called after loading the plugin if plugin_init() is not defined.
+ *
+ * This is an alternative to plugin_init() that is passed a pointer
+ * to the plugin's GeanyPlugin structure.
+ *
+ * @note This function will only be called if plugin_init() is not
+ * defined.
+ *
+ * @param plugin Pointer to the GeanyPlugin structure for the plugin.
+ * @return If the function returns @c FALSE, the plugin is not loaded,
+ * or rather it is immediately unloaded upon return. Returning @c TRUE
+ * indicates that the plugin initialized properly and everything is OK.
+ * @since 1.24
+ **/
+gboolean plugin_load(GeanyPlugin *plugin);
+
+/** Called before unloading the plugin.
+ *
+ * This is an alternative to plugin_cleanup() that is passed a pointer to
+ * the plugin's GeanyPlugin structure. If the function returns @c FALSE
+ * and the application isn't in the process of shutting down, the user
+ * will be prompted to leave the plugin loaded.
+ *
+ * @note This function will only be called if plugin_cleanup() is not
+ * defined.
+ * @note Even though the plugin can request to remain loaded, you should
+ * be really sure it needs to stay open (like it's downloading a file in
+ * another thread or something). Be concious of how annoying it could
+ * be for the user.
+ *
+ * @param plugin Pointer to the GeanyPlugin structure fror the plugin.
+ * @return The plugin can return @c FALSE to request to remain loaded.
+ * @since 1.24
+ **/
+gboolean plugin_unload(GeanyPlugin *plugin);
+
+/** Called to let the plugin attach a page in the Plugin Preferences
+ * dialog when it is being shown.
+ *
+ * @note This function will only be called if plugin_configure() and
+ * plugin_configure_single() are not defined.
+ *
+ * @param plugin The plugin that should be adding it's prefs page.
+ * @param dialog The prefs dialog widget itself so that the plugin
+ * can connect to its response signal.
+ * @return The widget to add to the prefs dialog or @c NULL to not
+ * add any page for this plugin.
+ * @since 1.24
+ **/
+GtkWidget *plugin_configure_begin(GeanyPlugin *plugin, GtkDialog *dialog);
+
+/** Called to notify the plugin that the user requested to view its
+ * help documentation. This would be a good opportunity to show a
+ * web page, open a file, etc.
+ *
+ * @note This function will only be called if plugin_help() is not defined.
+ *
+ * @param plugin The plugin that should show its help.
+ * @return @c TRUE if the plugin was able to show the user help docs,
+ * @c FALSE if it was not able.
+ * @since 1.24
+ **/
+gboolean plugin_help_requested(GeanyPlugin *plugin);

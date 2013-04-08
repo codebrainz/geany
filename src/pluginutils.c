@@ -279,30 +279,41 @@ static void on_pref_btn_clicked(gpointer btn, Plugin *p)
 }
 
 
+static GtkWidget *create_pref_config_page(Plugin *p, GtkDialog *dialog)
+{
+	GtkWidget *page = NULL;
+
+	if (p->configure)
+		page = p->configure(GTK_DIALOG(dialog));
+	else if (p->configure_begin)
+		page = p->configure_begin(&p->public, GTK_DIALOG(dialog));
+
+	if (GTK_IS_WIDGET(page))
+	{
+		GtkWidget *align = gtk_alignment_new(0.5, 0.5, 1, 1);
+
+		gtk_alignment_set_padding(GTK_ALIGNMENT(align), 6, 6, 6, 6);
+		gtk_container_add(GTK_CONTAINER(align), page);
+		page = gtk_vbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(page), align, TRUE, TRUE, 0);
+	}
+	else
+	{
+		geany_debug("Invalid widget returned from plugin_configure() "
+			"or plugin_configure_begin() in plugin \"%s\"!",
+			p->info.name);
+	}
+
+	return page;
+}
+
+
 static GtkWidget *create_pref_page(Plugin *p, GtkWidget *dialog)
 {
 	GtkWidget *page = NULL;	/* some plugins don't have prefs */
 
 	if (p->configure)
-	{
-		page = p->configure(GTK_DIALOG(dialog));
-
-		if (! GTK_IS_WIDGET(page))
-		{
-			geany_debug("Invalid widget returned from plugin_configure() in plugin \"%s\"!",
-				p->info.name);
-			return NULL;
-		}
-		else
-		{
-			GtkWidget *align = gtk_alignment_new(0.5, 0.5, 1, 1);
-
-			gtk_alignment_set_padding(GTK_ALIGNMENT(align), 6, 6, 6, 6);
-			gtk_container_add(GTK_CONTAINER(align), page);
-			page = gtk_vbox_new(FALSE, 0);
-			gtk_box_pack_start(GTK_BOX(page), align, TRUE, TRUE, 0);
-		}
-	}
+		page = create_pref_config_page(p, GTK_DIALOG(dialog));
 	else if (p->configure_single)
 	{
 		GtkWidget *align = gtk_alignment_new(0.5, 0.5, 0, 0);
@@ -315,6 +326,9 @@ static GtkWidget *create_pref_page(Plugin *p, GtkWidget *dialog)
 		gtk_container_add(GTK_CONTAINER(align), btn);
 		page = align;
 	}
+	else if (p->configure_begin)
+		page = create_pref_config_page(p, GTK_DIALOG(dialog));
+
 	return page;
 }
 
@@ -387,11 +401,10 @@ void plugin_show_configure(GeanyPlugin *plugin)
 
 	if (p->configure)
 		configure_plugins(p);
-	else
-	{
-		g_return_if_fail(p->configure_single);
+	else if (p->configure_single)
 		p->configure_single(main_widgets.window);
-	}
+	else if (p->configure_begin)
+		configure_plugins(p);
 }
 
 

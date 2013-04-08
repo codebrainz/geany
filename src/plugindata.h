@@ -166,7 +166,10 @@ PluginInfo;
  * @see geany_plugin. */
 typedef struct GeanyPlugin
 {
-	PluginInfo	*info;	/**< Fields set in plugin_set_info(). */
+	PluginInfo			*info;		/**< Fields set in plugin_set_info(). */
+	/** Pointer to geany_data available in the plugin struct.
+	 * @see GeanyData */
+	struct GeanyData	*data;
 
 	struct GeanyPluginPrivate *priv;	/* private */
 }
