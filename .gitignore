@@ -97,3 +97,5 @@ Makefile.in
 /doc/hacking.html
 /doc/*.pdf
 /doc/reference
+/doc/apiref-xml/
+/doc/interface.xml

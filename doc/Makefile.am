@@ -5,7 +5,8 @@ EXTRA_DIST = geany.html geany.css geany.txt geany.1 \
 	plugins.dox pluginsymbols.c pluginsignals.c \
 	stash-example.c stash-gui-example.c \
 	makefile.win32 \
-	$(srcdir)/$(IMAGE_FILES)
+	$(srcdir)/$(IMAGE_FILES) \
+	interface.xml interface.xslt interface.dox
 
 pdf: geany.txt
 	rst2latex -stg --documentoptions="10pt,a4paper" --output-encoding=utf8 $(srcdir)/geany.txt geany.tex
@@ -29,6 +30,13 @@ doc-clean:
 	rm -f geany.html
 	rm -f geany.1
 	rm -f *.pdf
+
+interface.xml: interface.dox interface.xslt
+	doxygen $<
+	xsltproc --output apiref-xml/full-ref-temp.xml apiref-xml/combine.xslt apiref-xml/index.xml
+	xsltproc --output apiref-xml/simplified-ref-temp.xml interface.xslt apiref-xml/full-ref-temp.xml
+	tidy -asxml -xml -w 80 -i apiref-xml/simplified-ref-temp.xml > $@
+	rm -rf apiref-xml/
 
 uninstall-local:
 	rm -rf $(DOCDIR);
