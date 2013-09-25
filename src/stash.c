@@ -1014,7 +1014,7 @@ static void stash_tree_renderer_edited(gchar *path_str, gchar *new_text, GtkTree
 			value->data.tree_int = atoi(new_text);
 			break;
 		case G_TYPE_STRING:
-			SETPTR(value->data.tree_string, g_strdup(new_text));
+			UTILS_REPLACE_PTR(value->data.tree_string, g_strdup(new_text));
 			break;
 	}
 
@@ -1159,7 +1159,7 @@ static void stash_tree_display_pref(StashTreeValue *value, StashPref *entry)
 			value->data.tree_int = *(gint *) entry->setting;
 			break;
 		case G_TYPE_STRING:
-			SETPTR(value->data.tree_string, g_strdup(*(gchararray *) entry->setting));
+			UTILS_REPLACE_PTR(value->data.tree_string, g_strdup(*(gchararray *) entry->setting));
 			break;
 		default:
 			g_warning("Unhandled type for %s::%s in %s()!", value->group_name,
@@ -1181,7 +1181,7 @@ static void stash_tree_update_pref(StashTreeValue *value, StashPref *entry)
 		case G_TYPE_STRING:
 		{
 			gchararray *text = entry->setting;
-			SETPTR(*text, g_strdup(value->data.tree_string));
+			UTILS_REPLACE_PTR(*text, g_strdup(value->data.tree_string));
 			break;
 		}
 		default:

@@ -93,7 +93,7 @@ void utils_open_browser(const gchar *uri)
 			if (new_cmd == NULL) /* user canceled */
 				again = FALSE;
 			else
-				SETPTR(tool_prefs.browser_cmd, new_cmd);
+				UTILS_REPLACE_PTR(tool_prefs.browser_cmd, new_cmd);
 		}
 		g_free(cmdline);
 	}
@@ -463,7 +463,7 @@ static gchar *utf8_strdown(const gchar *str)
 	{
 		down = g_locale_to_utf8(str, -1, NULL, NULL, NULL);
 		if (down)
-			SETPTR(down, g_utf8_strdown(down, -1));
+			UTILS_REPLACE_PTR(down, g_utf8_strdown(down, -1));
 	}
 
 	return down;
@@ -1897,7 +1897,7 @@ GSList *utils_get_config_files(const gchar *subdir)
 	{
 		utils_mkdir(path, FALSE);
 	}
-	SETPTR(path, g_build_path(G_DIR_SEPARATOR_S, app->datadir, subdir, NULL));
+	UTILS_REPLACE_PTR(path, g_build_path(G_DIR_SEPARATOR_S, app->datadir, subdir, NULL));
 	syslist = utils_get_file_list_full(path, FALSE, FALSE, NULL);
 	/* merge lists */
 	list = g_slist_concat(list, syslist);
@@ -1944,7 +1944,7 @@ gchar *utils_get_help_url(const gchar *suffix)
 
 	if (suffix != NULL)
 	{
-		SETPTR(uri, g_strconcat(uri, suffix, NULL));
+		UTILS_REPLACE_PTR(uri, g_strconcat(uri, suffix, NULL));
 	}
 
 	return uri;

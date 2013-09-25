@@ -338,9 +338,9 @@ static void remove_foreach_project_filetype(gpointer data, gpointer user_data)
 	GeanyFiletype *ft = data;
 	if (ft != NULL)
 	{
-		SETPTR(ft->projfilecmds, NULL);
-		SETPTR(ft->projexeccmds, NULL);
-		SETPTR(ft->projerror_regex_string, NULL);
+		UTILS_REPLACE_PTR(ft->projfilecmds, NULL);
+		UTILS_REPLACE_PTR(ft->projexeccmds, NULL);
+		UTILS_REPLACE_PTR(ft->projerror_regex_string, NULL);
 		ft->project_list_entry = -1;
 	}
 }
@@ -683,7 +683,7 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 		if (! g_path_is_absolute(locale_path))
 		{	/* relative base path, so add base dir of project file name */
 			gchar *dir = g_path_get_dirname(locale_filename);
-			SETPTR(locale_path, g_strconcat(dir, locale_path, NULL));
+			UTILS_REPLACE_PTR(locale_path, g_strconcat(dir, locale_path, NULL));
 			g_free(dir);
 		}
 
@@ -729,10 +729,10 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 	}
 	p = app->project;
 
-	SETPTR(p->name, g_strdup(name));
-	SETPTR(p->file_name, g_strdup(file_name));
+	UTILS_REPLACE_PTR(p->name, g_strdup(name));
+	UTILS_REPLACE_PTR(p->file_name, g_strdup(file_name));
 	/* use "." if base_path is empty */
-	SETPTR(p->base_path, g_strdup(!EMPTY(base_path) ? base_path : "./"));
+	UTILS_REPLACE_PTR(p->base_path, g_strdup(!EMPTY(base_path) ? base_path : "./"));
 
 	if (! new_project)	/* save properties specific fields */
 	{
@@ -750,7 +750,7 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(e->description));
 		gtk_text_buffer_get_start_iter(buffer, &start);
 		gtk_text_buffer_get_end_iter(buffer, &end);
-		SETPTR(p->description, g_strdup(gtk_text_buffer_get_text(buffer, &start, &end, FALSE)));
+		UTILS_REPLACE_PTR(p->description, g_strdup(gtk_text_buffer_get_text(buffer, &start, &end, FALSE)));
 
 		foreach_slist(node, stash_groups)
 			stash_group_update(node->data, e->dialog);
@@ -1174,7 +1174,7 @@ void project_apply_prefs(void)
 	const gchar *str;
 
 	str = gtk_entry_get_text(GTK_ENTRY(path_entry));
-	SETPTR(local_prefs.project_file_path, g_strdup(str));
+	UTILS_REPLACE_PTR(local_prefs.project_file_path, g_strdup(str));
 }
 
 

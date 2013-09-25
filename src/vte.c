@@ -753,7 +753,7 @@ G_MODULE_EXPORT void on_term_font_set(GtkFontButton *widget, gpointer user_data)
 
 	if (! utils_str_equal(fontbtn, vc->font))
 	{
-		SETPTR(vc->font, g_strdup(gtk_font_button_get_font_name(widget)));
+		UTILS_REPLACE_PTR(vc->font, g_strdup(gtk_font_button_get_font_name(widget)));
 		vte_apply_user_settings();
 	}
 }
@@ -849,7 +849,7 @@ void vte_send_selection_to_vte(void)
 		   this is disabled by default as it could cause all sorts of damage. */
 		if (text[len-1] != '\n' && text[len-1] != '\r')
 		{
-			SETPTR(text, g_strconcat(text, "\n", NULL));
+			UTILS_REPLACE_PTR(text, g_strconcat(text, "\n", NULL));
 			len++;
 		}
 	}

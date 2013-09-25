@@ -98,6 +98,7 @@ static struct
 
 
 static void project_change_cb(GObject *obj, GKeyFile *config, gpointer data);
+static void refresh(void);
 
 /* note: other callbacks connected in plugin_init */
 PluginCallback plugin_callbacks[] =
@@ -106,6 +107,15 @@ PluginCallback plugin_callbacks[] =
 	{ "project-save", (GCallback) &project_change_cb, TRUE, NULL },
 	{ NULL, NULL, FALSE, NULL }
 };
+
+
+static void update_current_dir(const char *locale_dir, gboolean do_refresh)
+{
+	g_free(current_dir);
+	current_dir = g_strdup(locale_dir);
+	if (do_refresh)
+		refresh();
+}
 
 
 #ifdef G_OS_WIN32
@@ -235,13 +245,14 @@ done:
 static void add_top_level_entry(void)
 {
 	GtkTreeIter iter;
-	gchar *utf8_dir;
+	gchar *utf8_dir, *locale_dir;
 
 	if (EMPTY(g_path_skip_root(current_dir)))
 		return;	/* ignore 'C:\' or '/' */
 
-	utf8_dir = g_path_get_dirname(current_dir);
-	SETPTR(utf8_dir, utils_get_utf8_from_locale(utf8_dir));
+	locale_dir = g_path_get_dirname(current_dir);
+	utf8_dir = utils_get_utf8_from_locale(locale_dir);
+	g_free(locale_dir);
 
 	gtk_list_store_prepend(file_store, &iter);
 	last_dir_iter = gtk_tree_iter_copy(&iter);
@@ -251,6 +262,7 @@ static void add_top_level_entry(void)
 		FILEVIEW_COLUMN_NAME, "..",
 		FILEVIEW_COLUMN_FILENAME, utf8_dir,
 		-1);
+
 	g_free(utf8_dir);
 }
 
@@ -305,8 +317,7 @@ static void refresh(void)
 
 static void on_go_home(void)
 {
-	SETPTR(current_dir, g_strdup(g_get_home_dir()));
-	refresh();
+	update_current_dir(g_get_home_dir(), TRUE);
 }
 
 
@@ -336,8 +347,9 @@ static void on_current_path(void)
 
 	if (doc == NULL || doc->file_name == NULL || ! g_path_is_absolute(doc->file_name))
 	{
-		SETPTR(current_dir, get_default_dir());
-		refresh();
+		gchar *def_dir = get_default_dir();
+		update_current_dir(def_dir, TRUE);
+		g_free(def_dir);
 		return;
 	}
 	fname = doc->file_name;
@@ -345,19 +357,21 @@ static void on_current_path(void)
 	dir = g_path_get_dirname(fname);
 	g_free(fname);
 
-	SETPTR(current_dir, dir);
-	refresh();
+	update_current_dir(dir, TRUE);
+	g_free(dir);
 }
 
 
 static void on_go_up(void)
 {
+	gchar *dir;
 	gsize len = strlen(current_dir);
 	if (current_dir[len-1] == G_DIR_SEPARATOR)
 		current_dir[len-1] = '\0';
 	/* remove the highest directory part (which becomes the basename of current_dir) */
-	SETPTR(current_dir, g_path_get_dirname(current_dir));
-	refresh();
+	dir = g_path_get_dirname(current_dir);
+	update_current_dir(dir, TRUE);
+	g_free(dir);
 }
 
 
@@ -511,9 +525,8 @@ static void open_selected_files(GList *list, gboolean do_not_focus)
 static void open_folder(GtkTreePath *treepath)
 {
 	gchar *fname = get_tree_path_filename(treepath);
-
-	SETPTR(current_dir, fname);
-	refresh();
+	update_current_dir(fname, TRUE);
+	g_free(fname);
 }
 
 
@@ -551,7 +564,7 @@ static void on_find_in_files(GtkMenuItem *menuitem, gpointer user_data)
 	GtkTreeSelection *treesel;
 	GtkTreeModel *model;
 	GList *list;
-	gchar *dir;
+	gchar *locale_dir, *utf8_dir;
 	gboolean is_dir = FALSE;
 
 	treesel = gtk_tree_view_get_selection(GTK_TREE_VIEW(file_view));
@@ -566,18 +579,19 @@ static void on_find_in_files(GtkMenuItem *menuitem, gpointer user_data)
 	if (is_dir)
 	{
 		GtkTreePath *treepath = list->data;	/* first selected item */
-
-		dir = get_tree_path_filename(treepath);
+		locale_dir = get_tree_path_filename(treepath);
 	}
 	else
-		dir = g_strdup(current_dir);
+		locale_dir = g_strdup(current_dir);
 
 	g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
 	g_list_free(list);
 
-	SETPTR(dir, utils_get_utf8_from_locale(dir));
-	search_show_find_in_files_dialog(dir);
-	g_free(dir);
+	utf8_dir = utils_get_utf8_from_locale(locale_dir);
+	g_free(locale_dir);
+
+	search_show_find_in_files_dialog(utf8_dir);
+	g_free(utf8_dir);
 }
 
 
@@ -760,28 +774,33 @@ static void on_clear_filter(GtkEntry *entry, gpointer user_data)
 
 static void on_path_entry_activate(GtkEntry *entry, gpointer user_data)
 {
-	gchar *new_dir = (gchar*) gtk_entry_get_text(entry);
+	const char *new_dir_utf8 = gtk_entry_get_text(entry);
+	gchar *locale_dir;
 
-	if (!EMPTY(new_dir))
+	if (!EMPTY(new_dir_utf8))
 	{
-		if (g_str_has_suffix(new_dir, ".."))
+		if (g_str_has_suffix(new_dir_utf8, ".."))
 		{
 			on_go_up();
 			return;
 		}
-		else if (new_dir[0] == '~')
+		else if (new_dir_utf8[0] == '~')
 		{
-			GString *str = g_string_new(new_dir);
+			GString *str;
+			locale_dir = utils_get_locale_from_utf8(new_dir_utf8);
+			str = g_string_new(locale_dir);
+			g_free(locale_dir);
 			utils_string_replace_first(str, "~", g_get_home_dir());
-			new_dir = g_string_free(str, FALSE);
+			locale_dir = g_string_free(str, FALSE);
 		}
 		else
-			new_dir = utils_get_locale_from_utf8(new_dir);
+			locale_dir = utils_get_locale_from_utf8(new_dir_utf8);
 	}
 	else
-		new_dir = g_strdup(g_get_home_dir());
+		locale_dir = g_strdup(g_get_home_dir());
 
-	SETPTR(current_dir, new_dir);
+	update_current_dir(locale_dir, FALSE);
+	g_free(locale_dir);
 
 	on_clear_filter(NULL, NULL);
 }
@@ -1003,7 +1022,7 @@ static void load_settings(void)
 static void project_change_cb(G_GNUC_UNUSED GObject *obj, G_GNUC_UNUSED GKeyFile *config,
 							  G_GNUC_UNUSED gpointer data)
 {
-	gchar *new_dir;
+	gchar *locale_dir;
 	GeanyProject *project = geany->app->project;
 
 	if (! fb_set_project_base_path || project == NULL || EMPTY(project->base_path))
@@ -1011,24 +1030,22 @@ static void project_change_cb(G_GNUC_UNUSED GObject *obj, G_GNUC_UNUSED GKeyFile
 
 	/* TODO this is a copy of project_get_base_path(), add it to the plugin API */
 	if (g_path_is_absolute(project->base_path))
-		new_dir = g_strdup(project->base_path);
+		locale_dir = utils_get_locale_from_utf8(project->base_path);
 	else
 	{	/* build base_path out of project file name's dir and base_path */
-		gchar *dir = g_path_get_dirname(project->file_name);
-
-		new_dir = g_strconcat(dir, G_DIR_SEPARATOR_S, project->base_path, NULL);
+		gchar *locale_fn = utils_get_locale_from_utf8(project->file_name);
+		gchar *dir = g_path_get_dirname(locale_fn);
+		gchar *temp_locale_dir = utils_get_locale_from_utf8(project->base_path);
+		locale_dir = g_build_filename(dir, temp_locale_dir, NULL);
+		g_free(locale_fn);
 		g_free(dir);
+		g_free(temp_locale_dir);
 	}
-	/* get it into locale encoding */
-	SETPTR(new_dir, utils_get_locale_from_utf8(new_dir));
 
-	if (! utils_str_equal(current_dir, new_dir))
-	{
-		SETPTR(current_dir, new_dir);
-		refresh();
-	}
-	else
-		g_free(new_dir);
+	if (! utils_str_equal(current_dir, locale_dir))
+		update_current_dir(locale_dir, TRUE);
+
+	g_free(locale_dir);
 }
 
 
@@ -1037,23 +1054,22 @@ static gpointer last_activate_path = NULL;
 static void document_activate_cb(G_GNUC_UNUSED GObject *obj, GeanyDocument *doc,
 								 G_GNUC_UNUSED gpointer data)
 {
-	gchar *new_dir;
+	gchar *locale_dir;
+	gchar *locale_fn = NULL;
 
 	last_activate_path = doc->real_path;
 
 	if (! fb_follow_path || doc->file_name == NULL || ! g_path_is_absolute(doc->file_name))
 		return;
 
-	new_dir = g_path_get_dirname(doc->file_name);
-	SETPTR(new_dir, utils_get_locale_from_utf8(new_dir));
+	locale_fn = utils_get_locale_from_utf8(doc->file_name);
+	locale_dir = g_path_get_dirname(locale_fn);
+	g_free(locale_fn);
 
-	if (! utils_str_equal(current_dir, new_dir))
-	{
-		SETPTR(current_dir, new_dir);
-		refresh();
-	}
-	else
-		g_free(new_dir);
+	if (! utils_str_equal(current_dir, locale_dir))
+		update_current_dir(locale_dir, TRUE);
+
+	g_free(locale_dir);
 }
 
 

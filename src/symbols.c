@@ -124,7 +124,7 @@ static void load_c_ignore_tags(void)
 	if (g_file_get_contents(path, &content, NULL, NULL))
 	{
 		/* historically we ignore the glib _DECLS for tag generation */
-		SETPTR(content, g_strconcat("G_BEGIN_DECLS G_END_DECLS\n", content, NULL));
+		UTILS_REPLACE_PTR(content, g_strconcat("G_BEGIN_DECLS G_END_DECLS\n", content, NULL));
 
 		g_strfreev(c_tags_ignore);
 		c_tags_ignore = g_strsplit_set(content, " \n\r", -1);
@@ -1104,12 +1104,12 @@ static gchar *get_symbol_tooltip(GeanyDocument *doc, const TMTag *tag)
 		! utils_str_equal(doc->encoding, "UTF-8") &&
 		! utils_str_equal(doc->encoding, "None"))
 	{
-		SETPTR(utf8_name,
+		UTILS_REPLACE_PTR(utf8_name,
 			encodings_convert_to_utf8_from_charset(utf8_name, -1, doc->encoding, TRUE));
 	}
 
 	if (utf8_name != NULL)
-		SETPTR(utf8_name, g_markup_escape_text(utf8_name, -1));
+		UTILS_REPLACE_PTR(utf8_name, g_markup_escape_text(utf8_name, -1));
 
 	return utf8_name;
 }
@@ -1874,7 +1874,7 @@ static void init_user_tags(void)
 		utils_mkdir(dir, FALSE);
 	file_list = utils_get_file_list_full(dir, TRUE, FALSE, NULL);
 
-	SETPTR(dir, g_build_filename(app->datadir, "tags", NULL));
+	UTILS_REPLACE_PTR(dir, g_build_filename(app->datadir, "tags", NULL));
 	list = utils_get_file_list_full(dir, TRUE, FALSE, NULL);
 	g_free(dir);
 

@@ -957,7 +957,7 @@ static void get_key_values(GKeyFile *config, const gchar *group, gchar **keys, g
 		gchar *str = g_key_file_get_string(config, group, *keys, NULL);
 
 		if (str)
-			SETPTR(*values, str);
+			UTILS_REPLACE_PTR(*values, str);
 
 		keys++;
 		values++;
@@ -1237,11 +1237,11 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 	/* check if default item */
 	if (!fname)
 	{
-		SETPTR(editor_prefs.color_scheme, NULL);
+		UTILS_REPLACE_PTR(editor_prefs.color_scheme, NULL);
 		filetypes_reload();
 		return;
 	}
-	SETPTR(fname, utils_get_locale_from_utf8(fname));
+	UTILS_REPLACE_PTR(fname, utils_get_locale_from_utf8(fname));
 
 	/* fname is just the basename from the menu item, so prepend the custom files path */
 	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
@@ -1253,13 +1253,13 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 	}
 	if (g_file_test(path, G_FILE_TEST_EXISTS))
 	{
-		SETPTR(editor_prefs.color_scheme, fname);
+		UTILS_REPLACE_PTR(editor_prefs.color_scheme, fname);
 		fname = NULL;
 		filetypes_reload();
 	}
 	else
 	{
-		SETPTR(fname, utils_get_utf8_from_locale(fname));
+		UTILS_REPLACE_PTR(fname, utils_get_utf8_from_locale(fname));
 		ui_set_statusbar(TRUE, _("Could not find file '%s'."), fname);
 	}
 	g_free(path);
@@ -1312,7 +1312,7 @@ static void add_color_scheme_file(GtkListStore *store, const gchar *fname)
 
 	path = g_build_filename(app->configdir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
 	hkeyfile = utils_key_file_new(path);
-	SETPTR(path, g_build_filename(app->datadir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL));
+	UTILS_REPLACE_PTR(path, g_build_filename(app->datadir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL));
 	skeyfile = utils_key_file_new(path);
 
 	theme_name = utils_get_setting(locale_string, hkeyfile, skeyfile, "theme_info", "name", theme_fn);

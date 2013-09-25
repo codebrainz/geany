@@ -346,7 +346,7 @@ static gchar *regex_match(GRegex *preg, const gchar *buffer, gsize size)
 		encoding = g_match_info_fetch(minfo, 1);
 		geany_debug("Detected encoding by regex search: %s", encoding);
 
-		SETPTR(encoding, g_utf8_strup(encoding, -1));
+		UTILS_REPLACE_PTR(encoding, g_utf8_strup(encoding, -1));
 	}
 	g_match_info_free(minfo);
 	return encoding;
@@ -783,7 +783,7 @@ handle_forced_encoding(BufferData *buffer, const gchar *forced_enc)
 		}
 		else
 		{
-			SETPTR(buffer->data, converted_text);
+			UTILS_REPLACE_PTR(buffer->data, converted_text);
 			buffer->len = strlen(converted_text);
 		}
 	}
@@ -821,13 +821,13 @@ handle_encoding(BufferData *buffer, GeanyEncodingIndex enc_idx)
 										buffer->data, buffer->size, buffer->enc, FALSE);
 				if (converted_text != NULL)
 				{
-					SETPTR(buffer->data, converted_text);
+					UTILS_REPLACE_PTR(buffer->data, converted_text);
 					buffer->len = strlen(converted_text);
 				}
 				else
 				{
 					/* there was a problem converting data from BOM encoding type */
-					SETPTR(buffer->enc, NULL);
+					UTILS_REPLACE_PTR(buffer->enc, NULL);
 					buffer->bom = FALSE;
 				}
 			}
@@ -855,7 +855,7 @@ handle_encoding(BufferData *buffer, GeanyEncodingIndex enc_idx)
 					g_free(regex_charset);
 					return FALSE;
 				}
-				SETPTR(buffer->data, converted_text);
+				UTILS_REPLACE_PTR(buffer->data, converted_text);
 				buffer->len = strlen(converted_text);
 			}
 			g_free(regex_charset);

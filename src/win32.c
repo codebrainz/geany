@@ -1047,7 +1047,7 @@ gboolean win32_spawn(const gchar *dir, gchar **argv, gchar **env, GSpawnFlags fl
 		return FALSE;
 	}
 	command = g_strjoinv(" ", argv);
-	SETPTR(command, g_strdup_printf("%s >%s 2>%s",
+	UTILS_REPLACE_PTR(command, g_strdup_printf("%s >%s 2>%s",
 		command, tmp_file, tmp_errfile));
 	g_chdir(dir);
 	ret = system(command);

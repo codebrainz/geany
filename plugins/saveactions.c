@@ -107,7 +107,8 @@ static gboolean backupcopy_set_backup_dir(const gchar *utf8_dir)
 	}
 	/** TODO add utils_is_file_writeable() to the plugin API and make use of it **/
 
-	SETPTR(backupcopy_backup_dir, tmp);
+	g_free(backupcopy_backup_dir);
+	backupcopy_backup_dir = tmp;
 
 	return TRUE;
 }
@@ -247,28 +248,32 @@ static void instantsave_document_new_cb(GObject *obj, GeanyDocument *doc, gpoint
     {
 		gchar *new_filename;
 		gint fd;
-		GeanyFiletype *ft = doc->file_type;
+		GeanyFiletype *ft = NULL;
 
 		fd = g_file_open_tmp("gis_XXXXXX", &new_filename, NULL);
 		if (fd != -1)
 			close(fd); /* close the returned file descriptor as we only need the filename */
 
-		if (ft == NULL || ft->id == GEANY_FILETYPES_NONE)
+		if (doc->file_type == NULL || doc->file_type->id == GEANY_FILETYPES_NONE)
 			/* ft is NULL when a new file without template was opened, so use the
 			 * configured default file type */
 			ft = filetypes_lookup_by_name(instantsave_default_ft);
+		else
+			ft = doc->file_type;
 
 		if (ft != NULL)
+		{
+			g_free(doc->file_name);
+
 			/* add the filetype's default extension to the new filename */
-			SETPTR(new_filename, g_strconcat(new_filename, ".", ft->extension, NULL));
+			doc->file_name = g_strconcat(new_filename, ".", ft->extension, NULL);
 
-		doc->file_name = new_filename;
+			if (ft->id == GEANY_FILETYPES_NONE)
+				document_set_filetype(doc, filetypes_lookup_by_name(instantsave_default_ft));
 
-		if (doc->file_type->id == GEANY_FILETYPES_NONE)
-			document_set_filetype(doc, filetypes_lookup_by_name(instantsave_default_ft));
-
-		/* force saving the file to enable all the related actions(tab name, filetype, etc.) */
-		document_save_file(doc, TRUE);
+			/* force saving the file to enable all the related actions(tab name, filetype, etc.) */
+			document_save_file(doc, TRUE);
+		}
     }
 }
 
@@ -455,7 +460,10 @@ static void configure_response_cb(GtkDialog *dialog, gint response, G_GNUC_UNUSE
 
 		g_key_file_set_integer(config, "backupcopy", "dir_levels", backupcopy_dir_levels);
 		g_key_file_set_string(config, "backupcopy", "time_fmt", text_time);
-		SETPTR(backupcopy_time_fmt, g_strdup(text_time));
+
+		g_free(backupcopy_time_fmt);
+		backupcopy_time_fmt = g_strdup(text_time);
+
 		if (enable_backupcopy)
 		{
 			if (!EMPTY(text_dir) && backupcopy_set_backup_dir(text_dir))

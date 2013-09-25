@@ -224,7 +224,7 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 			g_error_free(error);
 			error = NULL;
 
-			SETPTR(filename, g_build_filename(app->datadir, "ui_toolbar.xml", NULL));
+			UTILS_REPLACE_PTR(filename, g_build_filename(app->datadir, "ui_toolbar.xml", NULL));
 			merge_id = gtk_ui_manager_add_ui_from_file(uim, filename, &error);
 		}
 		g_free(filename);

@@ -1085,10 +1085,10 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 			{
 				/* in case the user now wants the current directory, add it to history */
 				ui_combo_box_add_to_history(GTK_COMBO_BOX_TEXT(fif_dlg.dir_combo), cur_dir, 0);
-				SETPTR(cur_dir, NULL);
+				UTILS_REPLACE_PTR(cur_dir, NULL);
 			}
 			else
-				SETPTR(last_cur_dir, g_strdup(cur_dir));
+				UTILS_REPLACE_PTR(last_cur_dir, g_strdup(cur_dir));
 
 			last_doc = doc;
 		}
@@ -1961,7 +1961,7 @@ static gint find_regex(ScintillaObject *sci, guint pos, GRegex *regex, GeanyMatc
 		guint i;
 
 		/* copy whole match text and offsets before they become invalid */
-		SETPTR(match->match_text, g_match_info_fetch(minfo, 0));
+		UTILS_REPLACE_PTR(match->match_text, g_match_info_fetch(minfo, 0));
 
 		foreach_range(i, G_N_ELEMENTS(match->matches))
 		{

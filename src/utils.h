@@ -41,20 +41,28 @@ G_BEGIN_DECLS
 #define NZV(ptr) (!EMPTY(ptr))
 #endif
 
+static inline void utils_replace_ptr(gpointer *target, gpointer replacement)
+{
+	g_free(*target);
+	*target = replacement;
+}
+
+#define UTILS_REPLACE_PTR(target_, replacement_) \
+	utils_replace_ptr((gpointer*)&target_, replacement_)
+
+#ifndef GEANY_DISABLE_DEPRECATED
+
 /** Assigns @a result to @a ptr, then frees the old value.
  * @a result can be an expression using the 'old' value of @a ptr.
  * E.g. @code SETPTR(str, g_strndup(str, 5)); @endcode
+ * @deprecated since 1.24
  **/
-#define SETPTR(ptr, result) \
-	do setptr(ptr, result) while (0)
+#define SETPTR(ptr, result) UTILS_REPLACE_PTR(ptr, result)
 
-/** @deprecated 2011/11/15 - use SETPTR() instead. */
-#define setptr(ptr, result) \
-	{\
-		gpointer setptr_tmp = ptr;\
-		ptr = result;\
-		g_free(setptr_tmp);\
-	}
+/** @deprecated since 2011/11/15 */
+#define setptr(ptr, result) UTILS_REPLACE_PTR(ptr, result)
+
+#endif /* GEANY_DISABLE_DEPRECATED */
 
 /** Duplicates a string on the stack using @c g_alloca().
  * Like glibc's @c strdupa(), but portable.

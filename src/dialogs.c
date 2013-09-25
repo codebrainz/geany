@@ -453,7 +453,7 @@ void dialogs_show_open_file(void)
 	if (! initdir)
 		initdir = g_strdup(utils_get_default_dir_utf8());
 
-	SETPTR(initdir, utils_get_locale_from_utf8(initdir));
+	UTILS_REPLACE_PTR(initdir, utils_get_locale_from_utf8(initdir));
 
 #ifdef G_OS_WIN32
 	if (interface_prefs.use_native_windows_dialogs)

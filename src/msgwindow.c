@@ -641,9 +641,9 @@ static gboolean goto_compiler_file_line(const gchar *filename, gint line, gboole
 		if (cur_dir)
 		{
 			/* we let the user know we couldn't find the parsed filename from the message window */
-			SETPTR(cur_dir, utils_get_locale_from_utf8(cur_dir));
+			UTILS_REPLACE_PTR(cur_dir, utils_get_locale_from_utf8(cur_dir));
 			name = g_path_get_basename(filename);
-			SETPTR(name, g_build_path(G_DIR_SEPARATOR_S, cur_dir, name, NULL));
+			UTILS_REPLACE_PTR(name, g_build_path(G_DIR_SEPARATOR_S, cur_dir, name, NULL));
 			g_free(cur_dir);
 
 			if (g_file_test(name, G_FILE_TEST_EXISTS))
@@ -744,7 +744,7 @@ static void make_absolute(gchar **filename, const gchar *dir)
 
 	/* add directory */
 	if (! utils_is_absolute_path(*filename))
-		SETPTR(*filename, g_build_filename(dir, *filename + skip_dot_slash, NULL));
+		UTILS_REPLACE_PTR(*filename, g_build_filename(dir, *filename + skip_dot_slash, NULL));
 }
 
 
@@ -1048,7 +1048,7 @@ static void msgwin_parse_generic_line(const gchar *string, gchar **filename, gin
 		/* if we aren't sure we got a supposedly correct filename, check it */
 		if (incertain && ! g_file_test(*filename, G_FILE_TEST_EXISTS))
 		{
-			SETPTR(*filename, NULL);
+			UTILS_REPLACE_PTR(*filename, NULL);
 			*line = -1;
 		}
 	}

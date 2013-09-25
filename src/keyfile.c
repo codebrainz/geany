@@ -1063,7 +1063,7 @@ gboolean configuration_load(void)
 	{	/* config file does not (yet) exist, so try to load a global config file which may be */
 		/* created by distributors */
 		geany_debug("No user config file found, trying to use global configuration.");
-		SETPTR(configfile, g_build_filename(app->datadir, "geany.conf", NULL));
+		UTILS_REPLACE_PTR(configfile, g_build_filename(app->datadir, "geany.conf", NULL));
 	}
 	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
 	g_free(configfile);
