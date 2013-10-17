@@ -535,6 +535,7 @@ static GeanyDocument *document_create(const gchar *utf8_filename)
 #ifndef USE_GIO_FILEMON
 	doc->priv->last_check = time(NULL);
 #endif
+	g_datalist_init(&(doc->priv->data_list));
 
 	sidebar_openfiles_add(doc);	/* sets doc->iter */
 
@@ -614,6 +615,8 @@ static gboolean remove_page(guint page_num)
 	document_stop_file_monitoring(doc);
 
 	document_undo_clear(doc);
+
+	g_datalist_clear(&(doc->priv->data_list));
 
 	g_free(doc->priv);
 
@@ -3156,4 +3159,111 @@ void document_grab_focus(GeanyDocument *doc)
 	g_return_if_fail(doc != NULL);
 
 	gtk_widget_grab_focus(GTK_WIDGET(doc->editor->sci));
+}
+
+
+/**
+ * Associate a key/value pointer with the document.
+ *
+ * This has the same semantics as g_object_set_data().
+ *
+ * @note It is important to remember that parts of Geany or random plugins
+ * maybe be also setting data in the data list, so it would be prudent to
+ * prefix all keys with something unique to the module or plugin in question.
+ *
+ * @param doc The GeanyDocument.
+ * @param key The string that identifies the pointer.
+ * @param data An arbitrary pointer to associate with the @a key or NULL to
+ * remove the existing data pointer.
+ *
+ * @see document_set_data_full()
+ * @see document_get_data()
+ * @since Geany 1.24 (API version 218)
+ */
+void document_set_data(GeanyDocument *doc, const gchar *key, gpointer data)
+{
+	g_return_if_fail(doc != NULL && doc->is_valid);
+	g_return_if_fail(key != NULL);
+	g_datalist_set_data(&(doc->priv->data_list), key, data);
+}
+
+
+/**
+ * Associate a key/value pointer with the document.
+ *
+ * This is the same as document_set_data() except that it allows you to
+ * specify a function to cleanup/free the data pointer when it gets
+ * removed or replaced.
+ *
+ * @note It is important to remember that parts of Geany or random plugins
+ * maybe be also setting data in the data list, so it would be prudent to
+ * prefix all keys with something unique to the module or plugin in question.
+ *
+ * @param doc The GeanyDocument.
+ * @param key The string that identifies the pointer.
+ * @param data An arbitrary pointer to associate with the @a key or NULL
+ * to remove the existing data pointer.
+ * @param free_func The function to call, passing the @a data pointer, which
+ * can be used to cleanup/free the data.
+ *
+ * @see document_set_data()
+ * @see document_get_data()
+ * @since Geany 1.24 (API version 218)
+ */
+void document_set_data_full(GeanyDocument *doc, const gchar *key,
+	gpointer data, GDestroyNotify free_func)
+{
+	g_return_if_fail(doc != NULL && doc->is_valid);
+	g_return_if_fail(key != NULL);
+	g_datalist_set_data_full(&(doc->priv->data_list), key, data,
+		data ? free_func : NULL);
+}
+
+
+/**
+ * Retrieve the pointer associated with the give key.
+ *
+ * This is how you retrieve data previously set with document_set_data() or
+ * document_set_data_full().
+ *
+ * @param doc The GeanyDocument.
+ * @param key The key to lookup the data pointer for.
+ * @return The data pointer if @a key was found or @c NULL otherwise.
+ *
+ * @see document_set_data()
+ * @since Geany 1.24 (API version 218)
+ */
+gpointer document_get_data(GeanyDocument *doc, const gchar *key)
+{
+	g_return_val_if_fail(doc != NULL && doc->is_valid, NULL);
+	g_return_val_if_fail(key != NULL, NULL);
+	return g_datalist_get_data(&(doc->priv->data_list), key);
+}
+
+
+/**
+ * Remove a data pointer from the document's data list.
+ *
+ * The key should be one that was previously set with either document_set_data()
+ * or document_set_data_full(). If no matching key is found, nothing is done.
+ *
+ * @note If a plugin has stored some allocated data here, it would be prudent
+ * not only to use document_set_data_full() specifying a free function to
+ * cleanup the data when a document is closed, but also calling this
+ * function from their plugin_cleanup() implementation to avoid leaking
+ * their data that would otherwise linger in the GeanyDocument after the
+ * plugin is unloaded.
+ *
+ * @param doc The GeanyDocument.
+ * @param key The key to remove along with associated data pointer.
+ *
+ * @see document_set_data_full()
+ * @see document_get_data()
+ * @since Geany 1.24 (API version 218)
+ */
+void document_remove_data(GeanyDocument *doc, const gchar *key)
+{
+	g_return_if_fail(doc != NULL && doc->is_valid);
+	g_return_if_fail(key != NULL);
+	g_datalist_remove_data(&(doc->priv->data_list), key);
 }

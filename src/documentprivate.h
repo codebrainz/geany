@@ -83,6 +83,8 @@ typedef struct GeanyDocumentPrivate
 	time_t			 mtime;
 	/* ID of the idle callback updating the tag list */
 	guint			 tag_list_update_source;
+	/* Arbitrary data/context associated with the document. */
+	GData *data_list;
 }
 GeanyDocumentPrivate;
 

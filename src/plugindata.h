@@ -322,6 +322,11 @@ typedef struct DocumentFuncs
 	gint		(*document_compare_by_display_name) (gconstpointer a, gconstpointer b);
 	gint		(*document_compare_by_tab_order) (gconstpointer a, gconstpointer b);
 	gint		(*document_compare_by_tab_order_reverse) (gconstpointer a, gconstpointer b);
+	void		(*document_set_data) (struct GeanyDocument *doc, const gchar *key, gpointer data);
+	void		(*document_set_data_full) (struct GeanyDocument *doc, const gchar *key,
+			gpointer data, GDestroyNotify free_func);
+	gpointer	(*document_get_data) (struct GeanyDocument *doc, const gchar *key);
+	void		(*document_remove_data) (struct GeanyDocument *doc, const gchar *key);
 }
 DocumentFuncs;
 

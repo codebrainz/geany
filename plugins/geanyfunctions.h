@@ -80,6 +80,14 @@
 	geany_functions->p_document->document_compare_by_tab_order
 #define document_compare_by_tab_order_reverse \
 	geany_functions->p_document->document_compare_by_tab_order_reverse
+#define document_set_data \
+	geany_functions->p_document->document_set_data
+#define document_set_data_full \
+	geany_functions->p_document->document_set_data_full
+#define document_get_data \
+	geany_functions->p_document->document_get_data
+#define document_remove_data \
+	geany_functions->p_document->document_remove_data
 #define editor_get_indent_prefs \
 	geany_functions->p_editor->editor_get_indent_prefs
 #define editor_create_widget \

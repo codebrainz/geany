@@ -113,7 +113,11 @@ static DocumentFuncs doc_funcs = {
 	&document_get_notebook_page,
 	&document_compare_by_display_name,
 	&document_compare_by_tab_order,
-	&document_compare_by_tab_order_reverse
+	&document_compare_by_tab_order_reverse,
+	&document_set_data,
+	&document_set_data_full,
+	&document_get_data,
+	&document_remove_data
 };
 
 static EditorFuncs editor_funcs = {
