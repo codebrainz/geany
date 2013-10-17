@@ -1797,62 +1797,37 @@ gboolean utils_is_remote_path(const gchar *path)
 }
 
 
-/* Remove all relative and untidy elements from the path of @a filename.
- * @param filename must be a valid absolute path.
- * @see tm_get_real_path() - also resolves links. */
-void utils_tidy_path(gchar *filename)
+/* Resolve a file or directory path, either absolute or relative, or a URI
+ * to an absolute local path. Only `file://` URIs are supported. If the path
+ * is relative, it's resolved relative to Geany's current working dir.
+ * The returned string should be freed when no longer needed. The path
+ * be in "locale encoding" (or whatever the system uses for filenames).
+ */
+gchar *utils_resolve_path(const gchar *path)
 {
-	GString *str = g_string_new(filename);
-	const gchar *c, *needle;
-	gchar *tmp;
-	gssize pos;
-	gboolean preserve_double_backslash = FALSE;
-
-	g_return_if_fail(g_path_is_absolute(filename));
-
-	if (str->len >= 2 && strncmp(str->str, "\\\\", 2) == 0)
-		preserve_double_backslash = TRUE;
-
-#ifdef G_OS_WIN32
-	/* using MSYS we can get Unix-style separators */
-	utils_string_replace_all(str, "/", G_DIR_SEPARATOR_S);
-#endif
-	/* replace "/./" and "//" */
-	utils_string_replace_all(str, G_DIR_SEPARATOR_S "." G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S);
-	utils_string_replace_all(str, G_DIR_SEPARATOR_S G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S);
-
-	if (preserve_double_backslash)
-		g_string_prepend(str, "\\");
-
-	/* replace "/../" */
-	needle = G_DIR_SEPARATOR_S ".." G_DIR_SEPARATOR_S;
-	while (1)
+	gchar *resolved = NULL;
+	if (path != NULL)
 	{
-		c = strstr(str->str, needle);
-		if (c == NULL)
-			break;
-		else
-		{
-			pos = c - str->str;
-			if (pos <= 3)
-				break;	/* bad path */
-
-			/* replace "/../" */
-			g_string_erase(str, pos, strlen(needle));
-			g_string_insert_c(str, pos, G_DIR_SEPARATOR);
-
-			tmp = g_strndup(str->str, pos);	/* path up to "/../" */
-			c = g_strrstr(tmp, G_DIR_SEPARATOR_S);
-			g_return_if_fail(c);
-
-			pos = c - tmp;	/* position of previous "/" */
-			g_string_erase(str, pos, strlen(c));
-			g_free(tmp);
-		}
+		GFile *file = g_file_new_for_commandline_arg(path);
+		resolved = g_file_get_path(file);
+		g_object_unref(file);
 	}
-	g_return_if_fail(strlen(str->str) <= strlen(filename));
-	strcpy(filename, str->str);
-	g_string_free(str, TRUE);
+	return resolved;
+}
+
+
+/* Same as utils_resolve_path() except input and output is encoded in UTF-8
+ * and the conversions to locale are done internally. */
+gchar *utils_resolve_path_utf8(const gchar *utf8_path)
+{
+	gchar *resolved = NULL;
+	if (utf8_path != NULL)
+	{
+		gchar *locale_filename = utils_get_locale_from_utf8(utf8_path);
+		resolved = utils_resolve_path(locale_filename);
+		SETPTR(resolved, utils_get_utf8_from_locale(resolved));
+	}
+	return resolved;
 }
 
 

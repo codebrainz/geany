@@ -153,7 +153,7 @@ static void send_open_command(gint sock, gint argc, gchar **argv)
 
 	for (i = 1; i < argc && argv[i] != NULL; i++)
 	{
-		filename = main_get_argv_filename(argv[i]);
+		filename = utils_resolve_path(argv[i]);
 
 		/* if the filename is valid or if a new file should be opened is check on the other side */
 		if (filename != NULL)

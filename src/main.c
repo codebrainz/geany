@@ -302,27 +302,6 @@ const gchar *main_get_version_string(void)
 }
 
 
-/* get the full file path of a command-line argument
- * N.B. the result should be freed and may contain '/../' or '/./ ' */
-gchar *main_get_argv_filename(const gchar *filename)
-{
-	gchar *result;
-
-	if (g_path_is_absolute(filename) || utils_is_uri(filename))
-		result = g_strdup(filename);
-	else
-	{
-		/* use current dir */
-		gchar *cur_dir = g_get_current_dir();
-
-		result = g_strjoin(
-			G_DIR_SEPARATOR_S, cur_dir, filename, NULL);
-		g_free(cur_dir);
-	}
-	return result;
-}
-
-
 /* get a :line:column specifier from the end of a filename (if present),
  * return the line/column values, and remove the specifier from the string
  * (Note that *line and *column must both be set to -1 initially) */
@@ -844,7 +823,7 @@ static void open_cl_files(gint argc, gchar **argv)
 
 	for (i = 1; i < argc; i++)
 	{
-		gchar *filename = main_get_argv_filename(argv[i]);
+		gchar *filename = utils_resolve_path(argv[i]);
 
 		if (g_file_test(filename, G_FILE_TEST_IS_DIR))
 		{
@@ -852,10 +831,8 @@ static void open_cl_files(gint argc, gchar **argv)
 			continue;
 		}
 
-#ifdef G_OS_WIN32
-		/* It seems argv elements are encoded in CP1252 on a German Windows */
-		SETPTR(filename, g_locale_to_utf8(filename, -1, NULL, NULL, NULL));
-#endif
+		SETPTR(filename, utils_get_utf8_from_locale(filename));
+
 		if (filename && ! main_handle_filename(filename))
 		{
 			const gchar *msg = _("Could not find file '%s'.");

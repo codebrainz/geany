@@ -168,7 +168,9 @@ const gchar *utils_get_eol_name(gint eol_mode);
 
 gboolean utils_atob(const gchar *str);
 
-void utils_tidy_path(gchar *filename);
+gchar *utils_resolve_path(const gchar *filename);
+
+gchar *utils_resolve_path_utf8(const gchar *utf8_path);
 
 gboolean utils_is_absolute_path(const gchar *path);
 

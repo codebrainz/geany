@@ -860,7 +860,7 @@ static gchar *get_custom_plugin_path(const gchar *plugin_path_config,
 		return NULL;
 
 	plugin_path_custom = utils_get_locale_from_utf8(prefs.custom_plugin_path);
-	utils_tidy_path(plugin_path_custom);
+	SETPTR(plugin_path_custom, utils_resolve_path(plugin_path_custom));
 
 	/* check whether the custom plugin path is one of the system or user plugin paths
 	 * and abort if so */

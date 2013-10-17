@@ -685,15 +685,15 @@ GeanyDocument *document_new_file_if_non_open(void)
 GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, const gchar *text)
 {
 	GeanyDocument *doc;
+	gchar *utf8_fn = NULL;
+	gboolean filename_specified;
 
-	if (utf8_filename && g_path_is_absolute(utf8_filename))
-	{
-		gchar *tmp;
-		tmp = utils_strdupa(utf8_filename);	/* work around const */
-		utils_tidy_path(tmp);
-		utf8_filename = tmp;
-	}
-	doc = document_create(utf8_filename);
+	if (utf8_filename)
+		utf8_fn = utils_resolve_path_utf8(utf8_filename);
+
+	filename_specified = (utf8_fn != NULL);
+	doc = document_create(utf8_fn);
+	g_free(utf8_fn);
 
 	g_assert(doc != NULL);
 
@@ -718,7 +718,7 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, 
 	/* store the opened encoding for undo/redo */
 	store_saved_encoding(doc);
 
-	if (ft == NULL && utf8_filename != NULL) /* guess the filetype from the filename if one is given */
+	if (ft == NULL && filename_specified) /* guess the filetype from the filename if one is given */
 		ft = filetypes_detect_from_document(doc);
 
 	document_set_filetype(doc, ft); /* also re-parses tags */
@@ -1115,8 +1115,8 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 #else
 		locale_filename = g_strdup(filename);
 #endif
-		/* remove relative junk */
-		utils_tidy_path(locale_filename);
+		/* resolve to an absolute local path */
+		SETPTR(locale_filename, utils_resolve_path(locale_filename));
 
 		/* try to get the UTF-8 equivalent for the filename, fallback to filename if error */
 		utf8_filename = utils_get_utf8_from_locale(locale_filename);

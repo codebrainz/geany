@@ -54,8 +54,6 @@ extern GeanyStatus main_status;
 
 const gchar *main_get_version_string(void);
 
-gchar *main_get_argv_filename(const gchar *filename);
-
 void main_quit(void);
 
 gboolean main_handle_filename(const gchar *locale_filename);
