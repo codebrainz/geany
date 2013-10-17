@@ -225,7 +225,9 @@ static UtilsFuncs utils_funcs = {
 	&utils_get_file_list_full,
 	&utils_copy_environment,
 	&utils_find_open_xml_tag,
-	&utils_find_open_xml_tag_pos
+	&utils_find_open_xml_tag_pos,
+	&utils_resolve_path,
+	&utils_realpath
 };
 
 static UIUtilsFuncs uiutils_funcs = {

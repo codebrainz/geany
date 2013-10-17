@@ -1801,11 +1801,23 @@ gboolean utils_is_remote_path(const gchar *path)
 }
 
 
-/* Resolve a file or directory path, either absolute or relative, or a URI
- * to an absolute local path. Only `file://` URIs are supported. If the path
- * is relative, it's resolved relative to Geany's current working dir.
- * The returned string should be freed when no longer needed. The path
- * be in "locale encoding" (or whatever the system uses for filenames).
+/**
+ * Resolves a URI, relative or absolute path to a local absolute path.
+ *
+ * If the path is relative, it's resolved relative to Geany's current
+ * working directory.
+ *
+ * This is quite similar to utils_realpath() except that it does not
+ * resolve symbolic links.
+ *
+ * @note Only `file://` URIs are supported since the returned path is local.
+ *
+ * @param path The path to resolve, in locale encoding.
+ * @return The fully resolved path, in locale encoding, which should be
+ * freed with g_free() when no longer needed.
+ * 
+ * @see utils_realpath()
+ * @since Geany 1.24 (API version 218)
  */
 gchar *utils_resolve_path(const gchar *path)
 {
@@ -1857,7 +1869,7 @@ gchar *utils_resolve_path_utf8(const gchar *utf8_path)
  * encoding, which should be freed with g_free() when no longer needed.
  *
  * @see utils_resolve_path()
- * @since Geany 1.24 (API version 217)
+ * @since Geany 1.24 (API version 218)
  */
 gchar *utils_realpath(const gchar *path)
 {

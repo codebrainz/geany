@@ -55,7 +55,7 @@ G_BEGIN_DECLS
  * @warning You should not test for values below 200 as previously
  * @c GEANY_API_VERSION was defined as an enum value, not a macro.
  */
-#define GEANY_API_VERSION 217
+#define GEANY_API_VERSION 218
 
 /* hack to have a different ABI when built with GTK3 because loading GTK2-linked plugins
  * with GTK3-linked Geany leads to crash */
@@ -449,6 +449,8 @@ typedef struct UtilsFuncs
 	gchar**		(*utils_copy_environment)(const gchar **exclude_vars, const gchar *first_varname, ...);
 	gchar*		(*utils_find_open_xml_tag) (const gchar sel[], gint size);
 	const gchar*	(*utils_find_open_xml_tag_pos) (const gchar sel[], gint size);
+	gchar*		(*utils_resolve_path) (const gchar *path);
+	gchar*		(*utils_realpath) (const gchar *path);
 }
 UtilsFuncs;
 

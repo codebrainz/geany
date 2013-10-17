@@ -266,6 +266,10 @@
 	geany_functions->p_utils->utils_find_open_xml_tag
 #define utils_find_open_xml_tag_pos \
 	geany_functions->p_utils->utils_find_open_xml_tag_pos
+#define utils_resolve_path \
+	geany_functions->p_utils->utils_resolve_path
+#define utils_realpath \
+	geany_functions->p_utils->utils_realpath
 #define ui_dialog_vbox_new \
 	geany_functions->p_ui->ui_dialog_vbox_new
 #define ui_frame_new_with_alignment \
