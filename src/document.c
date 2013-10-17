@@ -3171,11 +3171,15 @@ void document_grab_focus(GeanyDocument *doc)
  * maybe be also setting data in the data list, so it would be prudent to
  * prefix all keys with something unique to the module or plugin in question.
  *
+ * @note Unless there's a compelling reason not to, plugins are encouraged
+ * to use plugin_set_document_data() rather than this function.
+ *
  * @param doc The GeanyDocument.
  * @param key The string that identifies the pointer.
  * @param data An arbitrary pointer to associate with the @a key or NULL to
  * remove the existing data pointer.
  *
+ * @see plugin_set_document_data()
  * @see document_set_data_full()
  * @see document_get_data()
  * @since Geany 1.24 (API version 218)
@@ -3199,6 +3203,9 @@ void document_set_data(GeanyDocument *doc, const gchar *key, gpointer data)
  * maybe be also setting data in the data list, so it would be prudent to
  * prefix all keys with something unique to the module or plugin in question.
  *
+ * @note Unless there's a compelling reason not to, plugins are encouraged
+ * to use plugin_set_document_data_full() rather than this function.
+ *
  * @param doc The GeanyDocument.
  * @param key The string that identifies the pointer.
  * @param data An arbitrary pointer to associate with the @a key or NULL
@@ -3206,6 +3213,7 @@ void document_set_data(GeanyDocument *doc, const gchar *key, gpointer data)
  * @param free_func The function to call, passing the @a data pointer, which
  * can be used to cleanup/free the data.
  *
+ * @see plugin_set_document_data_full()
  * @see document_set_data()
  * @see document_get_data()
  * @since Geany 1.24 (API version 218)
@@ -3226,10 +3234,14 @@ void document_set_data_full(GeanyDocument *doc, const gchar *key,
  * This is how you retrieve data previously set with document_set_data() or
  * document_set_data_full().
  *
+ * @note Unless there's a compelling reason not to, plugins are encouraged
+ * to use plugin_get_document_data() rather than this function.
+ *
  * @param doc The GeanyDocument.
  * @param key The key to lookup the data pointer for.
  * @return The data pointer if @a key was found or @c NULL otherwise.
  *
+ * @see plugin_get_document_data()
  * @see document_set_data()
  * @since Geany 1.24 (API version 218)
  */
@@ -3254,9 +3266,13 @@ gpointer document_get_data(GeanyDocument *doc, const gchar *key)
  * their data that would otherwise linger in the GeanyDocument after the
  * plugin is unloaded.
  *
+ * @note Unless there's a compelling reason not to, plugins are encouraged
+ * to use plugin_remove_document_data() rather than this function.
+ *
  * @param doc The GeanyDocument.
  * @param key The key to remove along with associated data pointer.
  *
+ * @see plugin_remove_document_data()
  * @see document_set_data_full()
  * @see document_get_data()
  * @since Geany 1.24 (API version 218)

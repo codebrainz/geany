@@ -672,6 +672,11 @@ typedef struct PluginFuncs
 		GSourceFunc function, gpointer data);
 	guint	(*plugin_idle_add) (GeanyPlugin *plugin, GSourceFunc function, gpointer data);
 	void	(*plugin_builder_connect_signals) (GeanyPlugin *plugin, GtkBuilder *builder, gpointer user_data);
+	void	(*plugin_set_document_data) (GeanyPlugin *plugin, GeanyDocument *doc, const gchar *key, gpointer data);
+	void	(*plugin_set_document_data_full) (GeanyPlugin *plugin, GeanyDocument *doc, const gchar *key,
+			gpointer data);
+	gpointer (*plugin_get_document_data) (GeanyPlugin *plugin, GeanyDocument *doc, const gchar *key);
+	void	(*plugin_remove_document_data) (GeanyPlugin *plugin, GeanyDocument *doc, const gchar *key);
 }
 PluginFuncs;
 

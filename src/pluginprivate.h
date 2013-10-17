@@ -61,4 +61,13 @@ GeanyPluginPrivate;
 typedef GeanyPluginPrivate Plugin;	/* shorter alias */
 
 
+typedef struct
+{
+	GeanyDocument *doc;
+	const gchar *key;
+	gpointer data;
+	GDestroyNotify free_func;
+}
+PluginDocDataListEntry;
+
 #endif /* GEANY_PLUGINPRIVATE_H */

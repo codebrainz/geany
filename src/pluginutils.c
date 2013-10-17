@@ -35,6 +35,8 @@
 #include "utils.h"
 #include "support.h"
 #include "plugins.h"
+#include "document.h"
+#include "documentprivate.h"
 
 
 /** Inserts a toolbar item before the Quit button, or after the previous plugin toolbar item.
@@ -476,5 +478,158 @@ void plugin_builder_connect_signals(GeanyPlugin *plugin,
 	gtk_builder_connect_signals_full(builder, connect_plugin_signals, &data);
 }
 
+
+static void plugin_free_datalist_entry(PluginDocDataListEntry *ent)
+{
+	if (ent != NULL)
+	{
+		if (ent->free_func != NULL && ent->data != NULL)
+			ent->free_func(ent->data);
+		g_slice_free(PluginDocDataListEntry, ent);
+	}
+}
+
+
+static const gchar *plugin_intern_datalist_key(GeanyPlugin *plugin, const gchar *key)
+{
+	gchar *plugin_key;
+	plugin_key = g_strjoin("::", "plugin", plugin->priv->filename, key, NULL);
+	key = g_intern_string(key);
+	g_free(plugin_key);
+	return key;
+}
+
+
+/**
+ * Associate a key/value pointer with the document for the plugin.
+ *
+ * This is the same as document_set_data() except that all of the plugin's
+ * keys/data pointers are automatically removed when the plugin is unloaded.
+ * Another difference is that the key needn't be globally unique since
+ * the actual key attached to the document is prefixed with a unique
+ * identifier for the plugin on its behalf.
+ *
+ * @param plugin The GeanyPlugin.
+ * @param doc The GeanyDocument.
+ * @param key The string that identifies the pointer.
+ * @param data An arbitrary pointer to associate with the @a key or NULL to
+ * remove the existing data pointer.
+ *
+ * @see document_set_data()
+ * @see plugin_set_document_data_full()
+ * @since Geany 1.24 (API version 218)
+ */
+void plugin_set_document_data(GeanyPlugin *plugin, GeanyDocument *doc,
+	const gchar *key, gpointer data)
+{
+	plugin_set_document_data_full(plugin, doc, key, data, NULL);
+}
+
+
+/**
+ * Associate a key/value pointer with the document for the plugin.
+ *
+ * This is the same as plugin_set_document_data() except that it allows you to
+ * specify a function to cleanup/free the data pointer when it gets
+ * removed or replaced or when the plugin is unloaded.
+ *
+ * @param plugin The GeanyPlugin.
+ * @param doc The GeanyDocument.
+ * @param key The string that identifies the pointer.
+ * @param data An arbitrary pointer to associate with the @a key or NULL
+ * to remove the existing data pointer.
+ * @param free_func The function to call, passing the @a data pointer, which
+ * can be used to cleanup/free the data.
+ *
+ * @see document_set_data()
+ * @see plugin_get_document_data()
+ * @since Geany 1.24 (API version 218)
+ */
+void plugin_set_document_data_full(GeanyPlugin *plugin, GeanyDocument *doc,
+	const gchar *key, gpointer data, GDestroyNotify free_func)
+{
+	g_return_if_fail(plugin != NULL);
+	g_return_if_fail(doc != NULL && doc->is_valid);
+	g_return_if_fail(key != NULL);
+
+	key = plugin_intern_datalist_key(plugin, key);
+
+	if (data != NULL)
+	{
+		PluginDocDataListEntry *ent;
+
+		ent = g_slice_new0(PluginDocDataListEntry);
+		ent->doc = doc;
+		ent->key = key;
+		ent->data = data;
+		ent->free_func = ent->data ? free_func : NULL;
+
+		document_set_data_full(doc, ent->key, ent,
+			(GDestroyNotify)plugin_free_datalist_entry);
+	}
+	else
+		document_set_data(doc, key, NULL);
+}
+
+
+/**
+ * Retrieve the pointer associated with the give key for the plugin.
+ *
+ * This is how you retrieve data previously set with plugin_set_document_data()
+ * or plugin_set_document_data_full().
+ *
+ * @param plugin The GeanyPlugin.
+ * @param doc The GeanyDocument.
+ * @param key The key to lookup the data pointer for.
+ * @return The data pointer if @a key was found or @c NULL otherwise.
+ *
+ * @see plugin_set_document_data()
+ * @see document_set_data()
+ * @since Geany 1.24 (API version 218)
+ */
+gpointer plugin_get_document_data(GeanyPlugin *plugin, GeanyDocument *doc, const gchar *key)
+{
+	PluginDocDataListEntry *ent;
+
+	g_return_val_if_fail(plugin != NULL, NULL);
+	g_return_val_if_fail(doc != NULL && doc->is_valid, NULL);
+	g_return_val_if_fail(key != NULL, NULL);
+
+	key = plugin_intern_datalist_key(plugin, key);
+
+	ent = document_get_data(doc, key);
+	if (ent != NULL)
+		return ent->data;
+
+	return NULL;
+}
+
+
+/**
+ * Remove a data pointer from the document's data list.
+ *
+ * The key should be one that was previously set with either
+ * plugin_set_document_data() or plugin_set_document_data_full(). If no
+ * matching key is found, nothing is done.
+ *
+ * @note This is performed automatically for all the plugin's keys when
+ * it's unloaded.
+ *
+ * @param plugin The GeanyPlugin.
+ * @param doc The GeanyDocument.
+ * @param key The key to remove along with associated data pointer.
+ *
+ * @see plugin_set_document_data_full()
+ * @see plugin_get_document_data()
+ * @since Geany 1.24 (API version 218)
+ */
+void plugin_remove_document_data(GeanyPlugin *plugin, GeanyDocument *doc, const gchar *key)
+{
+	g_return_if_fail(plugin != NULL);
+	g_return_if_fail(doc != NULL && doc->is_valid);
+	g_return_if_fail(key != NULL);
+
+	document_remove_data(doc, plugin_intern_datalist_key(plugin, key));
+}
 
 #endif

@@ -59,6 +59,7 @@
 #include "win32.h"
 #include "pluginutils.h"
 #include "pluginprivate.h"
+#include "documentprivate.h"
 
 
 GList *active_plugin_list = NULL; /* list of only actually loaded plugins, always valid */
@@ -87,7 +88,11 @@ static PluginFuncs plugin_funcs = {
 	&plugin_timeout_add,
 	&plugin_timeout_add_seconds,
 	&plugin_idle_add,
-	&plugin_builder_connect_signals
+	&plugin_builder_connect_signals,
+	&plugin_set_document_data,
+	&plugin_set_document_data_full,
+	&plugin_get_document_data,
+	&plugin_remove_document_data
 };
 
 static DocumentFuncs doc_funcs = {
@@ -804,6 +809,42 @@ static void remove_sources(Plugin *plugin)
 }
 
 
+static void foreach_remove_doc_datalist_entry(GQuark key_id, gpointer data, Plugin *plugin)
+{
+	const gchar *key;
+	gchar *key_prefix;
+
+	if (data == NULL)
+		return;
+
+	key = g_quark_to_string(key_id);
+	key_prefix = g_strdup_printf("plugin::%s::", plugin->filename);
+
+	if (g_str_has_prefix(key, key_prefix))
+	{
+		PluginDocDataListEntry *ent = data;
+		document_remove_data(ent->doc, key);
+	}
+
+	g_free(key_prefix);
+}
+
+
+static void remove_doc_datalist_entries(Plugin *plugin)
+{
+	gsize i;
+	for (i = 0; i < documents_array->len; i++)
+	{
+		GeanyDocument *doc = documents_array->pdata[i];
+		if (DOC_VALID(doc))
+		{
+			g_datalist_foreach(&(doc->priv->data_list),
+				(GDataForeachFunc)foreach_remove_doc_datalist_entry, plugin);
+		}
+	}
+}
+
+
 static gboolean is_active_plugin(Plugin *plugin)
 {
 	return (g_list_find(active_plugin_list, plugin) != NULL);
@@ -821,6 +862,7 @@ plugin_cleanup(Plugin *plugin)
 
 	remove_callbacks(plugin);
 	remove_sources(plugin);
+	remove_doc_datalist_entries(plugin);
 
 	if (plugin->key_group)
 		keybindings_free_group(plugin->key_group);

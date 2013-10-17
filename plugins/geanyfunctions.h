@@ -34,6 +34,14 @@
 	geany_functions->p_plugin->plugin_idle_add
 #define plugin_builder_connect_signals \
 	geany_functions->p_plugin->plugin_builder_connect_signals
+#define plugin_set_document_data \
+	geany_functions->p_plugin->plugin_set_document_data
+#define plugin_set_document_data_full \
+	geany_functions->p_plugin->plugin_set_document_data_full
+#define plugin_get_document_data \
+	geany_functions->p_plugin->plugin_get_document_data
+#define plugin_remove_document_data \
+	geany_functions->p_plugin->plugin_remove_document_data
 #define document_new_file \
 	geany_functions->p_document->document_new_file
 #define document_get_current \
