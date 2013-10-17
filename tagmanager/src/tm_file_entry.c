@@ -27,6 +27,7 @@
 #include "tm_work_object.h"
 #include "tm_file_entry.h"
 
+#include "utils.h"
 
 #define FILE_NEW(T)		((T) = g_slice_new0(TMFileEntry))
 #define FILE_FREE(T)	g_slice_free(TMFileEntry, (T))
@@ -124,7 +125,7 @@ TMFileEntry *tm_file_entry_new(const char *path, TMFileEntry *parent
 	/* TTimo - don't follow symlinks */
 	if (tm_file_entry_type(path) == tm_file_link_t)
 		return NULL;
-	real_path = tm_get_real_path(path);
+	real_path = utils_realpath(path);
 	if (!real_path)
 		return NULL;
 	FILE_NEW(entry);

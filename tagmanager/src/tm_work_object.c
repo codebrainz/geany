@@ -20,71 +20,17 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <glib/gstdio.h>
-#ifdef G_OS_WIN32
-# define VC_EXTRALEAN
-# define WIN32_LEAN_AND_MEAN
-# include <windows.h> /* for GetFullPathName */
-#endif
 
 #include "tm_tag.h"
 #include "tm_work_object.h"
 
+#include "utils.h"
+
 static GPtrArray *s_work_object_subclasses = NULL;
-
-
-static int get_path_max(const char *path)
-{
-#ifdef PATH_MAX
-	return PATH_MAX;
-#else
-	int path_max = pathconf(path, _PC_PATH_MAX);
-	if (path_max <= 0)
-		path_max = 4096;
-	return path_max;
-#endif
-}
-
-
-#ifdef G_OS_WIN32
-/* realpath implementation for Windows found at http://bugzilla.gnome.org/show_bug.cgi?id=342926
- * this one is better than e.g. liberty's lrealpath because this one uses Win32 API and works
- * with special chars within the filename */
-static char *realpath (const char *pathname, char *resolved_path)
-{
-  int size;
-
-  if (resolved_path != NULL)
-  {
-    int path_max = get_path_max(pathname);
-	size = GetFullPathNameA (pathname, path_max, resolved_path, NULL);
-    if (size > path_max)
-      return NULL;
-    else
-      return resolved_path;
-  }
-  else
-  {
-    size = GetFullPathNameA (pathname, 0, NULL, NULL);
-    resolved_path = g_new0 (char, size);
-    GetFullPathNameA (pathname, size, resolved_path, NULL);
-    return resolved_path;
-  }
-}
-#endif
 
 gchar *tm_get_real_path(const gchar *file_name)
 {
-	if (file_name)
-	{
-		gsize len = get_path_max(file_name) + 1;
-		gchar *path = g_malloc0(len);
-
-		if (realpath(file_name, path))
-			return path;
-		else
-			g_free(path);
-	}
-	return NULL;
+	return utils_realpath(file_name);
 }
 
 guint tm_work_object_register(GFreeFunc free_func, TMUpdateFunc update_func, TMFindFunc find_func)
@@ -139,7 +85,7 @@ gboolean tm_work_object_init(TMWorkObject *work_object, guint type, const char *
 			g_warning("%s: Not a regular file", file_name);
 			return FALSE;
 		}
-		work_object->file_name = tm_get_real_path(file_name);
+		work_object->file_name = utils_realpath(file_name);
 		work_object->short_name = strrchr(work_object->file_name, '/');
 		if (work_object->short_name)
 			++ work_object->short_name;
@@ -270,7 +216,7 @@ TMWorkObject *tm_work_object_find(TMWorkObject *work_object, const char *file_na
 			}
 			else
 			{
-				char *path = tm_get_real_path(file_name);
+				char *path = utils_realpath(file_name);
 				int cmp = strcmp(work_object->file_name, file_name);
 				g_free(path);
 				if (0 == cmp)

@@ -30,6 +30,7 @@
 G_BEGIN_DECLS
 
 #include <time.h>
+#include <gdk/gdk.h>
 
 
 /** Returns @c TRUE if @a ptr is @c NULL or @c *ptr is @c FALSE. */
@@ -171,6 +172,10 @@ gboolean utils_atob(const gchar *str);
 gchar *utils_resolve_path(const gchar *filename);
 
 gchar *utils_resolve_path_utf8(const gchar *utf8_path);
+
+gchar *utils_realpath(const gchar *path);
+
+gchar *utils_realpath(const gchar *utf8_path);
 
 gboolean utils_is_absolute_path(const gchar *path);
 

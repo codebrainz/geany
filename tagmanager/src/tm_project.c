@@ -29,6 +29,8 @@
 #include "tm_file_entry.h"
 #include "tm_project.h"
 
+#include "utils.h"
+
 #define TM_FILE_NAME ".tm_project.cache"
 
 static const char *s_sources[] = { "*.c", "*.pc" /* C/Pro*C files */
@@ -78,7 +80,7 @@ gboolean tm_project_init(TMProject *project, const char *dir
 		g_warning("%s: Not a valid directory", dir);
 		return FALSE;
 	}
-	project->dir = tm_get_real_path(dir);
+	project->dir = utils_realpath(dir);
 	if (sources)
 		project->sources = sources;
 	else
@@ -165,7 +167,7 @@ gboolean tm_project_add_file(TMProject *project, const char *file_name
 	gboolean exists = FALSE;
 
 	g_return_val_if_fail((project && file_name), FALSE);
-	path = tm_get_real_path(file_name);
+	path = utils_realpath(file_name);
 #ifdef TM_DEBUG
 	g_message("Adding %s to project", path);
 #endif
@@ -241,7 +243,7 @@ TMWorkObject *tm_project_find_file(TMWorkObject *work_object
 				name = g_strdup(file_name);
 		}
 		else
-			name = tm_get_real_path(file_name);
+			name = utils_realpath(file_name);
 		for (i=0; i < project->file_list->len; ++i)
 		{
 			if (name_only)

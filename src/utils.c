@@ -56,6 +56,10 @@
 
 #include "utils.h"
 
+#ifdef G_OS_WIN32
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+#endif
 
 /**
  *  Tries to open the given URI in a browser.
@@ -1828,6 +1832,66 @@ gchar *utils_resolve_path_utf8(const gchar *utf8_path)
 		SETPTR(resolved, utils_get_utf8_from_locale(resolved));
 	}
 	return resolved;
+}
+
+
+/**
+ * @brief Resolves a URI, relative or absolute path to a local absolute path
+ * and follows symlinks to get the target path.
+ *
+ * This is fairly similar to realpath() function except that it first
+ * resolves the path using utils_resolve_path() and then uses realpath()
+ * or GetFullPathName() (depending on platform) to resolve any symbolic
+ * links or special characters to yield the final target path.
+ *
+ * @note This only handles `file://` URIs since it returns a local path.
+ * @note Unlike realpath(), this function does not require that the file
+ * actually exists, but obviously it can't follow symbolic links of they
+ * don't exist.
+ * @warning The maximum path length is currently limited to @c PATH_MAX or
+ * @c MAX_PATH depending on platform, this might not actually be long
+ * enough to fit a really long path name.
+ *
+ * @param path The path to resolve in locale encoding.
+ * @return The fully resolved/symlink-dereferenced local path, in locale
+ * encoding, which should be freed with g_free() when no longer needed.
+ *
+ * @see utils_resolve_path()
+ * @since Geany 1.24 (API version 217)
+ */
+gchar *utils_realpath(const gchar *path)
+{
+	gchar *real = NULL;
+
+	if (path != NULL)
+	{
+		/* handle URIs */
+		real = utils_resolve_path(path);
+
+		/* GLib doesn't have a wrapper for getting canonical path yet, so
+		 * have our own for now. */
+#if defined(G_OS_WIN32)
+{
+		/* FIXME: use Unicode variant and dynamically allocate buffer */
+		gchar real_buf[MAX_PATH+1] = {0};
+		if (GetFullPathNameA(path, MAX_PATH, real_buf, NULL))
+			SETPTR(real, g_strdup(real_buf));
+}
+#else
+		/* don't bother trying realpath if the file doesn't exist */
+		if (g_file_test(real, G_FILE_TEST_EXISTS))
+		{
+			/* FIXME: use canonicalize_file_name(), realpath()+pathconf() or
+			 * POSIX.1-2008 realpath() that accepts NULL as last argument and
+			 * returns an allocated string. */
+			gchar real_buf[PATH_MAX+1] = {0};
+			if (realpath(real, real_buf))
+				SETPTR(real, g_strdup(real_buf));
+		}
+#endif
+	}
+
+	return real;
 }
 
 

@@ -80,8 +80,10 @@ typedef struct _TMWorkObjectClass
 /*!
  Given a file name, returns a newly allocated string containing the realpath()
  of the file.
+ \note This function is deprecated, use the utils_realpath() function instead.
  \param file_name The original file_name
  \return A newly allocated string containing the real path to the file. NULL if none is available.
+ \deprecated Since 1.24 (API version 217)
 */
 gchar *tm_get_real_path(const gchar *file_name);
 
