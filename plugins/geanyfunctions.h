@@ -34,6 +34,10 @@
 	geany_functions->p_plugin->plugin_idle_add
 #define plugin_builder_connect_signals \
 	geany_functions->p_plugin->plugin_builder_connect_signals
+#define plugin_get_config_dir \
+	geany_functions->p_plugin->plugin_get_config_dir
+#define plugin_build_config_file_path \
+	geany_functions->p_plugin->plugin_build_config_file_path
 #define document_new_file \
 	geany_functions->p_document->document_new_file
 #define document_get_current \

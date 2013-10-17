@@ -477,4 +477,157 @@ void plugin_builder_connect_signals(GeanyPlugin *plugin,
 }
 
 
+static gchar *plugin_get_conf_name(struct GeanyPlugin *plugin)
+{
+	static const gchar *suffix = "." G_MODULE_SUFFIX;
+	static const gsize suffix_len = G_N_ELEMENTS(suffix) - 1;
+	gchar *plugin_so = g_path_get_basename(plugin->priv->filename);
+
+	if (g_str_has_suffix(plugin_so, suffix))
+	{
+		gsize bn_len = strlen(plugin_so);
+		plugin_so[bn_len - suffix_len] = '\0';
+	}
+
+	return plugin_so;
+}
+
+
+/**
+ * Get the recommended configuration directory for a plugin.
+ *
+ * The last directory component is specific to the plugin and is derived
+ * using the plugin's module (.so/.dll) filename, taking the basename
+ * and then removing the module suffix (.so/.dll). For example, if a plugin
+ * on Linux had the module filename `/usr/lib/geany/fooplugin.so`:
+ *
+ * - Remove leading `/usr/lib/geany/`.
+ * - Remove trailing `.so`.
+ * - Combine with Geany's plugin configuration directory found from
+ * `geany_data->app->configdir` and `plugins` subdirectory for a result of
+ * something like `/home/username/.config/geany/plugins/fooplugin`.
+ *
+ * The function ensures that the directory actually exists.
+ *
+ * @note You are of course free to use any filename you want, but this will
+ * give you a nicely named path under Geany's configuration directory for
+ * plugins.
+ *
+ * @param A pointer to the plugin's GeanyPointer.
+ * @return The path to the configuration directory if it existed or could
+ * be created, otherwise `NULL` is returned.
+ *
+ * @see plugin_build_config_file_path()
+ * @since Geany 1.24 (API version 218)
+ */
+gchar *plugin_get_config_dir(struct GeanyPlugin *plugin)
+{
+	gchar *conf_dir;
+
+	conf_dir = plugin_get_conf_name(plugin);
+	SETPTR(conf_dir, g_build_filename(app->configdir, "plugins", conf_dir, NULL));
+
+	if (g_mkdir_with_parents(conf_dir, 0755) != 0)
+	{
+		g_free(conf_dir);
+		return NULL;
+	}
+
+	return conf_dir;
+}
+
+
+/**
+ * Build a path in the recommended plugin directory.
+ *
+ * This is useful for plugins to make a path to a config file or other
+ * plugin-related file in the users home directory. The base directory
+ * is found using plugin_get_config_dir() and then the path components
+ * supplied are appended onto the path in the style of g_build_filename().
+ *
+ * If only `NULL` is passed as the varargs, a default config filename will
+ * be returned, which has the directory from plugin_get_config_dir()
+ * combined with a name derived from the plugin's module filename (see
+ * plugin_get_config_dir()) and finally appended with the `.conf` suffix.
+ *
+ * Using the example in plugin_get_config_dir() documentation, a default
+ * filename would be
+ * `/home/username/.config/geany/plugins/fooplugin/fooplugin.conf`.
+ *
+ * Or, providing the arguments `bar` and `baz.json` before the terminating
+ * NULL like this:
+ *
+ * @code
+ * json_file = plugin_build_config_path(geany_plugin, "bar", "baz.json", NULL);
+ * @endcode
+ *
+ * would result in the path of
+ * `/home/username/.config/geany/plugins/fooplugin/bar/baz.json`.
+ *
+ * The function ensures that the returned path actually exists by first
+ * ensuring that the directory component exists and then touching the
+ * full path to ensure a blank file exists if one didn't already exist.
+ *
+ * @note You cannot use this function to create only a directory.
+ * @warning Forgetting the terminating NULL argument in the varargs will
+ * result in undefined behaviour (ie. crash).
+ *
+ * @param plugin A pointer to the plugin's GeanyPointer.
+ * @param ... Zero or more string arguments followed by `NULL`.
+ * @return The path to the built config file path or `NULL` if it did not
+ * exist and could not be created.
+ *
+ * @see plugin_get_config_dir()
+ * @since Geany 1.24 (API version 218)
+ */
+gchar *plugin_build_config_file_path(struct GeanyPlugin *plugin, ...)
+{
+	gchar *conf_dir, *conf_path;
+	const gchar *component;
+	GPtrArray *arr;
+	va_list ap;
+	gint res;
+
+	arr = g_ptr_array_new_full(1, g_free);
+
+	conf_dir = plugin_get_config_dir(plugin);
+	g_ptr_array_add(arr, conf_dir);
+
+	va_start(ap, plugin);
+	while ((component = va_arg(ap, const gchar*)) != NULL)
+		g_ptr_array_add(arr, g_strdup(component));
+	va_end(ap);
+
+	/* If only NULL was passed to varargs, use the default config filename */
+	if (arr->len == 1)
+	{
+		gchar *conf_name = plugin_get_conf_name(plugin);
+		SETPTR(conf_name, g_strconcat(conf_name, ".conf", NULL));
+		g_ptr_array_add(arr, conf_name);
+	}
+
+	g_ptr_array_add(arr, NULL);
+
+	conf_path = g_build_filenamev((gchar**)arr->pdata);
+	g_ptr_array_free(arr, TRUE);
+
+	/* Ensure the file's directory and parents exist or could be created. */
+	conf_dir = g_path_get_dirname(conf_path);
+	res = g_mkdir_with_parents(conf_dir, 0755);
+	g_free(conf_dir);
+	if (res == 0)
+	{
+		/* Ensure the file exists or is created */
+		FILE *fp = fopen(conf_path, "ab+");
+		if (fp != NULL)
+			fclose(fp);
+		else
+			SETPTR(conf_path, NULL);
+	}
+	else
+		SETPTR(conf_path, NULL);
+
+	return conf_path;
+}
+
 #endif

@@ -87,7 +87,9 @@ static PluginFuncs plugin_funcs = {
 	&plugin_timeout_add,
 	&plugin_timeout_add_seconds,
 	&plugin_idle_add,
-	&plugin_builder_connect_signals
+	&plugin_builder_connect_signals,
+	&plugin_get_config_dir,
+	&plugin_build_config_file_path
 };
 
 static DocumentFuncs doc_funcs = {

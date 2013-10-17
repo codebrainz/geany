@@ -667,6 +667,8 @@ typedef struct PluginFuncs
 		GSourceFunc function, gpointer data);
 	guint	(*plugin_idle_add) (GeanyPlugin *plugin, GSourceFunc function, gpointer data);
 	void	(*plugin_builder_connect_signals) (GeanyPlugin *plugin, GtkBuilder *builder, gpointer user_data);
+	gchar*	(*plugin_get_config_dir) (GeanyPlugin *plugin);
+	gchar*	(*plugin_build_config_file_path) (GeanyPlugin *plugin, ...);
 }
 PluginFuncs;
 

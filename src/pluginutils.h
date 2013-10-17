@@ -56,5 +56,9 @@ void plugin_show_configure(struct GeanyPlugin *plugin);
 void plugin_builder_connect_signals(struct GeanyPlugin *plugin,
 	GtkBuilder *builder, gpointer user_data);
 
+gchar *plugin_get_config_dir(struct GeanyPlugin *plugin);
+
+gchar *plugin_build_config_file_path(struct GeanyPlugin *plugin, ...);
+
 #endif /* HAVE_PLUGINS */
 #endif /* GEANY_PLUGINUTILS_H */
