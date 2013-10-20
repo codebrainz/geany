@@ -33,8 +33,10 @@ struct GeanyScintillaClass_
 
 
 GType geany_scintilla_get_type(void);
-
 GtkWidget *geany_scintilla_new(void);
+
+gboolean geany_scintilla_get_line_numbers_visible(GeanyScintilla *sci);
+void geany_scintilla_set_line_numbers_visible(GeanyScintilla *sci, gboolean visible);
 
 G_END_DECLS
 
