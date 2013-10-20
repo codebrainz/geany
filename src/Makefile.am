@@ -5,6 +5,8 @@ EXTRA_DIST = gb.c win32.c win32.h plugindata.h \
 	documentprivate.h filetypesprivate.h pluginprivate.h projectprivate.h \
 	makefile.win32
 
+BUILT_SOURCES = geanyenums.c geanyenums.h
+
 bin_PROGRAMS = geany
 
 SRCS = \
@@ -17,6 +19,7 @@ SRCS = \
 	encodings.c encodings.h \
 	filetypes.c filetypes.h \
 	geanyentryaction.c geanyentryaction.h \
+	geanyenums.c geanyenums.h \
 	geanymenubuttonaction.c geanymenubuttonaction.h \
 	geanyobject.c geanyobject.h \
 	geanyscintilla.c geanyscintilla.h \
@@ -61,6 +64,7 @@ geany_include_HEADERS = \
 	encodings.h \
 	filetypes.h \
 	geany.h \
+	geanyscintilla.h \
 	gtkcompat.h \
 	highlighting.h \
 	keybindings.h \
@@ -149,3 +153,8 @@ clean-local:
 
 endif
 
+$(srcdir)/geanyenums.c: geanyenums.c.in geanyenums.h geanyscintilla.h
+	$(AM_V_GEN)$(GLIB_MKENUMS) --template $< geanyscintilla.h > $@
+
+$(srcdir)/geanyenums.h: geanyenums.h.in geanyscintilla.h
+	$(AM_V_GEN)$(GLIB_MKENUMS) --template $< geanyscintilla.h > $@
