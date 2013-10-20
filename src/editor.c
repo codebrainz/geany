@@ -936,23 +936,6 @@ static void ensure_range_visible(ScintillaObject *sci, gint posStart, gint posEn
 }
 
 
-static void auto_update_margin_width(GeanyEditor *editor)
-{
-	gint next_linecount = 1;
-	gint linecount = sci_get_line_count(editor->sci);
-	GeanyDocument *doc = editor->document;
-
-	while (next_linecount <= linecount)
-		next_linecount *= 10;
-
-	if (editor->document->priv->line_count != next_linecount)
-	{
-		doc->priv->line_count = next_linecount;
-		sci_set_line_numbers(editor->sci, TRUE, 0);
-	}
-}
-
-
 static void partial_complete(ScintillaObject *sci, const gchar *text)
 {
 	gint pos = sci_get_current_position(sci);
@@ -1061,11 +1044,6 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object, GeanyEditor *edi
 			break;
 
  		case SCN_MODIFIED:
-			if (editor_prefs.show_linenumber_margin && (nt->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) && nt->linesAdded)
-			{
-				/* automatically adjust Scintilla's line numbers margin width */
-				auto_update_margin_width(editor);
-			}
 			if (nt->modificationType & SC_STARTACTION && ! ignore_callback)
 			{
 				/* get notified about undo changes */
@@ -1137,11 +1115,6 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object, GeanyEditor *edi
 				}
 				editor_show_calltip(editor, -1);
 			}
-			break;
-
-		case SCN_ZOOM:
-			/* recalculate line margin width */
-			sci_set_line_numbers(sci, editor_prefs.show_linenumber_margin, 0);
 			break;
 	}
 	/* we always return FALSE here to let plugins handle the event too */
@@ -5013,7 +4986,8 @@ void editor_apply_update_prefs(GeanyEditor *editor)
 	sci_set_visible_white_spaces(sci, editor_prefs.show_white_space);
 	sci_set_visible_eols(sci, editor_prefs.show_line_endings);
 	sci_set_symbol_margin(sci, editor_prefs.show_markers_margin);
-	sci_set_line_numbers(sci, editor_prefs.show_linenumber_margin, 0);
+	geany_scintilla_set_line_numbers_visible(GEANY_SCINTILLA(sci),
+		editor_prefs.show_linenumber_margin);
 
 	sci_set_folding_margin_visible(sci, editor_prefs.folding);
 

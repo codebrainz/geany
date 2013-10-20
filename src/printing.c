@@ -32,6 +32,7 @@
 
 #include "geany.h"
 #include "printing.h"
+#include "geanyscintilla.h"
 #include "document.h"
 #include "sciwrappers.h"
 #include "editor.h"
@@ -348,7 +349,8 @@ static void begin_print(GtkPrintOperation *operation, GtkPrintContext *context, 
 	scintilla_send_message(dinfo->sci, SCI_SETDOCPOINTER, 0,
 			scintilla_send_message(dinfo->doc->editor->sci, SCI_GETDOCPOINTER, 0, 0));
 	highlighting_set_styles(dinfo->sci, dinfo->doc->file_type);
-	sci_set_line_numbers(dinfo->sci, printing_prefs.print_line_numbers, 0);
+	geany_scintilla_set_line_numbers_visible(GEANY_SCINTILLA(dinfo->doc->file_type),
+		printing_prefs.print_line_numbers);
 	scintilla_send_message(dinfo->sci, SCI_SETVIEWWS, SCWS_INVISIBLE, 0);
 	scintilla_send_message(dinfo->sci, SCI_SETVIEWEOL, FALSE, 0);
 	scintilla_send_message(dinfo->sci, SCI_SETEDGEMODE, EDGE_NONE, 0);

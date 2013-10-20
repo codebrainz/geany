@@ -41,32 +41,6 @@
 #define SSM(s, m, w, l) scintilla_send_message(s, m, w, l)
 
 
-/* line numbers visibility */
-void sci_set_line_numbers(ScintillaObject *sci, gboolean set, gint extra_width)
-{
-	if (set)
-	{
-		gchar tmp_str[15];
-		gint len = (gint) SSM(sci, SCI_GETLINECOUNT, 0, 0);
-		gint width;
-
-		g_snprintf(tmp_str, 15, "_%d", len);
-		width = sci_text_width(sci, STYLE_LINENUMBER, tmp_str);
-		if (extra_width)
-		{
-			g_snprintf(tmp_str, 15, "%d", extra_width);
-			width += sci_text_width(sci, STYLE_LINENUMBER, tmp_str);
-		}
-		SSM(sci, SCI_SETMARGINWIDTHN, 0, width);
-		SSM(sci, SCI_SETMARGINSENSITIVEN, 0, FALSE); /* use default behaviour */
-	}
-	else
-	{
-		SSM(sci, SCI_SETMARGINWIDTHN, 0, 0);
-	}
-}
-
-
 void sci_set_mark_long_lines(ScintillaObject *sci, gint type, gint column, const gchar *colour)
 {
 	glong colour_val = utils_strtod(colour, NULL, TRUE); /* Scintilla uses a "long" value */

@@ -28,7 +28,6 @@
 
 gchar*				sci_get_string				(ScintillaObject *sci, guint msg, gulong wParam);
 
-void 				sci_set_line_numbers		(ScintillaObject *sci,  gboolean set, gint extra_width);
 void				sci_set_mark_long_lines		(ScintillaObject *sci,	gint type, gint column, const gchar *color);
 
 void 				sci_set_text				(ScintillaObject *sci,  const gchar *text);

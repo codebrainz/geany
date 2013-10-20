@@ -33,6 +33,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "ui_utils.h"
+#include "geanyscintilla.h"
 #include "dialogs.h"
 #include "prefs.h"
 #include "sciwrappers.h"
@@ -1268,7 +1269,8 @@ void ui_toggle_editor_features(GeanyUIEditorFeatures feature)
 				sci_set_symbol_margin(doc->editor->sci, editor_prefs.show_markers_margin);
 				break;
 			case GEANY_EDITOR_SHOW_LINE_NUMBERS:
-				sci_set_line_numbers(doc->editor->sci, editor_prefs.show_linenumber_margin, 0);
+				geany_scintilla_set_line_numbers_visible(GEANY_SCINTILLA(doc->editor->sci),
+					editor_prefs.show_linenumber_margin);
 				break;
 			case GEANY_EDITOR_SHOW_WHITE_SPACE:
 				sci_set_visible_white_spaces(doc->editor->sci, editor_prefs.show_white_space);

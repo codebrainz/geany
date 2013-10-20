@@ -35,6 +35,7 @@ static void geany_scintilla_get_property(GObject *object, guint prop_id,
 static void on_scintilla_notify(GeanyScintilla *sci, guint id,
 	struct SCNotification *notif, gpointer user_data);
 
+
 static void geany_scintilla_update_line_numbers(GeanyScintilla *sci);
 
 
@@ -133,6 +134,9 @@ on_scintilla_notify(GeanyScintilla *sci, guint id, struct SCNotification *notif,
 				geany_scintilla_update_line_numbers(sci);
 			}
 			break;
+		case SCN_ZOOM:
+			geany_scintilla_update_line_numbers(sci);
+			break;
 		default:
 			break;
 	}
@@ -148,6 +152,9 @@ geany_scintilla_init(GeanyScintilla *self)
 	 * how to or if it's even possible to override the base class vfunc
 	 * with the type of signature it has in ScintillaClass. */
 	g_signal_connect(self, "sci-notify", G_CALLBACK(on_scintilla_notify), NULL);
+
+	SSM(self, SCI_SETMARGINWIDTHN, GEANY_SCINTILLA_MARGIN_LINE_NUMBERS, 16);
+	geany_scintilla_update_line_numbers(self);
 }
 
 
@@ -193,8 +200,7 @@ geany_scintilla_set_line_numbers_visible(GeanyScintilla *sci, gboolean visible)
 	{
 		if (!visible)
 			SSM(sci, SCI_SETMARGINWIDTHN, GEANY_SCINTILLA_MARGIN_LINE_NUMBERS, 0);
-		else
-			geany_scintilla_update_line_numbers(sci);
+		geany_scintilla_update_line_numbers(sci);
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_LINE_NUMBERS_VISIBLE]);
 	}
