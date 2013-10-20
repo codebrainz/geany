@@ -19,6 +19,7 @@ SRCS = \
 	geanyentryaction.c geanyentryaction.h \
 	geanymenubuttonaction.c geanymenubuttonaction.h \
 	geanyobject.c geanyobject.h \
+	geanyscintilla.c geanyscintilla.h \
 	geanywraplabel.c geanywraplabel.h \
 	gtkcompat.h \
 	highlighting.c highlighting.h \

@@ -33,12 +33,12 @@
  * Also some general Scintilla-related functions.
  */
 
-
 #include <ctype.h>
 #include <string.h>
 
 #include <gdk/gdkkeysyms.h>
 
+#include "geanyscintilla.h"
 #include "SciLexer.h"
 #include "geany.h"
 
@@ -4755,7 +4755,7 @@ static ScintillaObject *create_new_sci(GeanyEditor *editor)
 {
 	ScintillaObject	*sci;
 
-	sci = SCINTILLA(scintilla_new());
+	sci = SCINTILLA(geany_scintilla_new());
 
 	/* Scintilla doesn't support RTL languages properly and is primarily
 	 * intended to be used with LTR source code, so override the
