@@ -1,4 +1,5 @@
 #include "geanyscintilla.h"
+#include "geanyenums.h"
 
 #define SSM(s, m, w, l) \
 	scintilla_send_message(SCINTILLA(s), (guint)(m), (uptr_t)(w), (sptr_t)(l))
@@ -13,6 +14,9 @@ enum
 {
 	PROP_0,
 	PROP_LINE_NUMBERS_VISIBLE,
+	PROP_EDGE_MODE,
+	PROP_EDGE_COLUMN,
+	PROP_EDGE_COLOR,
 	N_PROPERTIES
 };
 
@@ -35,6 +39,10 @@ static void geany_scintilla_get_property(GObject *object, guint prop_id,
 static void on_scintilla_notify(GeanyScintilla *sci, guint id,
 	struct SCNotification *notif, gpointer user_data);
 
+// TODO: move to/replace with utils.c version
+static void geany_color_from_int(guint32 color, GdkColor *gdk_color);
+static guint32 geany_int_from_color(const GdkColor *gdk_color);
+
 
 static void geany_scintilla_update_line_numbers(GeanyScintilla *sci);
 
@@ -56,6 +64,21 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 	geany_scintilla_pspecs[PROP_LINE_NUMBERS_VISIBLE] =
 		g_param_spec_boolean("line-numbers-visible", "Line Numbers Visible",
 			"Whether or not the line number margin is visible", TRUE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
+	geany_scintilla_pspecs[PROP_EDGE_MODE] =
+		g_param_spec_enum("edge-mode", "Edge Mode",
+			"The edge mode marking long lines", GEANY_TYPE_SCINTILLA_EDGE_MODE,
+			GEANY_SCINTILLA_EDGE_MODE_NONE, G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
+	geany_scintilla_pspecs[PROP_EDGE_COLUMN] =
+		g_param_spec_uint("edge-column", "Edge Column",
+			"The column where the edge marker is shown", 0, G_MAXUINT32, 0,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
+	geany_scintilla_pspecs[PROP_EDGE_COLOR] =
+		g_param_spec_boxed("edge-color", "Edge Color",
+			"The colour of the edge marker", GDK_TYPE_COLOR,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
@@ -90,6 +113,15 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 			geany_scintilla_set_line_numbers_visible(sci,
 				g_value_get_boolean(value));
 			break;
+		case PROP_EDGE_MODE:
+			geany_scintilla_set_edge_mode(sci, g_value_get_enum(value));
+			break;
+		case PROP_EDGE_COLUMN:
+			geany_scintilla_set_edge_column(sci, g_value_get_uint(value));
+			break;
+		case PROP_EDGE_COLOR:
+			geany_scintilla_set_edge_color(sci, g_value_get_boxed(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -109,6 +141,19 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			g_value_set_boolean(value,
 				geany_scintilla_get_line_numbers_visible(sci));
 			break;
+		case PROP_EDGE_MODE:
+			g_value_set_enum(value, geany_scintilla_get_edge_mode(sci));
+			break;
+		case PROP_EDGE_COLUMN:
+			g_value_set_uint(value, geany_scintilla_get_edge_column(sci));
+			break;
+		case PROP_EDGE_COLOR:
+		{
+			GdkColor color;
+			geany_scintilla_get_edge_color(sci, &color);
+			g_value_set_boxed(value, &color);
+			break;
+		}
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -187,7 +232,7 @@ gboolean
 geany_scintilla_get_line_numbers_visible(GeanyScintilla *sci)
 {
 	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
-	return (SSM(sci, SCI_GETMARGINWIDTHN, 0, 0) != 0);
+	return (SSM(sci, SCI_GETMARGINWIDTHN, GEANY_SCINTILLA_MARGIN_LINE_NUMBERS, 0) != 0);
 }
 
 
@@ -203,5 +248,107 @@ geany_scintilla_set_line_numbers_visible(GeanyScintilla *sci, gboolean visible)
 		geany_scintilla_update_line_numbers(sci);
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_LINE_NUMBERS_VISIBLE]);
+	}
+}
+
+
+GeanyScintillaEdgeMode
+geany_scintilla_get_edge_mode(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), GEANY_SCINTILLA_EDGE_MODE_NONE);
+	return SSM(sci, SCI_GETEDGEMODE, 0, 0);
+}
+
+
+void
+geany_scintilla_set_edge_mode(GeanyScintilla *sci, GeanyScintillaEdgeMode edge_mode)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+
+	if (edge_mode != geany_scintilla_get_edge_mode(sci))
+	{
+		SSM(sci, SCI_SETEDGEMODE, edge_mode, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_EDGE_MODE]);
+	}
+}
+
+
+guint
+geany_scintilla_get_edge_column(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), 0);
+	return SSM(sci, SCI_GETEDGECOLUMN, 0, 0);
+}
+
+
+void
+geany_scintilla_set_edge_column(GeanyScintilla *sci, guint column)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+
+	if (column != geany_scintilla_get_edge_column(sci))
+	{
+		SSM(sci, SCI_SETEDGECOLUMN, column, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_EDGE_COLUMN]);
+	}
+}
+
+
+static void
+geany_color_from_int(guint32 color, GdkColor *gdk_color)
+{
+	guint8 r = (color >> 16) & 0xFF;
+	guint8 g = (color >> 8) & 0xFF;
+	guint8 b = color & 0xFF;
+	gdk_color->red = (r / 255.0) * G_MAXUINT16;
+	gdk_color->green = (g / 255.0) * G_MAXUINT16;
+	gdk_color->blue = (g / 255.0) * G_MAXINT16;
+	gdk_color->pixel = color;
+}
+
+
+static guint32
+geany_int_from_color(const GdkColor *gdk_color)
+{
+	guint8 r = (gdk_color->red / (gdouble)G_MAXUINT16) * 255;
+	guint8 g = (gdk_color->green / (gdouble)G_MAXUINT16) * 255;
+	guint8 b = (gdk_color->blue / (gdouble)G_MAXUINT16) * 255;
+	guint32 color = b;
+	color = (color << 8) + g;
+	color = (color << 8) + r;
+	return color;
+}
+
+
+void
+geany_scintilla_get_edge_color(GeanyScintilla *sci, GdkColor *gdk_color)
+{
+	guint32 color;
+
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	g_return_if_fail(gdk_color != NULL);
+
+	color = SSM(sci, SCI_GETEDGECOLOUR, 0, 0);
+	geany_color_from_int(color, gdk_color);
+}
+
+
+void
+geany_scintilla_set_edge_color(GeanyScintilla *sci, const GdkColor *color)
+{
+	GdkColor old_color;
+
+	g_return_if_fail(GEANY_SCINTILLA(sci));
+	g_return_if_fail(color != NULL);
+
+	geany_scintilla_get_edge_color(sci, &old_color);
+	if (!gdk_color_equal(color, &old_color))
+	{
+		guint32 new_color = geany_int_from_color(color);
+		SSM(sci, SCI_SETEDGECOLOUR, new_color, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_EDGE_COLOR]);
 	}
 }

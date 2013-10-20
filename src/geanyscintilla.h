@@ -31,12 +31,29 @@ struct GeanyScintillaClass_
 	ScintillaClass parent_class;
 };
 
+typedef enum
+{
+	GEANY_SCINTILLA_EDGE_MODE_NONE,
+	GEANY_SCINTILLA_EDGE_MODE_LINE,
+	GEANY_SCINTILLA_EDGE_MODE_BACKGROUND
+}
+GeanyScintillaEdgeMode;
+
 
 GType geany_scintilla_get_type(void);
 GtkWidget *geany_scintilla_new(void);
 
 gboolean geany_scintilla_get_line_numbers_visible(GeanyScintilla *sci);
 void geany_scintilla_set_line_numbers_visible(GeanyScintilla *sci, gboolean visible);
+
+GeanyScintillaEdgeMode geany_scintilla_get_edge_mode(GeanyScintilla *sci);
+void geany_scintilla_set_edge_mode(GeanyScintilla *sci, GeanyScintillaEdgeMode edge_mode);
+
+guint geany_scintilla_get_edge_column(GeanyScintilla *sci);
+void geany_scintilla_set_edge_column(GeanyScintilla *sci, guint column);
+
+void geany_scintilla_get_edge_color(GeanyScintilla *sci, GdkColor *color);
+void geany_scintilla_set_edge_color(GeanyScintilla *sci, const GdkColor *color);
 
 G_END_DECLS
 

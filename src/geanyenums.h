@@ -10,6 +10,11 @@
 #include "geanyscintilla.h"
 
 G_BEGIN_DECLS
+
+/* enumerations from "geanyscintilla.h" */
+G_GNUC_INTERNAL
+GType geany_scintilla_edge_mode_get_type (void) G_GNUC_CONST;
+#define GEANY_TYPE_SCINTILLA_EDGE_MODE (geany_scintilla_edge_mode_get_type ())
 G_END_DECLS
 
 #endif /* guard */
