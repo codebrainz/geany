@@ -41,35 +41,6 @@
 #define SSM(s, m, w, l) scintilla_send_message(s, m, w, l)
 
 
-void sci_set_mark_long_lines(ScintillaObject *sci, gint type, gint column, const gchar *colour)
-{
-	glong colour_val = utils_strtod(colour, NULL, TRUE); /* Scintilla uses a "long" value */
-
-	if (column == 0)
-		type = 2;
-	switch (type)
-	{
-		case 0:
-		{
-			SSM(sci, SCI_SETEDGEMODE, EDGE_LINE, 0);
-			break;
-		}
-		case 1:
-		{
-			SSM(sci, SCI_SETEDGEMODE, EDGE_BACKGROUND, 0);
-			break;
-		}
-		case 2:
-		{
-			SSM(sci, SCI_SETEDGEMODE, EDGE_NONE, 0);
-			return;
-		}
-	}
-	SSM(sci, SCI_SETEDGECOLUMN, (uptr_t) column, 0);
-	SSM(sci, SCI_SETEDGECOLOUR, (uptr_t) colour_val, 0);
-}
-
-
 /* symbol margin visibility */
 void sci_set_symbol_margin(ScintillaObject *sci, gboolean set)
 {

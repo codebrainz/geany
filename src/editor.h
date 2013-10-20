@@ -69,6 +69,16 @@ enum {
 	GEANY_AC_DQUOTE			= 16
 };
 
+
+typedef enum
+{
+	GEANY_EDITOR_LONG_LINE_DISABLED=2,
+	GEANY_EDITOR_LONG_LINE_LINE=0,
+	GEANY_EDITOR_LONG_LINE_BACKGROUND=1
+}
+GeanyEditorLongLineSetting;
+
+
 /** Geany indicator types, can be used with Editor indicator functions to highlight
  *  text in the document. */
 typedef enum
@@ -110,9 +120,8 @@ typedef struct GeanyEditorPrefs
 	gboolean	show_white_space;
 	gboolean	show_indent_guide;
 	gboolean	show_line_endings;
-	/* 0 - line, 1 - background, 2 - disabled.
-	 * This setting may be overridden when a project is opened. Use @c editor_get_prefs(). */
-	gint		long_line_type;
+	/* This setting may be overridden when a project is opened. Use @c editor_get_prefs(). */
+	GeanyEditorLongLineSetting long_line_type;
 	/* This setting may be overridden when a project is opened. Use @c editor_get_prefs(). */
 	gint		long_line_column;
 	gchar		*long_line_color;

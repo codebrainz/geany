@@ -744,10 +744,10 @@ static void load_dialog_prefs(GKeyFile *config)
 
 	/* display, editor */
 	editor_prefs.long_line_enabled = utils_get_setting_boolean(config, PACKAGE, "long_line_enabled", TRUE);
-	editor_prefs.long_line_type = utils_get_setting_integer(config, PACKAGE, "long_line_type", 0);
-	if (editor_prefs.long_line_type == 2) /* backward compatibility */
+	editor_prefs.long_line_type = utils_get_setting_integer(config, PACKAGE, "long_line_type", GEANY_EDITOR_LONG_LINE_LINE);
+	if (editor_prefs.long_line_type == GEANY_EDITOR_LONG_LINE_DISABLED) /* backward compatibility (with what? -matt) */
 	{
-		editor_prefs.long_line_type = 0;
+		editor_prefs.long_line_type = GEANY_EDITOR_LONG_LINE_LINE;
 		editor_prefs.long_line_enabled = FALSE;
 	}
 	editor_prefs.long_line_color = utils_get_setting_string(config, PACKAGE, "long_line_color", "#C2EBC2");

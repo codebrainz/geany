@@ -372,21 +372,63 @@ static gboolean is_style_php(gint style)
 }
 
 
+/* Maps GeanyEditorLongLineSetting to GeanyScintillaEdgeMode. */
+static GeanyScintillaEdgeMode
+editor_long_line_type_to_scintilla_edge_mode(GeanyEditorLongLineSetting lltype)
+{
+	switch (editor_prefs.long_line_type)
+	{
+		case GEANY_EDITOR_LONG_LINE_LINE:
+			return GEANY_SCINTILLA_EDGE_MODE_LINE;
+		case GEANY_EDITOR_LONG_LINE_BACKGROUND:
+			return GEANY_SCINTILLA_EDGE_MODE_BACKGROUND;
+		case GEANY_EDITOR_LONG_LINE_DISABLED:
+			return GEANY_SCINTILLA_EDGE_MODE_NONE;
+	}
+	return GEANY_SCINTILLA_EDGE_MODE_NONE;
+}
+
+
+/* Returns the Scintilla edge-mode for the current long long setting based
+ * on whether project is open or using regular setting. */
+static GeanyScintillaEdgeMode editor_get_scintilla_edge_mode(void)
+{
+	if (app->project)
+	{
+		switch (app->project->long_line_behaviour)
+		{
+			case GEANY_PROJECT_LONG_LINE_SETTING_DISABLED:
+				return GEANY_SCINTILLA_EDGE_MODE_NONE;
+			case GEANY_PROJECT_LONG_LINE_SETTING_GLOBAL:
+				break;
+			case GEANY_PROJECT_LONG_LINE_SETTING_CUSTOM:
+				return editor_long_line_type_to_scintilla_edge_mode(
+					editor_prefs.long_line_type);
+		}
+	}
+
+	if (!editor_prefs.long_line_enabled)
+		return GEANY_SCINTILLA_EDGE_MODE_NONE;
+	else
+		return editor_long_line_type_to_scintilla_edge_mode(editor_prefs.long_line_type);
+}
+
+
 static gint editor_get_long_line_type(void)
 {
 	if (app->project)
 		switch (app->project->long_line_behaviour)
 		{
-			case 0: /* marker disabled */
-				return 2;
-			case 1: /* use global settings */
+			case GEANY_PROJECT_LONG_LINE_SETTING_DISABLED:
+				return GEANY_EDITOR_LONG_LINE_DISABLED;
+			case GEANY_PROJECT_LONG_LINE_SETTING_GLOBAL:
 				break;
-			case 2: /* custom (enabled) */
+			case GEANY_PROJECT_LONG_LINE_SETTING_CUSTOM:
 				return editor_prefs.long_line_type;
 		}
 
 	if (!editor_prefs.long_line_enabled)
-		return 2;
+		return GEANY_EDITOR_LONG_LINE_DISABLED;
 	else
 		return editor_prefs.long_line_type;
 }
@@ -394,10 +436,12 @@ static gint editor_get_long_line_type(void)
 
 static gint editor_get_long_line_column(void)
 {
-	if (app->project && app->project->long_line_behaviour != 1 /* use global settings */)
+	if (app->project != NULL &&
+		app->project->long_line_behaviour != GEANY_PROJECT_LONG_LINE_SETTING_GLOBAL)
+	{
 		return app->project->long_line_column;
-	else
-		return editor_prefs.long_line_column;
+	}
+	return editor_prefs.long_line_column;
 }
 
 
@@ -4966,8 +5010,14 @@ void editor_apply_update_prefs(GeanyEditor *editor)
 
 	sci = editor->sci;
 
-	sci_set_mark_long_lines(sci, editor_get_long_line_type(),
-		editor_get_long_line_column(), editor_prefs.long_line_color);
+	/* set the edge that marks long lines */
+	geany_scintilla_set_edge_mode(GEANY_SCINTILLA(sci), editor_get_scintilla_edge_mode());
+	geany_scintilla_set_edge_column(GEANY_SCINTILLA(sci), editor_get_long_line_column());
+	{ // FIXME: We should use a GdkColor (or rather GdkRGBA) instead of string
+		GdkColor color = {0};
+		gdk_color_parse(editor_prefs.long_line_color, &color);
+		geany_scintilla_set_edge_color(GEANY_SCINTILLA(sci), &color);
+	}
 
 	/* update indent width, tab width */
 	editor_set_indent(editor, editor->indent_type, editor->indent_width);

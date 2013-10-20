@@ -200,6 +200,9 @@ geany_scintilla_init(GeanyScintilla *self)
 
 	SSM(self, SCI_SETMARGINWIDTHN, GEANY_SCINTILLA_MARGIN_LINE_NUMBERS, 16);
 	geany_scintilla_update_line_numbers(self);
+
+	GdkColor default_color = {0};
+	geany_scintilla_set_edge_color(self, &default_color);
 }
 
 
@@ -338,16 +341,19 @@ geany_scintilla_get_edge_color(GeanyScintilla *sci, GdkColor *gdk_color)
 void
 geany_scintilla_set_edge_color(GeanyScintilla *sci, const GdkColor *color)
 {
-	GdkColor old_color;
+	GdkColor old_color = {0};
+	GdkColor new_color = {0};
 
 	g_return_if_fail(GEANY_SCINTILLA(sci));
-	g_return_if_fail(color != NULL);
 
 	geany_scintilla_get_edge_color(sci, &old_color);
-	if (!gdk_color_equal(color, &old_color))
+
+	if (color != NULL)
+		new_color = *color;
+
+	if (!gdk_color_equal(&new_color, &old_color))
 	{
-		guint32 new_color = geany_int_from_color(color);
-		SSM(sci, SCI_SETEDGECOLOUR, new_color, 0);
+		SSM(sci, SCI_SETEDGECOLOUR, geany_int_from_color(&new_color), 0);
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_EDGE_COLOR]);
 	}

@@ -472,8 +472,12 @@ static void prefs_init_dialog(void)
 
 	switch (editor_prefs.long_line_type)
 	{
-		case 0: widget = ui_lookup_widget(ui_widgets.prefs_dialog, "radio_long_line_line"); break;
-		case 1: widget = ui_lookup_widget(ui_widgets.prefs_dialog, "radio_long_line_background"); break;
+		case GEANY_EDITOR_LONG_LINE_LINE:
+			widget = ui_lookup_widget(ui_widgets.prefs_dialog, "radio_long_line_line");
+			break;
+		case GEANY_EDITOR_LONG_LINE_BACKGROUND:
+			widget = ui_lookup_widget(ui_widgets.prefs_dialog, "radio_long_line_background");
+			break;
 	}
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), TRUE);
 
@@ -946,10 +950,10 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "radio_long_line_line");
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-			editor_prefs.long_line_type = 0;
+			editor_prefs.long_line_type = GEANY_EDITOR_LONG_LINE_LINE;
 		else
 			/* now only the "background" radio remains */
-			editor_prefs.long_line_type = 1;
+			editor_prefs.long_line_type = GEANY_EDITOR_LONG_LINE_BACKGROUND;
 
 		if (editor_prefs.long_line_column == 0)
 			editor_prefs.long_line_enabled = FALSE;

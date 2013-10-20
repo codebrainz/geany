@@ -525,9 +525,9 @@ static void show_project_properties(gboolean show_build)
 	radio_long_line_custom = ui_lookup_widget(e.dialog, "radio_long_line_custom_project");
 	switch (p->long_line_behaviour)
 	{
-		case 0: widget = ui_lookup_widget(e.dialog, "radio_long_line_disabled_project"); break;
-		case 1: widget = ui_lookup_widget(e.dialog, "radio_long_line_default_project"); break;
-		case 2: widget = radio_long_line_custom; break;
+		case GEANY_PROJECT_LONG_LINE_SETTING_DISABLED: widget = ui_lookup_widget(e.dialog, "radio_long_line_disabled_project"); break;
+		case GEANY_PROJECT_LONG_LINE_SETTING_GLOBAL: widget = ui_lookup_widget(e.dialog, "radio_long_line_default_project"); break;
+		case GEANY_PROJECT_LONG_LINE_SETTING_CUSTOM: widget = radio_long_line_custom; break;
 	}
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), TRUE);
 

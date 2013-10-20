@@ -28,6 +28,15 @@ G_BEGIN_DECLS
 #define GEANY_PROJECT_EXT				"geany"
 
 
+typedef enum
+{
+	GEANY_PROJECT_LONG_LINE_SETTING_DISABLED,
+	GEANY_PROJECT_LONG_LINE_SETTING_GLOBAL,
+	GEANY_PROJECT_LONG_LINE_SETTING_CUSTOM
+}
+GeanyProjectLongLineSetting;
+
+
 /** Structure for representing a project. */
 typedef struct GeanyProject
 {
@@ -44,7 +53,7 @@ typedef struct GeanyProject
 #ifdef GEANY_PRIVATE
 	/* Do not use following fields in plugins */
 	GPtrArray *build_filetypes_list; /* Project has custom filetype builds for these. */
-	gint long_line_behaviour; /* 0 - disabled, 1 - follow global settings, 2 - enabled (custom) */
+	GeanyProjectLongLineSetting long_line_behaviour;
 	gint long_line_column; /* Long line marker position. */
 #endif
 }
