@@ -72,6 +72,8 @@ gboolean geany_scintilla_get_can_redo(GeanyScintilla *sci);
 void geany_scintilla_undo(GeanyScintilla *sci);
 void geany_scintilla_redo(GeanyScintilla *sci);
 
+gboolean geany_scintilla_get_modified(GeanyScintilla *sci);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */

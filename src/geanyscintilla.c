@@ -10,6 +10,7 @@ struct GeanyScintillaPrivate_
 {
 	gboolean can_undo;
 	gboolean can_redo;
+	gboolean modified;
 };
 
 enum
@@ -22,6 +23,7 @@ enum
 	PROP_TEXT,
 	PROP_CAN_UNDO,
 	PROP_CAN_REDO,
+	PROP_MODIFIED,
 	N_PROPERTIES
 };
 
@@ -51,6 +53,7 @@ static guint32 geany_int_from_color(const GdkColor *gdk_color);
 
 static void geany_scintilla_update_line_numbers(GeanyScintilla *sci);
 static void geany_scintilla_update_undo_state(GeanyScintilla *sci);
+static void geany_scintilla_update_modified_state(GeanyScintilla *sci);
 
 
 G_DEFINE_TYPE(GeanyScintilla, geany_scintilla, scintilla_get_type())
@@ -99,6 +102,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 	geany_scintilla_pspecs[PROP_CAN_REDO] =
 		g_param_spec_boolean("can-redo", "Can Redo",
 			"Whether a redo opertaion can be performed", FALSE,
+			G_PARAM_READABLE);
+
+	geany_scintilla_pspecs[PROP_MODIFIED] =
+		g_param_spec_boolean("modified", "Is Modified",
+			"Whether the text in the editor is modified", FALSE,
 			G_PARAM_READABLE);
 
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
@@ -186,6 +194,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 		case PROP_CAN_REDO:
 			g_value_set_boolean(value, geany_scintilla_get_can_redo(sci));
 			break;
+		case PROP_MODIFIED:
+			g_value_set_boolean(value, geany_scintilla_get_modified(sci));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -219,6 +230,10 @@ on_scintilla_notify(GeanyScintilla *sci, guint id, struct SCNotification *notif,
 			break;
 		case SCN_ZOOM:
 			geany_scintilla_update_line_numbers(sci);
+			break;
+		case SCN_SAVEPOINTLEFT:
+		case SCN_SAVEPOINTREACHED:
+			geany_scintilla_update_modified_state(sci);
 			break;
 		default:
 			break;
@@ -565,4 +580,25 @@ geany_scintilla_redo(GeanyScintilla *sci)
 	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
 	SSM(sci, SCI_REDO, 0, 0);
 	geany_scintilla_update_undo_state(sci);
+}
+
+
+static void
+geany_scintilla_update_modified_state(GeanyScintilla *sci)
+{
+	gboolean modified = SSM(sci, SCI_GETMODIFY, 0, 0);
+	if (modified != sci->priv->modified)
+	{
+		sci->priv->modified = modified;
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_MODIFIED]);
+	}
+}
+
+
+gboolean
+geany_scintilla_get_modified(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return sci->priv->modified;
 }
