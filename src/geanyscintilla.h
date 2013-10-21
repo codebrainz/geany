@@ -96,6 +96,8 @@ void geany_scintilla_zoom_out(GeanyScintilla *sci);
 GeanyScintillaEOLMode geany_scintilla_get_eol_mode(GeanyScintilla *sci);
 void geany_scintilla_set_eol_mode(GeanyScintilla *sci, GeanyScintillaEOLMode eol_mode);
 void geany_scintilla_convert_eols(GeanyScintilla *sci, GeanyScintillaEOLMode eol_mode);
+gboolean geany_scintilla_get_eol_visible(GeanyScintilla *sci);
+void geany_scintilla_set_eol_visible(GeanyScintilla *sci, gboolean eol_visible);
 
 G_END_DECLS
 
