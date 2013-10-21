@@ -787,7 +787,7 @@ gboolean
 geany_scintilla_get_whitespace_visible(GeanyScintilla *sci)
 {
 	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
-	return SSM(sci, SCI_GETVIEWWS, 0, 0);
+	return (SSM(sci, SCI_GETVIEWWS, 0, 0) == SCWS_VISIBLEALWAYS);
 }
 
 
@@ -797,7 +797,7 @@ geany_scintilla_set_whitespace_visible(GeanyScintilla *sci, gboolean visible)
 	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
 	if (visible != geany_scintilla_get_whitespace_visible(sci))
 	{
-		SSM(sci, SCI_SETVIEWWS, visible, 0);
+		SSM(sci, SCI_SETVIEWWS, visible ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE, 0);
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_WHITESPACE_VISIBLE]);
 	}

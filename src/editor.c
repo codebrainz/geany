@@ -5033,7 +5033,7 @@ void editor_apply_update_prefs(GeanyEditor *editor)
 
 	editor_set_indentation_guides(editor);
 
-	sci_set_visible_white_spaces(sci, editor_prefs.show_white_space);
+	geany_scintilla_set_whitespace_visible(GEANY_SCINTILLA(sci), editor_prefs.show_white_space);
 	geany_scintilla_set_eol_visible(GEANY_SCINTILLA(sci), editor_prefs.show_line_endings);
 	sci_set_symbol_margin(sci, editor_prefs.show_markers_margin);
 	geany_scintilla_set_line_numbers_visible(GEANY_SCINTILLA(sci),

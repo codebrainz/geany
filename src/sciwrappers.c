@@ -74,15 +74,6 @@ void sci_set_folding_margin_visible(ScintillaObject *sci, gboolean set)
 }
 
 
-void sci_set_visible_white_spaces(ScintillaObject *sci, gboolean set)
-{
-	if (set)
-		SSM(sci, SCI_SETVIEWWS, SCWS_VISIBLEALWAYS, 0);
-	else
-		SSM(sci, SCI_SETVIEWWS, SCWS_INVISIBLE, 0);
-}
-
-
 void sci_set_lines_wrapped(ScintillaObject *sci, gboolean set)
 {
 	if (set)

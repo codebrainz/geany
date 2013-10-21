@@ -1273,7 +1273,8 @@ void ui_toggle_editor_features(GeanyUIEditorFeatures feature)
 					editor_prefs.show_linenumber_margin);
 				break;
 			case GEANY_EDITOR_SHOW_WHITE_SPACE:
-				sci_set_visible_white_spaces(doc->editor->sci, editor_prefs.show_white_space);
+				geany_scintilla_set_whitespace_visible(GEANY_SCINTILLA(doc->editor->sci),
+					editor_prefs.show_white_space);
 				break;
 			case GEANY_EDITOR_SHOW_LINE_ENDINGS:
 				geany_scintilla_set_eol_visible(GEANY_SCINTILLA(doc->editor->sci),
