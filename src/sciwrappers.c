@@ -126,28 +126,16 @@ void sci_set_text(ScintillaObject *sci, const gchar *text)
 }
 
 
-gboolean sci_can_undo(ScintillaObject *sci)
-{
-	return SSM(sci, SCI_CANUNDO, 0, 0) != FALSE;
-}
-
-
-gboolean sci_can_redo(ScintillaObject *sci)
-{
-	return SSM(sci, SCI_CANREDO, 0, 0) != FALSE;
-}
-
-
 void sci_undo(ScintillaObject *sci)
 {
-	if (sci_can_undo(sci))
+	if (geany_scintilla_get_can_undo(GEANY_SCINTILLA(sci)))
 		SSM(sci, SCI_UNDO, 0, 0);
 }
 
 
 void sci_redo(ScintillaObject *sci)
 {
-	if (sci_can_redo(sci))
+	if (geany_scintilla_get_can_redo(GEANY_SCINTILLA(sci)))
 		SSM(sci, SCI_REDO, 0, 0);
 }
 

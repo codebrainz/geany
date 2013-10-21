@@ -2543,8 +2543,11 @@ gboolean document_can_undo(GeanyDocument *doc)
 {
 	g_return_val_if_fail(doc != NULL, FALSE);
 
-	if (g_trash_stack_height(&doc->priv->undo_actions) > 0 || sci_can_undo(doc->editor->sci))
+	if (g_trash_stack_height(&doc->priv->undo_actions) > 0 ||
+	    geany_scintilla_get_can_undo(GEANY_SCINTILLA(doc->editor->sci)))
+	{
 		return TRUE;
+	}
 	else
 		return FALSE;
 }
@@ -2622,8 +2625,11 @@ gboolean document_can_redo(GeanyDocument *doc)
 {
 	g_return_val_if_fail(doc != NULL, FALSE);
 
-	if (g_trash_stack_height(&doc->priv->redo_actions) > 0 || sci_can_redo(doc->editor->sci))
+	if (g_trash_stack_height(&doc->priv->redo_actions) > 0 ||
+	    geany_scintilla_get_can_redo(GEANY_SCINTILLA(doc->editor->sci)))
+	{
 		return TRUE;
+	}
 	else
 		return FALSE;
 }

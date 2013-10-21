@@ -8,7 +8,8 @@
 
 struct GeanyScintillaPrivate_
 {
-	gpointer reserved;
+	gboolean can_undo;
+	gboolean can_redo;
 };
 
 enum
@@ -19,6 +20,8 @@ enum
 	PROP_EDGE_COLUMN,
 	PROP_EDGE_COLOR,
 	PROP_TEXT,
+	PROP_CAN_UNDO,
+	PROP_CAN_REDO,
 	N_PROPERTIES
 };
 
@@ -86,6 +89,16 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 	geany_scintilla_pspecs[PROP_TEXT] =
 		g_param_spec_string("text", "Text", "The text in the editor", "",
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
+	geany_scintilla_pspecs[PROP_CAN_UNDO] =
+		g_param_spec_boolean("can-undo", "Can Undo",
+			"Whether an undo operation can be performed", FALSE,
+			G_PARAM_READABLE);
+
+	geany_scintilla_pspecs[PROP_CAN_REDO] =
+		g_param_spec_boolean("can-redo", "Can Redo",
+			"Whether a redo opertaion can be performed", FALSE,
+			G_PARAM_READABLE);
 
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
@@ -166,6 +179,12 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 		case PROP_TEXT:
 			g_value_set_string(value, geany_scintilla_get_text(sci));
 			break;
+		case PROP_CAN_UNDO:
+			g_value_set_boolean(value, geany_scintilla_get_can_undo(sci));
+			break;
+		case PROP_CAN_REDO:
+			g_value_set_boolean(value, geany_scintilla_get_can_redo(sci));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -189,9 +208,26 @@ on_scintilla_notify(GeanyScintilla *sci, guint id, struct SCNotification *notif,
 			{
 				if (notif->linesAdded != 0)
 					geany_scintilla_update_line_numbers(sci);
+
 				/* Emit "notify::text" when the buffer text changes */
 				g_object_notify_by_pspec(G_OBJECT(sci),
 					geany_scintilla_pspecs[PROP_TEXT]);
+
+				/* Check if CANUNDO changed and emit prop notification */
+				if (SSM(sci, SCI_CANUNDO, 0, 0) != sci->priv->can_undo)
+				{
+					sci->priv->can_undo = SSM(sci, SCI_CANUNDO, 0, 0);
+					g_object_notify_by_pspec(G_OBJECT(sci),
+						geany_scintilla_pspecs[PROP_CAN_UNDO]);
+				}
+
+				/* Check if CANREDO changed and emit prop notification */
+				if (SSM(sci, SCI_CANREDO, 0, 0) != sci->priv->can_redo)
+				{
+					sci->priv->can_redo = SSM(sci, SCI_CANREDO, 0, 0);
+					g_object_notify_by_pspec(G_OBJECT(sci),
+						geany_scintilla_pspecs[PROP_CAN_REDO]);
+				}
 			}
 			break;
 		case SCN_ZOOM:
@@ -218,6 +254,9 @@ geany_scintilla_init(GeanyScintilla *self)
 
 	GdkColor default_color = {0};
 	geany_scintilla_set_edge_color(self, &default_color);
+
+	self->priv->can_undo = SSM(self, SCI_CANUNDO, 0, 0);
+	self->priv->can_redo = SSM(self, SCI_CANREDO, 0, 0);
 }
 
 
@@ -484,4 +523,20 @@ void geany_scintilla_insert_text_length(GeanyScintilla *sci, gssize pos, gssize 
 			SSM(sci, SCI_SETCURRENTPOS, cur_pos, 0);
 		}
 	}
+}
+
+
+gboolean
+geany_scintilla_get_can_undo(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return sci->priv->can_undo;
+}
+
+
+gboolean
+geany_scintilla_get_can_redo(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return sci->priv->can_redo;
 }

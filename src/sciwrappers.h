@@ -35,9 +35,6 @@ gchar*				sci_get_contents_range		(ScintillaObject *sci, gint start, gint end);
 gint				sci_get_length				(ScintillaObject *sci);
 void				sci_insert_text				(ScintillaObject *sci, gint pos, const gchar *text);
 
-
-gboolean			sci_can_redo				(ScintillaObject *sci);
-gboolean			sci_can_undo				(ScintillaObject *sci);
 gboolean			sci_has_selection			(ScintillaObject *sci);
 void 				sci_undo					(ScintillaObject *sci);
 void 				sci_redo					(ScintillaObject *sci);
