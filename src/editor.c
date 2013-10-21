@@ -2611,9 +2611,10 @@ gboolean editor_complete_snippet(GeanyEditor *editor, gint pos)
 	if (!EMPTY(word) &&
 		! isspace(sci_get_char_at(sci, pos - 1))) /* pos points to the line end char so use pos -1 */
 	{
-		sci_start_undo_action(sci);	/* needed because we insert a space separately from construct */
+		/* needed because we insert a space separately from construct */
+		geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
 		result = snippets_complete_constructs(editor, pos, word);
-		sci_end_undo_action(sci);
+		geany_scintilla_end_undo_action(GEANY_SCINTILLA(sci));
 		if (result)
 			sci_cancel(sci);	/* cancel any autocompletion list, etc */
 	}
@@ -2654,11 +2655,11 @@ static void insert_closing_tag(GeanyEditor *editor, gint pos, gchar ch, const gc
 	else
 		to_insert = g_strconcat("</", tag_name, ">", NULL);
 
-	sci_start_undo_action(sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
 	sci_replace_sel(sci, to_insert);
 	if (ch == '>')
 		sci_set_selection(sci, pos, pos);
-	sci_end_undo_action(sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(sci));
 	g_free(to_insert);
 }
 
@@ -2974,7 +2975,7 @@ gint editor_do_uncomment(GeanyEditor *editor, gint line, gboolean toggle)
 	if (co_len == 0)
 		return 0;
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	for (i = first_line; i <= last_line; i++)
 	{
@@ -3037,7 +3038,7 @@ gint editor_do_uncomment(GeanyEditor *editor, gint line, gboolean toggle)
 			}
 		}
 	}
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	/* restore selection if there is one
 	 * but don't touch the selection if caller is editor_do_comment_toggle */
@@ -3098,7 +3099,7 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 	if (co_len == 0)
 		return;
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	for (i = first_line; (i <= last_line) && (! break_loop); i++)
 	{
@@ -3166,7 +3167,7 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 		}
 	}
 
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	co_len += tm_len;
 
@@ -3270,7 +3271,7 @@ void editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_line
 	if (co_len == 0)
 		return;
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	for (i = first_line; (i <= last_line) && (! break_loop); i++)
 	{
@@ -3327,7 +3328,7 @@ void editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_line
 			}
 		}
 	}
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	/* restore selection if there is one
 	 * but don't touch the selection if caller is editor_do_comment_toggle */
@@ -3563,7 +3564,7 @@ void editor_insert_multiline_comment(GeanyEditor *editor)
 	if (!EMPTY(cc))
 		have_multiline_comment = TRUE;
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	doc = editor->document;
 
@@ -3607,7 +3608,7 @@ void editor_insert_multiline_comment(GeanyEditor *editor)
 	/* reset the selection */
 	sci_set_anchor(editor->sci, pos);
 
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 }
 
 
@@ -3918,7 +3919,7 @@ void editor_smart_line_indentation(GeanyEditor *editor, gint pos)
 		sci_set_selection_end(sci, sci_get_position_from_line(sci, last_line + 1));
 	}
 
-	sci_end_undo_action(sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(sci));
 }
 
 
@@ -3941,7 +3942,7 @@ void editor_indentation_by_one_space(GeanyEditor *editor, gint pos, gboolean dec
 	if (pos == -1)
 		pos = sel_start;
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	for (i = first_line; i <= last_line; i++)
 	{
@@ -3985,7 +3986,7 @@ void editor_indentation_by_one_space(GeanyEditor *editor, gint pos, gboolean dec
 	else
 		sci_set_current_position(editor->sci, pos + count, FALSE);
 
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 }
 
 
@@ -4337,7 +4338,7 @@ void editor_replace_tabs(GeanyEditor *editor)
 
 	g_return_if_fail(editor != NULL);
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 	tab_len = sci_get_tab_width(editor->sci);
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(editor->sci));
@@ -4361,7 +4362,7 @@ void editor_replace_tabs(GeanyEditor *editor)
 		ttf.chrg.cpMax += current_tab_true_length - 1;
 		g_free(tab_str);
 	}
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 }
 
 
@@ -4387,7 +4388,7 @@ void editor_replace_spaces(GeanyEditor *editor)
 	}
 	tab_len = (gint) tab_len_f;
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(editor->sci));
 	ttf.lpstrText = g_strnfill(tab_len, ' ');
@@ -4411,7 +4412,7 @@ void editor_replace_spaces(GeanyEditor *editor)
 		/* update end of range now text has changed */
 		ttf.chrg.cpMax -= tab_len - 1;
 	}
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 	g_free(ttf.lpstrText);
 }
 
@@ -4446,13 +4447,13 @@ void editor_strip_trailing_spaces(GeanyEditor *editor)
 	gint max_lines = sci_get_line_count(editor->sci);
 	gint line;
 
-	sci_start_undo_action(editor->sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(editor->sci));
 
 	for (line = 0; line < max_lines; line++)
 	{
 		editor_strip_line_trailing_spaces(editor, line);
 	}
-	sci_end_undo_action(editor->sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 }
 
 
@@ -5128,12 +5129,12 @@ void editor_indent(GeanyEditor *editor, gboolean increase)
 		if (end == geany_scintilla_get_text_length(GEANY_SCINTILLA(sci)))
 			lend++;	/* for last line with text on it */
 
-		sci_start_undo_action(sci);
+		geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
 		for (line = lstart; line < lend; line++)
 		{
 			editor_change_line_indent(editor, line, increase);
 		}
-		sci_end_undo_action(sci);
+		geany_scintilla_end_undo_action(GEANY_SCINTILLA(editor->sci));
 	}
 
 	/* restore caret and anchor position */

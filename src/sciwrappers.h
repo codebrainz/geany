@@ -34,11 +34,10 @@ void				sci_get_text_range			(ScintillaObject *sci, gint start, gint end, gchar 
 gchar*				sci_get_contents_range		(ScintillaObject *sci, gint start, gint end);
 gint				sci_get_length				(ScintillaObject *sci);
 void				sci_insert_text				(ScintillaObject *sci, gint pos, const gchar *text);
+void 				sci_start_undo_action		(ScintillaObject *sci);
+void 				sci_end_undo_action			(ScintillaObject *sci);
 
 gboolean			sci_has_selection			(ScintillaObject *sci);
-void 				sci_empty_undo_buffer		(ScintillaObject *sci);
-void 				sci_end_undo_action			(ScintillaObject *sci);
-void 				sci_start_undo_action		(ScintillaObject *sci);
 
 void				sci_set_visible_eols		(ScintillaObject *sci, gboolean set);
 void				sci_set_lines_wrapped		(ScintillaObject *sci, gboolean set);
@@ -87,8 +86,6 @@ gchar*				sci_get_line				(ScintillaObject *sci, gint line_num);
 gint 				sci_get_line_length			(ScintillaObject *sci, gint line);
 gint				sci_get_line_count			(ScintillaObject *sci);
 gint				sci_get_position_from_xy	(ScintillaObject *sci, gint x, gint y, gboolean nearby);
-
-void 				sci_set_undo_collection		(ScintillaObject *sci, gboolean set);
 
 gint				sci_get_line_end_position	(ScintillaObject *sci, gint line);
 

@@ -698,7 +698,8 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, 
 
 	g_assert(doc != NULL);
 
-	sci_set_undo_collection(doc->editor->sci, FALSE); /* avoid creation of an undo action */
+	/* avoid creation of an undo action */
+	geany_scintilla_set_enable_undo_collection(GEANY_SCINTILLA(doc->editor->sci), FALSE);
 	if (text)
 	{
 		GString *template = g_string_new(text);
@@ -712,8 +713,7 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, 
 
 	sci_set_eol_mode(doc->editor->sci, file_prefs.default_eol_character);
 
-	sci_set_undo_collection(doc->editor->sci, TRUE);
-	sci_empty_undo_buffer(doc->editor->sci);
+	geany_scintilla_set_enable_undo_collection(GEANY_SCINTILLA(doc->editor->sci), TRUE);
 
 	doc->encoding = g_strdup(encodings[file_prefs.default_new_encoding].charset);
 	/* store the opened encoding for undo/redo */
@@ -1155,8 +1155,8 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 			monitor_file_setup(doc);
 		}
 
-		sci_set_undo_collection(doc->editor->sci, FALSE); /* avoid creation of an undo action */
-		sci_empty_undo_buffer(doc->editor->sci);
+		/* avoid creation of an undo action */
+		geany_scintilla_set_enable_undo_collection(GEANY_SCINTILLA(doc->editor->sci), FALSE);
 
 		/* add the text to the ScintillaObject */
 		sci_set_readonly(doc->editor->sci, FALSE);	/* to allow replacing text */
@@ -1168,7 +1168,7 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 		sci_set_eol_mode(doc->editor->sci, editor_mode);
 		g_free(filedata.data);
 
-		sci_set_undo_collection(doc->editor->sci, TRUE);
+		geany_scintilla_set_enable_undo_collection(GEANY_SCINTILLA(doc->editor->sci), TRUE);
 
 		doc->priv->mtime = filedata.mtime; /* get the modification time from file and keep it */
 		g_free(doc->encoding);	/* if reloading, free old encoding */
@@ -2084,9 +2084,9 @@ document_replace_range(GeanyDocument *doc, const gchar *find_text, const gchar *
 	ttf.chrg.cpMax = end;
 	ttf.lpstrText = (gchar*)find_text;
 
-	sci_start_undo_action(sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
 	count = search_replace_range(sci, &ttf, flags, replace_text);
-	sci_end_undo_action(sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(sci));
 
 	if (count > 0)
 	{	/* scroll last match in view, will destroy the existing selection */
@@ -2128,7 +2128,7 @@ void document_replace_sel(GeanyDocument *doc, const gchar *find_text, const gcha
 	{
 		gint first_line, line;
 
-		sci_start_undo_action(doc->editor->sci);
+		geany_scintilla_begin_undo_action(GEANY_SCINTILLA(doc->editor->sci));
 
 		first_line = sci_get_line_from_position(doc->editor->sci, selection_start);
 		/* Find the last line with chars selected (not EOL char) */
@@ -2157,7 +2157,7 @@ void document_replace_sel(GeanyDocument *doc, const gchar *find_text, const gcha
 				}
 			}
 		}
-		sci_end_undo_action(doc->editor->sci);
+		geany_scintilla_end_undo_action(GEANY_SCINTILLA(doc->editor->sci));
 	}
 	else	/* handle normal line selection */
 	{

@@ -131,7 +131,7 @@ void sci_set_text(ScintillaObject *sci, const gchar *text)
  * @param sci Scintilla @c GtkWidget. */
 void sci_start_undo_action(ScintillaObject *sci)
 {
-	SSM(sci, SCI_BEGINUNDOACTION, 0, 0);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
 }
 
 
@@ -140,19 +140,7 @@ void sci_start_undo_action(ScintillaObject *sci)
  * @see sci_start_undo_action(). */
 void sci_end_undo_action(ScintillaObject *sci)
 {
-	SSM(sci, SCI_ENDUNDOACTION, 0, 0);
-}
-
-
-void sci_set_undo_collection(ScintillaObject *sci, gboolean set)
-{
-	SSM(sci, SCI_SETUNDOCOLLECTION, set != FALSE, 0);
-}
-
-
-void sci_empty_undo_buffer(ScintillaObject *sci)
-{
-	SSM(sci, SCI_EMPTYUNDOBUFFER, 0, 0);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(sci));
 }
 
 

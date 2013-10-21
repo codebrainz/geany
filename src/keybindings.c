@@ -2265,7 +2265,7 @@ static void reflow_paragraph(GeanyEditor *editor)
 		return;
 	}
 
-	sci_start_undo_action(sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
 	sel = sci_has_selection(sci);
 	if (!sel)
 		editor_select_indent_block(editor);
@@ -2274,7 +2274,7 @@ static void reflow_paragraph(GeanyEditor *editor)
 	if (!sel)
 		sci_set_anchor(sci, -1);
 
-	sci_end_undo_action(sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(sci));
 }
 
 
@@ -2291,7 +2291,7 @@ static void join_paragraph(GeanyEditor *editor)
 		return;
 	}
 
-	sci_start_undo_action(sci);
+	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
 	sel = sci_has_selection(sci);
 	if (!sel)
 		editor_select_indent_block(editor);
@@ -2300,7 +2300,7 @@ static void join_paragraph(GeanyEditor *editor)
 	if (!sel)
 		sci_set_anchor(sci, -1);
 
-	sci_end_undo_action(sci);
+	geany_scintilla_end_undo_action(GEANY_SCINTILLA(sci));
 }
 
 
