@@ -26,6 +26,7 @@ enum
 	PROP_CAN_REDO,
 	PROP_MODIFIED,
 	PROP_UNDO_COLLECTION,
+	PROP_ZOOM_LEVEL,
 	N_PROPERTIES
 };
 
@@ -116,6 +117,10 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether to collection undo information", TRUE,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_ZOOM_LEVEL] =
+		g_param_spec_int("zoom-level", "Zoom Level", "Zoom level of the editor",
+			-10, 20, 0, G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -162,6 +167,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 			break;
 		case PROP_UNDO_COLLECTION:
 			geany_scintilla_set_enable_undo_collection(sci, g_value_get_boolean(value));
+			break;
+		case PROP_ZOOM_LEVEL:
+			geany_scintilla_set_zoom_level(sci, g_value_get_int(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -210,6 +218,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 		case PROP_UNDO_COLLECTION:
 			g_value_set_boolean(value, geany_scintilla_get_enable_undo_collection(sci));
 			break;
+		case PROP_ZOOM_LEVEL:
+			g_value_set_int(value, geany_scintilla_get_zoom_level(sci));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -243,6 +254,8 @@ on_scintilla_notify(GeanyScintilla *sci, guint id, struct SCNotification *notif,
 			break;
 		case SCN_ZOOM:
 			geany_scintilla_update_line_numbers(sci);
+			g_object_notify_by_pspec(G_OBJECT(sci),
+				geany_scintilla_pspecs[PROP_ZOOM_LEVEL]);
 			break;
 		case SCN_SAVEPOINTLEFT:
 		case SCN_SAVEPOINTREACHED:
@@ -654,4 +667,36 @@ geany_scintilla_get_modified(GeanyScintilla *sci)
 {
 	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
 	return sci->priv->modified;
+}
+
+
+gint geany_scintilla_get_zoom_level(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), 0);
+	return SSM(sci, SCI_GETZOOM, 0, 0);
+}
+
+
+void geany_scintilla_set_zoom_level(GeanyScintilla *sci, gint zoom_level)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (zoom_level != geany_scintilla_get_zoom_level(sci))
+		SSM(sci, SCI_SETZOOM, zoom_level, 0);
+	/* property notification emitted from SCN_ZOOM handler */
+}
+
+
+void geany_scintilla_zoom_in(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_ZOOMIN, 0, 0);
+	/* property notification emitted from SCN_ZOOM handler */
+}
+
+
+void geany_scintilla_zoom_out(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_ZOOMOUT, 0, 0);
+	/* property notification emitted from SCN_ZOOM handler */
 }

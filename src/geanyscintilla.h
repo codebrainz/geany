@@ -78,6 +78,13 @@ void geany_scintilla_set_enable_undo_collection(GeanyScintilla *sci, gboolean en
 
 gboolean geany_scintilla_get_modified(GeanyScintilla *sci);
 
+gint geany_scintilla_get_zoom_level(GeanyScintilla *sci);
+void geany_scintilla_set_zoom_level(GeanyScintilla *sci, gint zoom_level);
+void geany_scintilla_zoom_in(GeanyScintilla *sci);
+void geany_scintilla_zoom_out(GeanyScintilla *sci);
+#define geany_scintilla_zoom_reset(sci) \
+	geany_scintilla_set_zoom_level(sci, 0)
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */
