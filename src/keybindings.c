@@ -1998,7 +1998,7 @@ static void duplicate_lines(GeanyEditor *editor)
 static void delete_lines(GeanyEditor *editor)
 {
 	editor_select_lines(editor, TRUE); /* include last line (like cut lines, copy lines do) */
-	sci_clear(editor->sci);	/* (SCI_LINEDELETE only does 1 line) */
+	geany_scintilla_clear(GEANY_SCINTILLA(editor->sci)); /* (SCI_LINEDELETE only does 1 line) */
 }
 
 

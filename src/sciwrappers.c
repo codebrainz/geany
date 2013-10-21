@@ -308,30 +308,6 @@ gint sci_get_line_end_position(ScintillaObject *sci, gint line)
 }
 
 
-void sci_cut(ScintillaObject *sci)
-{
-	SSM(sci, SCI_CUT, 0, 0);
-}
-
-
-void sci_copy(ScintillaObject *sci)
-{
-	SSM(sci, SCI_COPY, 0, 0);
-}
-
-
-void sci_paste(ScintillaObject *sci)
-{
-	SSM(sci, SCI_PASTE, 0, 0);
-}
-
-
-void sci_clear(ScintillaObject *sci)
-{
-	SSM(sci, SCI_CLEAR, 0, 0);
-}
-
-
 /** Gets the selection start position.
  * @param sci Scintilla widget.
  * @return Position. */

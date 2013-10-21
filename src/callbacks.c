@@ -297,7 +297,7 @@ G_MODULE_EXPORT void on_cut1_activate(GtkMenuItem *menuitem, gpointer user_data)
 		gtk_editable_cut_clipboard(GTK_EDITABLE(focusw));
 	else
 	if (IS_SCINTILLA(focusw) && doc != NULL)
-		sci_cut(doc->editor->sci);
+		geany_scintilla_cut(GEANY_SCINTILLA(doc->editor->sci));
 	else
 	if (GTK_IS_TEXT_VIEW(focusw))
 	{
@@ -317,7 +317,7 @@ G_MODULE_EXPORT void on_copy1_activate(GtkMenuItem *menuitem, gpointer user_data
 		gtk_editable_copy_clipboard(GTK_EDITABLE(focusw));
 	else
 	if (IS_SCINTILLA(focusw) && doc != NULL)
-		sci_copy(doc->editor->sci);
+		geany_scintilla_copy(GEANY_SCINTILLA(doc->editor->sci));
 	else
 	if (GTK_IS_TEXT_VIEW(focusw))
 	{
@@ -335,13 +335,9 @@ G_MODULE_EXPORT void on_paste1_activate(GtkMenuItem *menuitem, gpointer user_dat
 
 	if (GTK_IS_EDITABLE(focusw))
 		gtk_editable_paste_clipboard(GTK_EDITABLE(focusw));
-	else
-	if (IS_SCINTILLA(focusw) && doc != NULL)
-	{
-		sci_paste(doc->editor->sci);
-	}
-	else
-	if (GTK_IS_TEXT_VIEW(focusw))
+	else if (IS_SCINTILLA(focusw) && doc != NULL)
+		geany_scintilla_paste(GEANY_SCINTILLA(doc->editor->sci));
+	else if (GTK_IS_TEXT_VIEW(focusw))
 	{
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(
 			GTK_TEXT_VIEW(focusw));
@@ -358,11 +354,9 @@ G_MODULE_EXPORT void on_delete1_activate(GtkMenuItem *menuitem, gpointer user_da
 
 	if (GTK_IS_EDITABLE(focusw))
 		gtk_editable_delete_selection(GTK_EDITABLE(focusw));
-	else
-	if (IS_SCINTILLA(focusw) && doc != NULL && sci_has_selection(doc->editor->sci))
-		sci_clear(doc->editor->sci);
-	else
-	if (GTK_IS_TEXT_VIEW(focusw))
+	else if (IS_SCINTILLA(focusw) && doc != NULL && sci_has_selection(doc->editor->sci))
+		geany_scintilla_clear(GEANY_SCINTILLA(doc->editor->sci));
+	else if (GTK_IS_TEXT_VIEW(focusw))
 	{
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(
 			GTK_TEXT_VIEW(focusw));

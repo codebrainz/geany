@@ -55,11 +55,6 @@ gint 				sci_get_current_position	(ScintillaObject *sci);
 void 				sci_set_current_position	(ScintillaObject *sci, gint position, gboolean scroll_to_caret);
 void 				sci_set_current_line		(ScintillaObject *sci, gint line);
 
-void 				sci_cut						(ScintillaObject *sci);
-void 				sci_copy					(ScintillaObject *sci);
-void 				sci_paste					(ScintillaObject *sci);
-void 				sci_clear					(ScintillaObject *sci);
-
 gint				sci_get_selection_start		(ScintillaObject *sci);
 gint				sci_get_selection_end		(ScintillaObject *sci);
 void 				sci_replace_sel				(ScintillaObject *sci, const gchar *text);
