@@ -802,3 +802,35 @@ geany_scintilla_set_whitespace_visible(GeanyScintilla *sci, gboolean visible)
 			geany_scintilla_pspecs[PROP_WHITESPACE_VISIBLE]);
 	}
 }
+
+
+void
+geany_scintilla_cut(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_CUT, 0, 0);
+}
+
+
+void
+geany_scintilla_copy(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_COPY, 0, 0);
+}
+
+
+void
+geany_scintilla_paste(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_PASTE, 0, 0);
+}
+
+
+void
+geany_scintilla_clear(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_CLEAR, 0, 0);
+}

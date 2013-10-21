@@ -102,6 +102,11 @@ void geany_scintilla_set_eol_visible(GeanyScintilla *sci, gboolean eol_visible);
 gboolean geany_scintilla_get_whitespace_visible(GeanyScintilla *sci);
 void geany_scintilla_set_whitespace_visible(GeanyScintilla *sci, gboolean visible);
 
+void geany_scintilla_cut(GeanyScintilla *sci);
+void geany_scintilla_copy(GeanyScintilla *sci);
+void geany_scintilla_paste(GeanyScintilla *sci);
+void geany_scintilla_clear(GeanyScintilla *sci);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */
