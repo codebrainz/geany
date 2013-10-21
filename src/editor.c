@@ -4534,7 +4534,7 @@ void editor_set_indent(GeanyEditor *editor, GeanyIndentType type, gint width)
 
 	editor->indent_type = type;
 	editor->indent_width = width;
-	sci_set_use_tabs(sci, use_tabs);
+	geany_scintilla_set_use_tabs(GEANY_SCINTILLA(sci), use_tabs);
 
 	if (type == GEANY_INDENT_TYPE_BOTH)
 	{
@@ -4554,7 +4554,8 @@ void editor_set_indent(GeanyEditor *editor, GeanyIndentType type, gint width)
 	SSM(sci, SCI_SETINDENT, width, 0);
 
 	/* remove indent spaces on backspace, if using any spaces to indent */
-	SSM(sci, SCI_SETBACKSPACEUNINDENTS, type != GEANY_INDENT_TYPE_TABS, 0);
+	geany_scintilla_set_backspace_unindents(GEANY_SCINTILLA(sci),
+		type != GEANY_INDENT_TYPE_TABS);
 }
 
 
@@ -5021,7 +5022,7 @@ void editor_apply_update_prefs(GeanyEditor *editor)
 
 	/* update indent width, tab width */
 	editor_set_indent(editor, editor->indent_type, editor->indent_width);
-	sci_set_tab_indents(sci, editor_prefs.use_tab_to_indent);
+	geany_scintilla_set_tab_indents(GEANY_SCINTILLA(sci), editor_prefs.use_tab_to_indent);
 
 	sci_assign_cmdkey(sci, SCK_HOME | (SCMOD_SHIFT << 16),
 		editor_prefs.smart_home_key ? SCI_VCHOMEEXTEND : SCI_HOMEEXTEND);

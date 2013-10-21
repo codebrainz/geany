@@ -953,18 +953,6 @@ gint sci_get_overtype(ScintillaObject *sci)
 }
 
 
-void sci_set_tab_indents(ScintillaObject *sci, gboolean set)
-{
-	SSM(sci, SCI_SETTABINDENTS, set != FALSE, 0);
-}
-
-
-void sci_set_use_tabs(ScintillaObject *sci, gboolean set)
-{
-	SSM(sci, SCI_SETUSETABS, set != FALSE, 0);
-}
-
-
 gint sci_get_pos_at_line_sel_start(ScintillaObject *sci, gint line)
 {
 	return (gint) SSM(sci, SCI_GETLINESELSTARTPOSITION, (uptr_t) line, 0);

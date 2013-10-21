@@ -142,8 +142,6 @@ void				sci_set_autoc_max_height	(ScintillaObject *sci, gint val);
 gint				sci_find_matching_brace		(ScintillaObject *sci, gint pos);
 
 gint				sci_get_overtype			(ScintillaObject *sci);
-void				sci_set_tab_indents			(ScintillaObject *sci, gboolean set);
-void				sci_set_use_tabs			(ScintillaObject *sci, gboolean set);
 
 void				sci_set_scrollbar_mode		(ScintillaObject *sci, gboolean visible);
 void				sci_set_caret_policy_x		(ScintillaObject *sci, gint policy, gint slop);
