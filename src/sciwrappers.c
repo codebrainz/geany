@@ -33,6 +33,7 @@
 
 #include <string.h>
 
+#include "geanyscintilla.h"
 #include "geany.h"
 
 #include "sciwrappers.h"
@@ -130,9 +131,7 @@ void sci_add_text(ScintillaObject *sci, const gchar *text)
  * @param text Text. */
 void sci_set_text(ScintillaObject *sci, const gchar *text)
 {
-	if( text != NULL ){ /* if null text is passed to scintilla will segfault */
-		SSM(sci, SCI_SETTEXT, 0, (sptr_t) text);
-	}
+	geany_scintilla_set_text(GEANY_SCINTILLA(sci), text);
 }
 
 
@@ -537,7 +536,9 @@ gchar *sci_get_line(ScintillaObject *sci, gint line_num)
  * @param text Text buffer; must be allocated @a len + 1 bytes for null-termination. */
 void sci_get_text(ScintillaObject *sci, gint len, gchar *text)
 {
-	SSM(sci, SCI_GETTEXT, (uptr_t) len, (sptr_t) text);
+	const gchar *cur_text = geany_scintilla_get_text(GEANY_SCINTILLA(sci));
+	if (cur_text != NULL)
+		strncpy(text, cur_text, len + 1);
 }
 
 
@@ -552,14 +553,14 @@ void sci_get_text(ScintillaObject *sci, gint len, gchar *text)
  */
 gchar *sci_get_contents(ScintillaObject *sci, gint buffer_len)
 {
-	gchar *text;
-
+	GString *out_string;
+	
 	if (buffer_len < 0)
-		buffer_len = sci_get_length(sci) + 1;
+		buffer_len = geany_scintilla_get_text_length(GEANY_SCINTILLA(sci));
 
-	text = g_malloc(buffer_len);
-	SSM(sci, SCI_GETTEXT, (uptr_t) buffer_len, (sptr_t) text);
-	return text;
+	geany_scintilla_get_text_range_string(GEANY_SCINTILLA(sci), out_string, 0, buffer_len);
+
+	return g_string_free(out_string, FALSE);
 }
 
 
@@ -875,11 +876,13 @@ void sci_clear_cmdkey(ScintillaObject *sci, gint key)
  * @param text Text will be zero terminated and must be allocated (end - start + 1) bytes. */
 void sci_get_text_range(ScintillaObject *sci, gint start, gint end, gchar *text)
 {
-	struct Sci_TextRange tr;
-	tr.chrg.cpMin = start;
-	tr.chrg.cpMax = end;
-	tr.lpstrText = text;
-	SSM(sci, SCI_GETTEXTRANGE, 0, (long) &tr);
+	const gchar *cur_text = geany_scintilla_get_text_range(GEANY_SCINTILLA(sci), start, end);
+	if (cur_text != NULL)
+	{
+		gsize len = end - start;
+		strncpy(text, cur_text, len);
+		text[len] = '\0';
+	}
 }
 
 
@@ -893,13 +896,11 @@ void sci_get_text_range(ScintillaObject *sci, gint start, gint end, gchar *text)
  */
 gchar *sci_get_contents_range(ScintillaObject *sci, gint start, gint end)
 {
-	gchar *text;
-
+	GString *out_string;
 	g_return_val_if_fail(start < end, NULL);
-
-	text = g_malloc((gsize) (end - start) + 1);
-	sci_get_text_range(sci, start, end, text);
-	return text;
+	out_string = g_string_sized_new(end - start);
+	geany_scintilla_get_text_range_string(GEANY_SCINTILLA(sci), out_string, start, end);
+	return g_string_free(out_string, FALSE);
 }
 
 

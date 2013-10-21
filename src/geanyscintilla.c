@@ -17,6 +17,7 @@ enum
 	PROP_EDGE_MODE,
 	PROP_EDGE_COLUMN,
 	PROP_EDGE_COLOR,
+	PROP_TEXT,
 	N_PROPERTIES
 };
 
@@ -81,6 +82,10 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"The colour of the edge marker", GDK_TYPE_COLOR,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_TEXT] =
+		g_param_spec_string("text", "Text", "The text in the editor", "",
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -122,6 +127,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_EDGE_COLOR:
 			geany_scintilla_set_edge_color(sci, g_value_get_boxed(value));
 			break;
+		case PROP_TEXT:
+			geany_scintilla_set_text(sci, g_value_get_string(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -154,6 +162,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			g_value_set_boxed(value, &color);
 			break;
 		}
+		case PROP_TEXT:
+			g_value_set_string(value, geany_scintilla_get_text(sci));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -172,11 +183,14 @@ on_scintilla_notify(GeanyScintilla *sci, guint id, struct SCNotification *notif,
 	switch (notif->nmhdr.code)
 	{
 		case SCN_MODIFIED:
-			if ((notif->modificationType & SC_MOD_INSERTTEXT ||
-			    notif->modificationType & SC_MOD_DELETETEXT) &&
-			    notif->linesAdded != 0)
+			if (notif->modificationType & SC_MOD_INSERTTEXT ||
+			    notif->modificationType & SC_MOD_DELETETEXT)
 			{
-				geany_scintilla_update_line_numbers(sci);
+				if (notif->linesAdded != 0)
+					geany_scintilla_update_line_numbers(sci);
+				/* Emit "notify::text" when the buffer text changes */
+				g_object_notify_by_pspec(G_OBJECT(sci),
+					geany_scintilla_pspecs[PROP_TEXT]);
 			}
 			break;
 		case SCN_ZOOM:
@@ -357,4 +371,84 @@ geany_scintilla_set_edge_color(GeanyScintilla *sci, const GdkColor *color)
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_EDGE_COLOR]);
 	}
+}
+
+
+/* NOTE: returned pointer is invalidated as soon as any changes are made
+ * to the Scintilla buffer. */
+const gchar *
+geany_scintilla_get_text(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), NULL);
+	return (const gchar*) SSM(sci, SCI_GETCHARACTERPOINTER, 0, 0);
+}
+
+
+/* Like _get_text() except puts a copy of the text into supplied string */
+void
+geany_scintilla_get_text_string(GeanyScintilla *sci, GString *out_string)
+{
+	const gchar *text;
+
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	g_return_if_fail(out_string != NULL);
+
+	text = geany_scintilla_get_text(sci);
+	if (text != NULL)
+	{
+		g_string_set_size(out_string, SSM(sci, SCI_GETLENGTH, 0, 0));
+		g_string_assign(out_string, text);
+	}
+}
+
+
+/* NOTE: returned pointer is invalidated as soon as any changes are made
+ * to the Scintilla buffer, also the returned string is not zero-terminated. */
+const gchar *
+geany_scintilla_get_text_range(GeanyScintilla *sci, guint start, guint end)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), NULL);
+	return (const gchar*) SSM(sci, SCI_GETRANGEPOINTER, start, end - start);
+}
+
+
+void
+geany_scintilla_get_text_range_string(GeanyScintilla *sci, GString *out_string,
+	guint start, guint end)
+{
+	struct Sci_TextRange range;
+	gsize len = end - start;
+
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	g_return_if_fail(out_string != NULL);
+
+	g_string_set_size(out_string, len + 1);
+	range.chrg.cpMin = start;
+	range.chrg.cpMax = end;
+	range.lpstrText = out_string->str;
+	g_string_set_size(out_string, SSM(sci, SCI_GETTEXTRANGE, 0, &range));
+}
+
+
+void
+geany_scintilla_set_text(GeanyScintilla *sci, const gchar *text)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+
+	if (text == NULL)
+		text = "";
+
+	/* TODO: check if this is too slow to be worth having correct property
+	 * notifications. */
+	if (g_strcmp0(text, geany_scintilla_get_text(sci)) != 0)
+	{
+		SSM(sci, SCI_SETTEXT, 0, text);
+		g_object_notify_by_pspec(G_OBJECT(sci), geany_scintilla_pspecs[PROP_TEXT]);
+	}
+}
+
+guint geany_scintilla_get_text_length(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), 0);
+	return SSM(sci, SCI_GETLENGTH, 0, 0);
 }

@@ -55,6 +55,14 @@ void geany_scintilla_set_edge_column(GeanyScintilla *sci, guint column);
 void geany_scintilla_get_edge_color(GeanyScintilla *sci, GdkColor *color);
 void geany_scintilla_set_edge_color(GeanyScintilla *sci, const GdkColor *color);
 
+const gchar *geany_scintilla_get_text(GeanyScintilla *sci);
+void geany_scintilla_get_text_string(GeanyScintilla *sci, GString *out_string);
+const gchar *geany_scintilla_get_text_range(GeanyScintilla *sci, guint start, guint end);
+void geany_scintilla_get_text_range_string(GeanyScintilla *sci, GString *out_string,
+	guint start, guint end);
+void geany_scintilla_set_text(GeanyScintilla *sci, const gchar *text);
+guint geany_scintilla_get_text_length(GeanyScintilla *sci);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */
