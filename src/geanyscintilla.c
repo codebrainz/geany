@@ -1068,3 +1068,22 @@ geany_scintilla_set_line_wrapping_enabled(GeanyScintilla *sci, gboolean enabled)
 			geany_scintilla_pspecs[PROP_LINE_WRAPPING_ENABLED]);
 	}
 }
+
+
+void
+geany_scintilla_goto_position(GeanyScintilla *sci, guint pos, gboolean unfold)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (unfold)
+		SSM(sci, SCI_ENSUREVISIBLE, SSM(sci, SCI_LINEFROMPOSITION, pos, 0), 0);
+	SSM(sci, SCI_GOTOPOS, pos, 0);
+}
+
+
+void
+geany_scintilla_goto_line(GeanyScintilla *sci, guint line)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_ENSUREVISIBLE, line, 0);
+	SSM(sci, SCI_GOTOLINE, line, 0);
+}

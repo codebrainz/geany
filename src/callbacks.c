@@ -1236,7 +1236,7 @@ G_MODULE_EXPORT void on_comments_changelog_activate(GtkMenuItem *menuitem, gpoin
 	geany_scintilla_insert_text(GEANY_SCINTILLA(doc->editor->sci), 0, text);
 	/* sets the cursor to the right position to type the changelog text,
 	 * the template has 21 chars + length of name and email */
-	sci_goto_pos(doc->editor->sci, 21 + strlen(template_prefs.developer) + strlen(template_prefs.mail), TRUE);
+	geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), 21 + strlen(template_prefs.developer) + strlen(template_prefs.mail), TRUE);
 	geany_scintilla_end_undo_action(GEANY_SCINTILLA(doc->editor->sci));
 
 	g_free(text);
@@ -1258,7 +1258,7 @@ G_MODULE_EXPORT void on_comments_fileheader_activate(GtkMenuItem *menuitem, gpoi
 
 	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(doc->editor->sci));
 	geany_scintilla_insert_text(GEANY_SCINTILLA(doc->editor->sci), 0, text);
-	sci_goto_pos(doc->editor->sci, 0, FALSE);
+	geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), 0, FALSE);
 	geany_scintilla_end_undo_action(GEANY_SCINTILLA(doc->editor->sci));
 	g_free(text);
 }
@@ -1312,7 +1312,7 @@ G_MODULE_EXPORT void on_insert_date_activate(GtkMenuItem *menuitem, gpointer use
 		geany_scintilla_begin_undo_action(GEANY_SCINTILLA(doc->editor->sci));;
 		geany_scintilla_insert_text(GEANY_SCINTILLA(doc->editor->sci),
 			editor_info.click_pos, time_str);
-		sci_goto_pos(doc->editor->sci, editor_info.click_pos + strlen(time_str), FALSE);
+		geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), editor_info.click_pos + strlen(time_str), FALSE);
 		geany_scintilla_end_undo_action(GEANY_SCINTILLA(doc->editor->sci));
 		g_free(time_str);
 	}
@@ -1352,7 +1352,7 @@ G_MODULE_EXPORT void on_insert_include_activate(GtkMenuItem *menuitem, gpointer 
 	geany_scintilla_end_undo_action(GEANY_SCINTILLA(doc->editor->sci));
 	g_free(text);
 	if (pos >= 0)
-		sci_goto_pos(doc->editor->sci, pos, FALSE);
+		geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), pos, FALSE);
 }
 
 

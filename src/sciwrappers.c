@@ -582,13 +582,6 @@ gboolean sci_has_selection(ScintillaObject *sci)
 }
 
 
-void sci_goto_pos(ScintillaObject *sci, gint pos, gboolean unfold)
-{
-	if (unfold) SSM(sci, SCI_ENSUREVISIBLE, (uptr_t) SSM(sci, SCI_LINEFROMPOSITION, (uptr_t) pos, 0), 0);
-	SSM(sci, SCI_GOTOPOS, (uptr_t) pos, 0);
-}
-
-
 void sci_set_search_anchor(ScintillaObject *sci)
 {
 	SSM(sci, SCI_SEARCHANCHOR, 0, 0);
@@ -679,8 +672,10 @@ void sci_set_font(ScintillaObject *sci, gint style, const gchar *font, gint size
  */
 void sci_goto_line(ScintillaObject *sci, gint line, gboolean unfold)
 {
-	if (unfold) SSM(sci, SCI_ENSUREVISIBLE, (uptr_t) line, 0);
-	SSM(sci, SCI_GOTOLINE, (uptr_t) line, 0);
+	if (unfold)
+		geany_scintilla_goto_line(GEANY_SCINTILLA(sci), line);
+	else
+		SSM(sci, SCI_GOTOLINE, (uptr_t) line, 0);
 }
 
 

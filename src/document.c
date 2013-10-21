@@ -855,7 +855,7 @@ static gint set_cursor_position(GeanyEditor *editor, gint pos)
 {
 	if (cl_options.goto_line >= 0)
 	{	/* goto line which was specified on command line and then undefine the line */
-		sci_goto_line(editor->sci, cl_options.goto_line - 1, TRUE);
+		geany_scintilla_goto_line(GEANY_SCINTILLA(editor->sci), cl_options.goto_line - 1);
 		editor->scroll_percent = 0.5F;
 		cl_options.goto_line = -1;
 	}
@@ -1888,7 +1888,7 @@ gboolean document_search_bar_find(GeanyDocument *doc, const gchar *text, gint fl
 			ui_set_statusbar(FALSE, _("\"%s\" was not found."), text);
 		}
 		utils_beep();
-		sci_goto_pos(doc->editor->sci, start_pos, FALSE);	/* clear selection */
+		geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), start_pos, FALSE);	/* clear selection */
 		return FALSE;
 	}
 }
@@ -1923,9 +1923,9 @@ gint document_find_text(GeanyDocument *doc, const gchar *text, const gchar *orig
 	if ((selection_end - selection_start) > 0)
 	{ /* there's a selection so go to the end */
 		if (search_backwards)
-			sci_goto_pos(doc->editor->sci, selection_start, TRUE);
+			geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), selection_start, TRUE);
 		else
-			sci_goto_pos(doc->editor->sci, selection_end, TRUE);
+			geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), selection_end, TRUE);
 	}
 
 	sci_set_search_anchor(doc->editor->sci);
@@ -2010,9 +2010,9 @@ gint document_replace_text(GeanyDocument *doc, const gchar *find_text, const gch
 	/* there's a selection so go to the start before finding to search through it
 	 * this ensures there is a match */
 	if (search_backwards)
-		sci_goto_pos(doc->editor->sci, selection_end, TRUE);
+		geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), selection_end, TRUE);
 	else
-		sci_goto_pos(doc->editor->sci, selection_start, TRUE);
+		geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), selection_start, TRUE);
 
 	search_pos = document_find_text(doc, find_text, original_find_text, flags, search_backwards, &match, TRUE, NULL);
 	/* return if the original selected text did not match (at the start of the selection) */
@@ -2095,7 +2095,7 @@ document_replace_range(GeanyDocument *doc, const gchar *find_text, const gchar *
 	if (count > 0)
 	{	/* scroll last match in view, will destroy the existing selection */
 		if (scroll_to_match)
-			sci_goto_pos(sci, ttf.chrg.cpMin, TRUE);
+			geany_scintilla_goto_position(GEANY_SCINTILLA(sci), ttf.chrg.cpMin, TRUE);
 
 		if (new_range_end != NULL)
 			*new_range_end = ttf.chrg.cpMax;
@@ -2177,7 +2177,7 @@ void document_replace_sel(GeanyDocument *doc, const gchar *find_text, const gcha
 		if (selection_mode == SC_SEL_RECTANGLE && selected_lines > 1)
 		{
 			/* now we can scroll to the selection and destroy it because we rebuild it later */
-			/*sci_goto_pos(doc->editor->sci, selection_start, FALSE);*/
+			/*geany_scintilla_goto_position(GEANY_SCINTILLA(doc->editor->sci), selection_start, FALSE);*/
 
 			/* Note: the selection will be wrapped to last_line + 1 if max_column is greater than
 			 * the highest column on the last line. The wrapped selection is completely different

@@ -37,6 +37,7 @@ void				sci_insert_text				(ScintillaObject *sci, gint pos, const gchar *text);
 void 				sci_start_undo_action		(ScintillaObject *sci);
 void 				sci_end_undo_action			(ScintillaObject *sci);
 gboolean			sci_has_selection			(ScintillaObject *sci);
+void				sci_goto_line				(ScintillaObject *sci, gint line, gboolean unfold);
 
 void				sci_set_marker_at_line		(ScintillaObject *sci, gint line_number, gint marker);
 void				sci_delete_marker_at_line	(ScintillaObject *sci, gint line_number, gint marker);
@@ -92,7 +93,6 @@ gchar				sci_get_char_at				(ScintillaObject *sci, gint pos);
 void				sci_set_savepoint			(ScintillaObject *sci);
 void				sci_set_indentation_guides	(ScintillaObject *sci, gint mode);
 void				sci_use_popup				(ScintillaObject *sci, gboolean enable);
-void				sci_goto_pos				(ScintillaObject *sci, gint pos, gboolean unfold);
 void				sci_set_search_anchor		(ScintillaObject *sci);
 void				sci_set_anchor				(ScintillaObject *sci, gint pos);
 void				sci_scroll_caret			(ScintillaObject *sci);
@@ -102,7 +102,6 @@ gint				sci_search_next				(ScintillaObject *sci, gint flags, const gchar *text)
 gint				sci_search_prev				(ScintillaObject *sci, gint flags, const gchar *text);
 gint				sci_find_text				(ScintillaObject *sci, gint flags, struct Sci_TextToFind *ttf);
 void				sci_set_font				(ScintillaObject *sci, gint style, const gchar *font, gint size);
-void				sci_goto_line				(ScintillaObject *sci, gint line, gboolean unfold);
 void				sci_marker_delete_all		(ScintillaObject *sci, gint marker);
 gint				sci_get_style_at			(ScintillaObject *sci, gint position);
 void				sci_set_symbol_margin		(ScintillaObject *sci, gboolean set);
