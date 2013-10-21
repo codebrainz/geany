@@ -129,6 +129,9 @@ void geany_scintilla_set_enable_overtype(GeanyScintilla *sci, gboolean overtype)
 
 gboolean geany_scintilla_get_has_selection(GeanyScintilla *sci);
 
+gboolean geany_scintilla_get_read_only(GeanyScintilla *sci);
+void geany_scintilla_set_read_only(GeanyScintilla *sci, gboolean read_only);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */

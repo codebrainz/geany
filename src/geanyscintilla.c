@@ -35,6 +35,7 @@ enum
 	PROP_TAB_INDENTS,
 	PROP_BACKSPACE_UNINDENTS,
 	PROP_ENABLE_OVERTYPE,
+	PROP_READ_ONLY,
 	N_PROPERTIES
 };
 
@@ -162,6 +163,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether overtype/insert mode is enabled", FALSE,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_READ_ONLY] =
+		g_param_spec_boolean("read-only", "Read-Only",
+			"Whether the document is read-only (locked) or read-write", FALSE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -237,6 +243,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_ENABLE_OVERTYPE:
 			geany_scintilla_set_enable_overtype(sci, g_value_get_boolean(value));
 			break;
+		case PROP_READ_ONLY:
+			geany_scintilla_set_read_only(sci, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -311,6 +320,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_ENABLE_OVERTYPE:
 			g_value_set_boolean(value, geany_scintilla_get_enable_overtype(sci));
+			break;
+		case PROP_READ_ONLY:
+			g_value_set_boolean(value, geany_scintilla_get_read_only(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -1001,4 +1013,25 @@ geany_scintilla_get_has_selection(GeanyScintilla *sci)
 {
 	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
 	return (SSM(sci, SCI_GETSELECTIONEND, 0, 0) - SSM(sci, SCI_GETSELECTIONSTART, 0, 0) > 0);
+}
+
+
+gboolean
+geany_scintilla_get_read_only(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return SSM(sci, SCI_GETREADONLY, 0, 0);
+}
+
+
+void
+geany_scintilla_set_read_only(GeanyScintilla *sci, gboolean read_only)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (read_only != geany_scintilla_get_read_only(sci))
+	{
+		SSM(sci, SCI_SETREADONLY, read_only, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_READ_ONLY]);
+	}
 }
