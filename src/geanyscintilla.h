@@ -141,6 +141,9 @@ void geany_scintilla_goto_line(GeanyScintilla *sci, guint line);
 guint geany_scintilla_get_current_position(GeanyScintilla *sci);
 void geany_scintilla_set_current_position(GeanyScintilla *sci, guint pos);
 
+guint geany_scintilla_get_current_line(GeanyScintilla *sci);
+void geany_scintilla_set_current_line(GeanyScintilla *sci, guint line);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */

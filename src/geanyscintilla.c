@@ -13,6 +13,7 @@ struct GeanyScintillaPrivate_
 	gboolean modified;
 	gboolean undo_collection;
 	guint current_pos;
+	guint current_line;
 };
 
 enum
@@ -39,6 +40,7 @@ enum
 	PROP_READ_ONLY,
 	PROP_LINE_WRAPPING_ENABLED,
 	PROP_CURRENT_POSITION,
+	PROP_CURRENT_LINE,
 	N_PROPERTIES
 };
 
@@ -182,6 +184,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"The position of the caret", 0, G_MAXUINT, 0,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_CURRENT_LINE] =
+		g_param_spec_uint("current-line", "Current Caret Line",
+			"The line where the caret is", 0, G_MAXUINT, 0,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -266,6 +273,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_CURRENT_POSITION:
 			geany_scintilla_set_current_position(sci, g_value_get_uint(value));
 			break;
+		case PROP_CURRENT_LINE:
+			geany_scintilla_set_current_line(sci, g_value_get_uint(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -349,6 +359,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_CURRENT_POSITION:
 			g_value_set_uint(value, geany_scintilla_get_current_position(sci));
+			break;
+		case PROP_CURRENT_LINE:
+			g_value_set_uint(value, geany_scintilla_get_current_line(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -1095,6 +1108,13 @@ geany_scintilla_update_current_pos(GeanyScintilla *sci)
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_CURRENT_POSITION]);
 	}
+	new_pos = SSM(sci, SCI_LINEFROMPOSITION, new_pos, 0);
+	if (new_pos != sci->priv->current_line)
+	{
+		sci->priv->current_line = new_pos;
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_CURRENT_LINE]);
+	}
 }
 
 
@@ -1133,4 +1153,20 @@ geany_scintilla_set_current_position(GeanyScintilla *sci, guint pos)
 	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
 	SSM(sci, SCI_SETCURRENTPOS, pos, 0);
 	geany_scintilla_update_current_pos(sci);
+}
+
+
+guint
+geany_scintilla_get_current_line(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), 0);
+	return sci->priv->current_line;
+}
+
+
+void
+geany_scintilla_set_current_line(GeanyScintilla *sci, guint line)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	geany_scintilla_set_current_position(sci, SSM(sci, SCI_POSITIONFROMLINE, line, 0));
 }
