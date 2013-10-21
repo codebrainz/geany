@@ -28,6 +28,7 @@
 
 #include "geany.h"
 #include "search.h"
+#include "geanyscintilla.h"
 #include "prefs.h"
 #include "support.h"
 #include "utils.h"
@@ -1230,7 +1231,7 @@ gint search_mark_all(GeanyDocument *doc, const gchar *search_text, gint flags)
 		return 0;
 
 	ttf.chrg.cpMin = 0;
-	ttf.chrg.cpMax = sci_get_length(doc->editor->sci);
+	ttf.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci));
 	ttf.lpstrText = (gchar *)search_text;
 
 	matches = find_range(doc->editor->sci, flags, &ttf);
@@ -1950,7 +1951,7 @@ static gint find_regex(ScintillaObject *sci, guint pos, GRegex *regex, GeanyMatc
 	GMatchInfo *minfo;
 	gint ret = -1;
 
-	g_return_val_if_fail(pos <= (guint)sci_get_length(sci), -1);
+	g_return_val_if_fail(pos <= geany_scintilla_get_text_length(GEANY_SCINTILLA(sci)), -1);
 
 	/* Warning: any SCI calls will invalidate 'text' after calling SCI_GETCHARACTERPOINTER */
 	text = (void*)scintilla_send_message(sci, SCI_GETCHARACTERPOINTER, 0, 0);
@@ -2130,7 +2131,7 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text, gi
 	short_file_name = g_path_get_basename(DOC_FILENAME(doc));
 
 	ttf.chrg.cpMin = 0;
-	ttf.chrg.cpMax = sci_get_length(doc->editor->sci);
+	ttf.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci));
 	ttf.lpstrText = (gchar *)search_text;
 
 	matches = find_range(doc->editor->sci, flags, &ttf);

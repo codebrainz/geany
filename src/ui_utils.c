@@ -336,7 +336,7 @@ void ui_update_statusbar(GeanyDocument *doc, gint pos)
 		/* Add temporary fix for sci infinite loop in Document::GetColumn(int)
 		 * when current pos is beyond document end (can occur when removing
 		 * blocks of selected lines especially esp. brace sections near end of file). */
-		if (pos <= sci_get_length(doc->editor->sci))
+		if (pos <= geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci)))
 			col = sci_get_col_from_position(doc->editor->sci, pos);
 		else
 			col = 0;

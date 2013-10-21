@@ -290,7 +290,7 @@ gint sci_marker_previous(ScintillaObject *sci, gint line, gint marker_mask, gboo
 	marker_line = (gint) SSM(sci, SCI_MARKERPREVIOUS, (uptr_t) line, marker_mask);
 	if (wrap && marker_line == -1)
 	{
-		gint len = sci_get_length(sci);
+		gint len = geany_scintilla_get_text_length(GEANY_SCINTILLA(sci));
 		gint last_line = sci_get_line_from_position(sci, len - 1);
 
 		marker_line = (gint) SSM(sci, SCI_MARKERPREVIOUS, (uptr_t) last_line, marker_mask);
@@ -469,7 +469,7 @@ void sci_replace_sel(ScintillaObject *sci, const gchar *text)
  * @return Length. */
 gint sci_get_length(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETLENGTH, 0, 0);
+	return geany_scintilla_get_text_length(GEANY_SCINTILLA(sci));
 }
 
 
@@ -532,7 +532,7 @@ gchar *sci_get_line(ScintillaObject *sci, gint line_num)
  * Use sci_get_contents() instead.
  *
  * @param sci Scintilla widget.
- * @param len Length of @a text buffer, usually sci_get_length() + 1.
+ * @param len Length of @a text buffer, usually geany_scintilla_get_text_length() + 1.
  * @param text Text buffer; must be allocated @a len + 1 bytes for null-termination. */
 void sci_get_text(ScintillaObject *sci, gint len, gchar *text)
 {
@@ -545,7 +545,7 @@ void sci_get_text(ScintillaObject *sci, gint len, gchar *text)
 /** Allocates and fills a buffer with text from the start of the document.
  * @param sci Scintilla widget.
  * @param buffer_len Buffer length to allocate, including the terminating
- * null char, e.g. sci_get_length() + 1. Alternatively use @c -1 to get all
+ * null char, e.g. geany_scintilla_get_text_length() + 1. Alternatively use @c -1 to get all
  * text (since Geany 1.23).
  * @return A copy of the text. Should be freed when no longer needed.
  *

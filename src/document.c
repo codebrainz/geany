@@ -890,7 +890,7 @@ static gboolean detect_tabs_and_spaces(GeanyEditor *editor)
 	g_free(soft_tab);
 
 	ttf.chrg.cpMin = 0;
-	ttf.chrg.cpMax = sci_get_length(sci);
+	ttf.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(sci));
 	ttf.lpstrText = regex;
 	while (1)
 	{
@@ -1729,7 +1729,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	/* notify plugins which may wish to modify the document before it's saved */
 	g_signal_emit_by_name(geany_object, "document-before-save", doc);
 
-	len = sci_get_length(doc->editor->sci) + 1;
+	len = geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci)) + 1;
 	if (doc->has_bom && encodings_is_unicode_charset(doc->encoding))
 	{	/* always write a UTF-8 BOM because in this moment the text itself is still in UTF-8
 		 * encoding, it will be converted to doc->encoding below and this conversion
@@ -1837,7 +1837,7 @@ gboolean document_search_bar_find(GeanyDocument *doc, const gchar *text, gint fl
 
 	/* search cursor to end or start */
 	ttf.chrg.cpMin = start_pos;
-	ttf.chrg.cpMax = backwards ? 0 : sci_get_length(doc->editor->sci);
+	ttf.chrg.cpMax = backwards ? 0 : geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci));
 	ttf.lpstrText = (gchar *)text;
 	search_pos = sci_find_text(doc->editor->sci, flags, &ttf);
 
@@ -1846,7 +1846,7 @@ gboolean document_search_bar_find(GeanyDocument *doc, const gchar *text, gint fl
 	{
 		if (backwards)
 		{
-			ttf.chrg.cpMin = sci_get_length(doc->editor->sci);
+			ttf.chrg.cpMin = geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci));
 			ttf.chrg.cpMax = start_pos;
 		}
 		else
@@ -1940,7 +1940,7 @@ gint document_find_text(GeanyDocument *doc, const gchar *text, const gchar *orig
 	}
 	else
 	{
-		gint sci_len = sci_get_length(doc->editor->sci);
+		gint sci_len = geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci));
 
 		/* if we just searched the whole text, give up searching. */
 		if ((selection_end == 0 && ! search_backwards) ||
@@ -2212,7 +2212,7 @@ gint document_replace_all(GeanyDocument *doc, const gchar *find_text, const gcha
 	if (! *find_text)
 		return FALSE;
 
-	len = sci_get_length(doc->editor->sci);
+	len = geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci));
 	count = document_replace_range(
 			doc, find_text, replace_text, flags, 0, len, TRUE, NULL);
 
@@ -2273,7 +2273,7 @@ void document_update_tags(GeanyDocument *doc)
 		return;
 	}
 
-	len = sci_get_length(doc->editor->sci);
+	len = geany_scintilla_get_text_length(GEANY_SCINTILLA(doc->editor->sci));
 	/* tm_source_file_buffer_update() below don't support 0-length data,
 	 * so just empty the tags array and leave */
 	if (len < 1)

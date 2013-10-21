@@ -1548,7 +1548,7 @@ static gint brace_match(ScintillaObject *sci, gint pos)
 		direction = 1;
 
 	pos += direction;
-	while ((pos >= 0) && (pos < sci_get_length(sci)))
+	while ((pos >= 0) && (pos < geany_scintilla_get_text_length(GEANY_SCINTILLA(sci))))
 	{
 		chAtPos = sci_get_char_at(sci, pos);
 		styAtPos = sci_get_style_at(sci, pos);
@@ -2114,7 +2114,7 @@ static GSList *get_doc_words(ScintillaObject *sci, gchar *root, gsize rootlen)
 	GSList *words = NULL;
 	struct Sci_TextToFind ttf;
 
-	len = sci_get_length(sci);
+	len = geany_scintilla_get_text_length(GEANY_SCINTILLA(sci));
 	current = sci_get_current_position(sci) - rootlen;
 
 	ttf.lpstrText = root;
@@ -2840,7 +2840,7 @@ static gint find_in_current_style(ScintillaObject *sci, const gchar *text, gbool
 {
 	gint start = sci_get_current_position(sci);
 	gint end = start;
-	gint len = sci_get_length(sci);
+	gint len = geany_scintilla_get_text_length(GEANY_SCINTILLA(sci));
 	gint current_style = sci_get_style_at(sci, start);
 	struct Sci_TextToFind ttf;
 
@@ -3480,7 +3480,8 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 
 	/* Check whether the comment block continues on this line */
 	indent_pos = sci_get_line_indent_position(sci, cur_line);
-	if (sci_get_style_at(sci, indent_pos) == style || indent_pos >= sci_get_length(sci))
+	if (sci_get_style_at(sci, indent_pos) == style ||
+	    indent_pos >= geany_scintilla_get_text_length(GEANY_SCINTILLA(sci)))
 	{
 		gchar *previous_line = sci_get_line(sci, cur_line - 1);
 		/* the type of comment, '*' (C/C++/Java), '+' and the others (D) */
@@ -4098,7 +4099,7 @@ void editor_indicator_clear(GeanyEditor *editor, gint indic)
 
 	g_return_if_fail(editor != NULL);
 
-	last_pos = sci_get_length(editor->sci);
+	last_pos = geany_scintilla_get_text_length(GEANY_SCINTILLA(editor->sci));
 	if (last_pos > 0)
 	{
 		sci_indicator_set(editor->sci, indic);
@@ -4341,7 +4342,7 @@ void editor_replace_tabs(GeanyEditor *editor)
 	sci_start_undo_action(editor->sci);
 	tab_len = sci_get_tab_width(editor->sci);
 	ttf.chrg.cpMin = 0;
-	ttf.chrg.cpMax = sci_get_length(editor->sci);
+	ttf.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(editor->sci));
 	ttf.lpstrText = (gchar*) "\t";
 
 	while (TRUE)
@@ -4390,7 +4391,7 @@ void editor_replace_spaces(GeanyEditor *editor)
 
 	sci_start_undo_action(editor->sci);
 	ttf.chrg.cpMin = 0;
-	ttf.chrg.cpMax = sci_get_length(editor->sci);
+	ttf.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(editor->sci));
 	ttf.lpstrText = g_strnfill(tab_len, ' ');
 
 	while (TRUE)
@@ -5128,7 +5129,7 @@ void editor_indent(GeanyEditor *editor, gboolean increase)
 		end = sci_get_selection_end(sci);
 		lstart = sci_get_line_from_position(sci, start);
 		lend = sci_get_line_from_position(sci, end);
-		if (end == sci_get_length(sci))
+		if (end == geany_scintilla_get_text_length(GEANY_SCINTILLA(sci)))
 			lend++;	/* for last line with text on it */
 
 		sci_start_undo_action(sci);

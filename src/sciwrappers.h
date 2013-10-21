@@ -27,8 +27,13 @@
 
 
 gchar*				sci_get_string				(ScintillaObject *sci, guint msg, gulong wParam);
-
 void 				sci_set_text				(ScintillaObject *sci,  const gchar *text);
+void				sci_get_text				(ScintillaObject *sci, gint len, gchar *text);
+gchar*				sci_get_contents			(ScintillaObject *sci, gint buffer_len);
+void				sci_get_text_range			(ScintillaObject *sci, gint start, gint end, gchar *text);
+gchar*				sci_get_contents_range		(ScintillaObject *sci, gint start, gint end);
+gint				sci_get_length				(ScintillaObject *sci);
+
 void 				sci_add_text				(ScintillaObject *sci,  const gchar *text);
 gboolean			sci_can_redo				(ScintillaObject *sci);
 gboolean			sci_can_undo				(ScintillaObject *sci);
@@ -80,9 +85,6 @@ void 				sci_set_selection_start		(ScintillaObject *sci, gint position);
 void				sci_set_selection_end		(ScintillaObject *sci, gint position);
 void				sci_set_selection			(ScintillaObject *sci, gint anchorPos, gint currentPos);
 
-gint				sci_get_length				(ScintillaObject *sci);
-void				sci_get_text				(ScintillaObject *sci, gint len, gchar *text);
-gchar*				sci_get_contents			(ScintillaObject *sci, gint buffer_len);
 void				sci_get_selected_text		(ScintillaObject *sci, gchar *text);
 gint				sci_get_selected_text_length(ScintillaObject *sci);
 gchar*				sci_get_selection_contents	(ScintillaObject *sci);
@@ -130,8 +132,6 @@ void				sci_set_symbol_margin		(ScintillaObject *sci, gboolean set);
 void				sci_set_codepage			(ScintillaObject *sci, gint cp);
 void				sci_clear_cmdkey			(ScintillaObject *sci, gint key);
 void				sci_assign_cmdkey			(ScintillaObject *sci, gint key, gint command);
-void				sci_get_text_range			(ScintillaObject *sci, gint start, gint end, gchar *text);
-gchar*				sci_get_contents_range		(ScintillaObject *sci, gint start, gint end);
 void				sci_selection_duplicate		(ScintillaObject *sci);
 void				sci_line_duplicate			(ScintillaObject *sci);
 void				sci_insert_text				(ScintillaObject *sci, gint pos, const gchar *text);

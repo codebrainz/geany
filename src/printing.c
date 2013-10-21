@@ -326,7 +326,7 @@ static void setup_range(DocInfo *dinfo, GtkPrintContext *ctx)
 	dinfo->fr.rc.bottom /= dinfo->sci_scale;
 
 	dinfo->fr.chrg.cpMin = 0;
-	dinfo->fr.chrg.cpMax = sci_get_length(dinfo->sci);
+	dinfo->fr.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(dinfo->sci));
 }
 
 
@@ -454,7 +454,7 @@ static void draw_page(GtkPrintOperation *operation, GtkPrintContext *context,
 	if ((guint)page_nr + 1 < dinfo->pages->len)
 		dinfo->fr.chrg.cpMax = g_array_index(dinfo->pages, gint, page_nr + 1) - 1;
 	else /* it's the last page, print 'til the end */
-		dinfo->fr.chrg.cpMax = sci_get_length(dinfo->sci);
+		dinfo->fr.chrg.cpMax = geany_scintilla_get_text_length(GEANY_SCINTILLA(dinfo->sci));
 
 	format_range(dinfo, TRUE);
 
