@@ -40,6 +40,7 @@
 
 #include "vte.h"
 #include "support.h"
+#include "geanyscintilla.h"
 #include "prefs.h"
 #include "ui_utils.h"
 #include "utils.h"
@@ -832,7 +833,7 @@ void vte_send_selection_to_vte(void)
 	doc = document_get_current();
 	g_return_if_fail(doc != NULL);
 
-	if (sci_has_selection(doc->editor->sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 	{
 		text = sci_get_selection_contents(doc->editor->sci);
 	}

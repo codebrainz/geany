@@ -343,7 +343,7 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 		editor_find_current_word(editor, editor_info.click_pos,
 			current_word, sizeof current_word, NULL);
 
-		can_goto = sci_has_selection(editor->sci) || current_word[0] != '\0';
+		can_goto = geany_scintilla_get_has_selection(GEANY_SCINTILLA(editor->sci)) || current_word[0] != '\0';
 		ui_update_popup_goto_items(can_goto);
 		ui_update_popup_copy_items(doc);
 		ui_update_insert_include_item(doc, 0);
@@ -2596,7 +2596,7 @@ gboolean editor_complete_snippet(GeanyEditor *editor, gint pos)
 	g_return_val_if_fail(editor != NULL, FALSE);
 
 	sci = editor->sci;
-	if (sci_has_selection(sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci)))
 		return FALSE;
 	/* return if we are editing an existing line (chars on right of cursor) */
 	if (keybindings_lookup_item(GEANY_KEY_GROUP_EDITOR,
@@ -4183,7 +4183,7 @@ void editor_insert_color(GeanyEditor *editor, const gchar *colour)
 {
 	g_return_if_fail(editor != NULL);
 
-	if (sci_has_selection(editor->sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(editor->sci)))
 	{
 		gint start = sci_get_selection_start(editor->sci);
 		const gchar *replacement = colour;

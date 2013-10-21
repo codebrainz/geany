@@ -994,3 +994,11 @@ geany_scintilla_set_enable_overtype(GeanyScintilla *sci, gboolean overtype)
 			geany_scintilla_pspecs[PROP_ENABLE_OVERTYPE]);
 	}
 }
+
+
+gboolean
+geany_scintilla_get_has_selection(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return (SSM(sci, SCI_GETSELECTIONEND, 0, 0) - SSM(sci, SCI_GETSELECTIONSTART, 0, 0) > 0);
+}

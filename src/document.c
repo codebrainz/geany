@@ -2856,7 +2856,7 @@ GeanyDocument *document_clone(GeanyDocument *old_doc)
 
 	g_return_val_if_fail(old_doc, NULL);
 	old_sci = old_doc->editor->sci;
-	if (sci_has_selection(old_sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(old_sci)))
 		text = sci_get_selection_contents(old_sci);
 	else
 		text = sci_get_contents(old_sci, -1);

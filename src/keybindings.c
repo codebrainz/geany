@@ -1466,7 +1466,7 @@ static gboolean cb_func_search_action(guint key_id)
 			else
 				text = get_current_word_or_sel(doc, TRUE);
 
-			if (sci_has_selection(sci))
+			if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci)))
 				search_mark_all(doc, text, SCFIND_MATCHCASE);
 			else
 				search_mark_all(doc, text, SCFIND_MATCHCASE | SCFIND_WHOLEWORD);
@@ -1619,7 +1619,7 @@ static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 {
 	ScintillaObject *sci = doc->editor->sci;
 
-	if (sci_has_selection(sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci)))
 		return sci_get_selection_contents(sci);
 
 	return read_current_word(doc, sci_word) ? g_strdup(editor_info.current_word) : NULL;
@@ -1988,7 +1988,7 @@ static void duplicate_lines(GeanyEditor *editor)
 		editor_select_lines(editor, FALSE);
 		sci_selection_duplicate(editor->sci);
 	}
-	else if (sci_has_selection(editor->sci))
+	else if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(editor->sci)))
 		sci_selection_duplicate(editor->sci);
 	else
 		sci_line_duplicate(editor->sci);
@@ -2266,7 +2266,7 @@ static void reflow_paragraph(GeanyEditor *editor)
 	}
 
 	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
-	sel = sci_has_selection(sci);
+	sel = geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci));
 	if (!sel)
 		editor_select_indent_block(editor);
 	sci_deselect_last_newline(sci);
@@ -2292,7 +2292,7 @@ static void join_paragraph(GeanyEditor *editor)
 	}
 
 	geany_scintilla_begin_undo_action(GEANY_SCINTILLA(sci));
-	sel = sci_has_selection(sci);
+	sel = geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci));
 	if (!sel)
 		editor_select_indent_block(editor);
 	sci_deselect_last_newline(sci);

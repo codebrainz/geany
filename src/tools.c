@@ -39,6 +39,7 @@
 
 #include "tools.h"
 #include "support.h"
+#include "geanyscintilla.h"
 #include "document.h"
 #include "editor.h"
 #include "sciwrappers.h"
@@ -358,7 +359,7 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 
 	g_return_if_fail(doc != NULL && command != NULL);
 
-	if (! sci_has_selection(doc->editor->sci))
+	if (! geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 		editor_select_lines(doc->editor, FALSE);
 
 	if (!g_shell_parse_argv(command, NULL, &argv, &error))
@@ -860,7 +861,7 @@ void tools_word_count(void)
 	vbox = ui_dialog_vbox_new(GTK_DIALOG(dialog));
 	gtk_widget_set_name(dialog, "GeanyDialog");
 
-	if (sci_has_selection(doc->editor->sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 	{
 		text = sci_get_selection_contents(doc->editor->sci);
 		range = _("selection");

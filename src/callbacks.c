@@ -354,7 +354,7 @@ G_MODULE_EXPORT void on_delete1_activate(GtkMenuItem *menuitem, gpointer user_da
 
 	if (GTK_IS_EDITABLE(focusw))
 		gtk_editable_delete_selection(GTK_EDITABLE(focusw));
-	else if (IS_SCINTILLA(focusw) && doc != NULL && sci_has_selection(doc->editor->sci))
+	else if (IS_SCINTILLA(focusw) && doc != NULL && geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 		geany_scintilla_clear(GEANY_SCINTILLA(doc->editor->sci));
 	else if (GTK_IS_TEXT_VIEW(focusw))
 	{
@@ -714,14 +714,14 @@ G_MODULE_EXPORT void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer us
 	g_return_if_fail(doc != NULL);
 
 	sci = doc->editor->sci;
-	if (! sci_has_selection(sci))
+	if (! geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci)))
 	{
 		keybindings_send_command(GEANY_KEY_GROUP_SELECT, GEANY_KEYS_SELECT_WORD);
 		keep_sel = FALSE;
 	}
 
 	/* either we already had a selection or we created one for current word */
-	if (sci_has_selection(sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci)))
 	{
 		gchar *result = NULL;
 		gint cmd = SCI_LOWERCASE;
@@ -892,7 +892,7 @@ static void find_usage(gboolean in_session)
 
 	g_return_if_fail(doc != NULL);
 
-	if (sci_has_selection(doc->editor->sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 	{	/* take selected text if there is a selection */
 		search_text = sci_get_selection_contents(doc->editor->sci);
 		flags = SCFIND_MATCHCASE;
@@ -929,7 +929,7 @@ static void goto_tag(gboolean definition)
 	g_return_if_fail(doc != NULL);
 
 	/* update cursor pos for navigating back afterwards */
-	if (!sci_has_selection(doc->editor->sci))
+	if (!geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 		sci_set_current_position(doc->editor->sci, editor_info.click_pos, FALSE);
 
 	/* use the keybinding callback as it checks for selections as well as current word */
@@ -1694,7 +1694,7 @@ G_MODULE_EXPORT void on_context_action1_activate(GtkMenuItem *menuitem, gpointer
 
 	g_return_if_fail(doc != NULL);
 
-	if (sci_has_selection(doc->editor->sci))
+	if (geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 	{	/* take selected text if there is a selection */
 		word = sci_get_selection_contents(doc->editor->sci);
 	}

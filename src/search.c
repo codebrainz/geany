@@ -408,7 +408,7 @@ void search_find_selection(GeanyDocument *doc, gboolean search_backwards)
 	}
 #endif
 
-	if (!s && sci_has_selection(doc->editor->sci))
+	if (!s && geany_scintilla_get_has_selection(GEANY_SCINTILLA(doc->editor->sci)))
 		s = sci_get_selection_contents(doc->editor->sci);
 
 	if (!s && search_prefs.find_selection_type != GEANY_FIND_SEL_AGAIN)

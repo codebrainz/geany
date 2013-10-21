@@ -587,10 +587,7 @@ void sci_use_popup(ScintillaObject *sci, gboolean enable)
  **/
 gboolean sci_has_selection(ScintillaObject *sci)
 {
-	if (SSM(sci, SCI_GETSELECTIONEND, 0, 0) - SSM(sci, SCI_GETSELECTIONSTART, 0, 0))
-		return TRUE;
-	else
-		return FALSE;
+	return geany_scintilla_get_has_selection(GEANY_SCINTILLA(sci));
 }
 
 

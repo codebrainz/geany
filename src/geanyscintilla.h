@@ -127,6 +127,8 @@ void geany_scintilla_set_backspace_unindents(GeanyScintilla *sci, gboolean unind
 gboolean geany_scintilla_get_enable_overtype(GeanyScintilla *sci);
 void geany_scintilla_set_enable_overtype(GeanyScintilla *sci, gboolean overtype);
 
+gboolean geany_scintilla_get_has_selection(GeanyScintilla *sci);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */
