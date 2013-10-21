@@ -110,12 +110,6 @@ void sci_end_undo_action(ScintillaObject *sci)
 }
 
 
-gint sci_get_zoom(ScintillaObject *sci)
-{
-	return (gint) SSM(sci, SCI_GETZOOM, 0, 0);
-}
-
-
 /** Sets a line marker.
  * @param sci Scintilla widget.
  * @param line_number Line number.
