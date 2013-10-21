@@ -71,6 +71,10 @@ gboolean geany_scintilla_get_can_undo(GeanyScintilla *sci);
 gboolean geany_scintilla_get_can_redo(GeanyScintilla *sci);
 void geany_scintilla_undo(GeanyScintilla *sci);
 void geany_scintilla_redo(GeanyScintilla *sci);
+void geany_scintilla_begin_undo_action(GeanyScintilla *sci);
+void geany_scintilla_end_undo_action(GeanyScintilla *sci);
+gboolean geany_scintilla_get_enable_undo_collection(GeanyScintilla *sci);
+void geany_scintilla_set_enable_undo_collection(GeanyScintilla *sci, gboolean enable);
 
 gboolean geany_scintilla_get_modified(GeanyScintilla *sci);
 

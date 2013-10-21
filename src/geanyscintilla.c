@@ -11,6 +11,7 @@ struct GeanyScintillaPrivate_
 	gboolean can_undo;
 	gboolean can_redo;
 	gboolean modified;
+	gboolean undo_collection;
 };
 
 enum
@@ -24,6 +25,7 @@ enum
 	PROP_CAN_UNDO,
 	PROP_CAN_REDO,
 	PROP_MODIFIED,
+	PROP_UNDO_COLLECTION,
 	N_PROPERTIES
 };
 
@@ -109,6 +111,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether the text in the editor is modified", FALSE,
 			G_PARAM_READABLE);
 
+	geany_scintilla_pspecs[PROP_UNDO_COLLECTION] =
+		g_param_spec_boolean("enable-undo-collection", "Enable Undo Collection",
+			"Whether to collection undo information", TRUE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -153,6 +160,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_TEXT:
 			geany_scintilla_set_text(sci, g_value_get_string(value));
 			break;
+		case PROP_UNDO_COLLECTION:
+			geany_scintilla_set_enable_undo_collection(sci, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -196,6 +206,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_MODIFIED:
 			g_value_set_boolean(value, geany_scintilla_get_modified(sci));
+			break;
+		case PROP_UNDO_COLLECTION:
+			g_value_set_boolean(value, geany_scintilla_get_enable_undo_collection(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -580,6 +593,46 @@ geany_scintilla_redo(GeanyScintilla *sci)
 	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
 	SSM(sci, SCI_REDO, 0, 0);
 	geany_scintilla_update_undo_state(sci);
+}
+
+
+void
+geany_scintilla_begin_undo_action(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_BEGINUNDOACTION, 0, 0);
+}
+
+
+void
+geany_scintilla_end_undo_action(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_ENDUNDOACTION, 0, 0);
+}
+
+
+gboolean
+geany_scintilla_get_enable_undo_collection(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return sci->priv->undo_collection;
+}
+
+
+void
+geany_scintilla_set_enable_undo_collection(GeanyScintilla *sci, gboolean enable)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (enable != sci->priv->undo_collection)
+	{
+		sci->priv->undo_collection = enable;
+		SSM(sci, SCI_SETUNDOCOLLECTION, enable, 0);
+		if (!enable)
+			SSM(sci, SCI_EMPTYUNDOBUFFER, 0, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_UNDO_COLLECTION]);
+	}
 }
 
 
