@@ -36,6 +36,7 @@ enum
 	PROP_BACKSPACE_UNINDENTS,
 	PROP_ENABLE_OVERTYPE,
 	PROP_READ_ONLY,
+	PROP_LINE_WRAPPING_ENABLED,
 	N_PROPERTIES
 };
 
@@ -168,6 +169,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether the document is read-only (locked) or read-write", FALSE,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_LINE_WRAPPING_ENABLED] =
+		g_param_spec_boolean("line-wrapping-enabled", "Line-Wrapping Enabled",
+			"Whether line-wrapping is enabled", FALSE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -246,6 +252,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_READ_ONLY:
 			geany_scintilla_set_read_only(sci, g_value_get_boolean(value));
 			break;
+		case PROP_LINE_WRAPPING_ENABLED:
+			geany_scintilla_set_line_wrapping_enabled(sci, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -323,6 +332,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_READ_ONLY:
 			g_value_set_boolean(value, geany_scintilla_get_read_only(sci));
+			break;
+		case PROP_LINE_WRAPPING_ENABLED:
+			g_value_set_boolean(value, geany_scintilla_get_line_wrapping_enabled(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -1033,5 +1045,26 @@ geany_scintilla_set_read_only(GeanyScintilla *sci, gboolean read_only)
 		SSM(sci, SCI_SETREADONLY, read_only, 0);
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_READ_ONLY]);
+	}
+}
+
+
+gboolean
+geany_scintilla_get_line_wrapping_enabled(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return (SSM(sci, SCI_GETWRAPMODE, 0, 0) != SC_WRAP_NONE);
+}
+
+
+void
+geany_scintilla_set_line_wrapping_enabled(GeanyScintilla *sci, gboolean enabled)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (enabled != geany_scintilla_get_line_wrapping_enabled(sci))
+	{
+		SSM(sci, SCI_SETWRAPMODE, enabled ? SC_WRAP_WORD : SC_WRAP_NONE, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_LINE_WRAPPING_ENABLED]);
 	}
 }
