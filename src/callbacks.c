@@ -865,7 +865,7 @@ G_MODULE_EXPORT void on_set_file_readonly1_toggled(GtkCheckMenuItem *checkmenuit
 		g_return_if_fail(doc != NULL);
 
 		doc->readonly = ! doc->readonly;
-		sci_set_readonly(doc->editor->sci, doc->readonly);
+		geany_scintilla_set_read_only(GEANY_SCINTILLA(doc->editor->sci), doc->readonly);
 		ui_update_tab_status(doc);
 		ui_update_statusbar(doc, -1);
 	}

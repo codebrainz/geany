@@ -1160,7 +1160,7 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 		geany_scintilla_set_enable_undo_collection(GEANY_SCINTILLA(doc->editor->sci), FALSE);
 
 		/* add the text to the ScintillaObject */
-		sci_set_readonly(doc->editor->sci, FALSE);	/* to allow replacing text */
+		geany_scintilla_set_read_only(GEANY_SCINTILLA(doc->editor->sci), FALSE); /* to allow replacing text */
 		sci_set_text(doc->editor->sci, filedata.data);	/* NULL terminated data */
 		queue_colourise(doc);	/* Ensure the document gets colourised. */
 
@@ -1178,7 +1178,7 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 		store_saved_encoding(doc);	/* store the opened encoding for undo/redo */
 
 		doc->readonly = readonly || filedata.readonly;
-		sci_set_readonly(doc->editor->sci, doc->readonly);
+		geany_scintilla_set_read_only(GEANY_SCINTILLA(doc->editor->sci), doc->readonly);
 
 		if (! reload)
 		{
@@ -2875,7 +2875,7 @@ GeanyDocument *document_clone(GeanyDocument *old_doc)
 	doc->has_bom = old_doc->has_bom;
 	document_set_encoding(doc, old_doc->encoding);
 	sci_set_lines_wrapped(doc->editor->sci, doc->editor->line_wrapping);
-	sci_set_readonly(doc->editor->sci, doc->readonly);
+	geany_scintilla_set_read_only(GEANY_SCINTILLA(doc->editor->sci), doc->readonly);
 
 	/* update ui */
 	ui_document_show_hide(doc);

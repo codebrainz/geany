@@ -122,7 +122,6 @@ gint				sci_replace_target			(ScintillaObject *sci, const gchar *text, gboolean 
 void				sci_set_keywords			(ScintillaObject *sci, guint k, const gchar *text);
 gint				sci_get_lexer				(ScintillaObject *sci);
 void				sci_set_lexer				(ScintillaObject *sci, guint lexer_id);
-void				sci_set_readonly			(ScintillaObject *sci, gboolean readonly);
 void				sci_send_command			(ScintillaObject *sci, gint cmd);
 
 gint				sci_get_current_line		(ScintillaObject *sci);

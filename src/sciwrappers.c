@@ -818,12 +818,6 @@ void sci_set_keywords(ScintillaObject *sci, guint k, const gchar *text)
 }
 
 
-void sci_set_readonly(ScintillaObject *sci, gboolean readonly)
-{
-	SSM(sci, SCI_SETREADONLY, readonly != FALSE, 0);
-}
-
-
 /** Sends Scintilla commands without any parameters.
  * @param sci The Scintilla @c GtkWidget.
  * @param cmd @c SCI_COMMAND.
