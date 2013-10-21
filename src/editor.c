@@ -4495,7 +4495,7 @@ void editor_set_font(GeanyEditor *editor, const gchar *font)
 	g_free(font_name);
 
 	/* zoom to 100% to prevent confusion */
-	sci_zoom_off(editor->sci);
+	geany_scintilla_zoom_reset(GEANY_SCINTILLA(editor->sci));
 }
 
 

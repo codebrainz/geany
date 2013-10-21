@@ -144,24 +144,6 @@ void sci_end_undo_action(ScintillaObject *sci)
 }
 
 
-void sci_zoom_in(ScintillaObject *sci)
-{
-	SSM(sci, SCI_ZOOMIN, 0, 0);
-}
-
-
-void sci_zoom_out(ScintillaObject *sci)
-{
-	SSM(sci, SCI_ZOOMOUT, 0, 0);
-}
-
-
-void sci_zoom_off(ScintillaObject *sci)
-{
-	SSM(sci, SCI_SETZOOM, 0, 0);
-}
-
-
 gint sci_get_zoom(ScintillaObject *sci)
 {
 	return (gint) SSM(sci, SCI_GETZOOM, 0, 0);

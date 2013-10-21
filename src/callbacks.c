@@ -543,7 +543,7 @@ G_MODULE_EXPORT void on_zoom_in1_activate(GtkMenuItem *menuitem, gpointer user_d
 
 	g_return_if_fail(doc != NULL);
 
-	sci_zoom_in(doc->editor->sci);
+	geany_scintilla_zoom_in(GEANY_SCINTILLA(doc->editor->sci));
 }
 
 
@@ -554,7 +554,7 @@ G_MODULE_EXPORT void on_zoom_out1_activate(GtkMenuItem *menuitem, gpointer user_
 
 	g_return_if_fail(doc != NULL);
 
-	sci_zoom_out(doc->editor->sci);
+	geany_scintilla_zoom_out(GEANY_SCINTILLA(doc->editor->sci));
 }
 
 
@@ -564,7 +564,7 @@ G_MODULE_EXPORT void on_normal_size1_activate(GtkMenuItem *menuitem, gpointer us
 
 	g_return_if_fail(doc != NULL);
 
-	sci_zoom_off(doc->editor->sci);
+	geany_scintilla_zoom_reset(GEANY_SCINTILLA(doc->editor->sci));
 }
 
 
