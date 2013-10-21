@@ -126,20 +126,6 @@ void sci_set_text(ScintillaObject *sci, const gchar *text)
 }
 
 
-void sci_undo(ScintillaObject *sci)
-{
-	if (geany_scintilla_get_can_undo(GEANY_SCINTILLA(sci)))
-		SSM(sci, SCI_UNDO, 0, 0);
-}
-
-
-void sci_redo(ScintillaObject *sci)
-{
-	if (geany_scintilla_get_can_redo(GEANY_SCINTILLA(sci)))
-		SSM(sci, SCI_REDO, 0, 0);
-}
-
-
 /** Begins grouping a set of edits together as one Undo action.
  * You must call sci_end_undo_action() after making your edits.
  * @param sci Scintilla @c GtkWidget. */

@@ -2575,7 +2575,7 @@ void document_undo(GeanyDocument *doc)
 	{
 		/* fallback, should not be necessary */
 		geany_debug("%s: fallback used", G_STRFUNC);
-		sci_undo(doc->editor->sci);
+		geany_scintilla_undo(GEANY_SCINTILLA(doc->editor->sci));
 	}
 	else
 	{
@@ -2585,7 +2585,7 @@ void document_undo(GeanyDocument *doc)
 			{
 				document_redo_add(doc, UNDO_SCINTILLA, NULL);
 
-				sci_undo(doc->editor->sci);
+				geany_scintilla_undo(GEANY_SCINTILLA(doc->editor->sci));
 				break;
 			}
 			case UNDO_BOM:
@@ -2647,7 +2647,7 @@ void document_redo(GeanyDocument *doc)
 	{
 		/* fallback, should not be necessary */
 		geany_debug("%s: fallback used", G_STRFUNC);
-		sci_redo(doc->editor->sci);
+		geany_scintilla_redo(GEANY_SCINTILLA(doc->editor->sci));
 	}
 	else
 	{
@@ -2657,7 +2657,7 @@ void document_redo(GeanyDocument *doc)
 			{
 				document_undo_add(doc, UNDO_SCINTILLA, NULL);
 
-				sci_redo(doc->editor->sci);
+				geany_scintilla_redo(GEANY_SCINTILLA(doc->editor->sci));
 				break;
 			}
 			case UNDO_BOM:

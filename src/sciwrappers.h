@@ -36,8 +36,6 @@ gint				sci_get_length				(ScintillaObject *sci);
 void				sci_insert_text				(ScintillaObject *sci, gint pos, const gchar *text);
 
 gboolean			sci_has_selection			(ScintillaObject *sci);
-void 				sci_undo					(ScintillaObject *sci);
-void 				sci_redo					(ScintillaObject *sci);
 void 				sci_empty_undo_buffer		(ScintillaObject *sci);
 void 				sci_end_undo_action			(ScintillaObject *sci);
 void 				sci_start_undo_action		(ScintillaObject *sci);
