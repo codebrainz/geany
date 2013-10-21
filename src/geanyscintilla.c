@@ -18,6 +18,7 @@ enum
 {
 	PROP_0,
 	PROP_LINE_NUMBERS_VISIBLE,
+	PROP_CODE_FOLDING_VISIBLE,
 	PROP_EDGE_MODE,
 	PROP_EDGE_COLUMN,
 	PROP_EDGE_COLOR,
@@ -32,13 +33,6 @@ enum
 	PROP_WHITESPACE_VISIBLE,
 	N_PROPERTIES
 };
-
-
-typedef enum
-{
-	GEANY_SCINTILLA_MARGIN_LINE_NUMBERS,
-}
-GeanyScintillaMargin;
 
 
 static GParamSpec *geany_scintilla_pspecs[N_PROPERTIES] = { NULL };
@@ -79,6 +73,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 	geany_scintilla_pspecs[PROP_LINE_NUMBERS_VISIBLE] =
 		g_param_spec_boolean("line-numbers-visible", "Line Numbers Visible",
 			"Whether or not the line number margin is visible", TRUE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
+	geany_scintilla_pspecs[PROP_CODE_FOLDING_VISIBLE] =
+		g_param_spec_boolean("code-folding-visible", "Code Folding Visible",
+			"Whether or not the code folding margin is visible", TRUE,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
 	geany_scintilla_pspecs[PROP_EDGE_MODE] =
@@ -171,6 +170,10 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 			geany_scintilla_set_line_numbers_visible(sci,
 				g_value_get_boolean(value));
 			break;
+		case PROP_CODE_FOLDING_VISIBLE:
+			geany_scintilla_set_code_folding_visible(sci,
+				g_value_get_boolean(value));
+			break;
 		case PROP_EDGE_MODE:
 			geany_scintilla_set_edge_mode(sci, g_value_get_enum(value));
 			break;
@@ -216,6 +219,10 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 		case PROP_LINE_NUMBERS_VISIBLE:
 			g_value_set_boolean(value,
 				geany_scintilla_get_line_numbers_visible(sci));
+			break;
+		case PROP_CODE_FOLDING_VISIBLE:
+			g_value_set_boolean(value,
+				geany_scintilla_get_code_folding_visible(sci));
 			break;
 		case PROP_EDGE_MODE:
 			g_value_set_enum(value, geany_scintilla_get_edge_mode(sci));
@@ -369,6 +376,27 @@ geany_scintilla_set_line_numbers_visible(GeanyScintilla *sci, gboolean visible)
 		geany_scintilla_update_line_numbers(sci);
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_LINE_NUMBERS_VISIBLE]);
+	}
+}
+
+
+gboolean
+geany_scintilla_get_code_folding_visible(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return (SSM(sci, SCI_GETMARGINWIDTHN, GEANY_SCINTILLA_MARGIN_FOLD, 0) != 0);
+}
+
+
+void
+geany_scintilla_set_code_folding_visible(GeanyScintilla *sci, gboolean visible)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (visible != geany_scintilla_get_code_folding_visible(sci))
+	{
+		SSM(sci, SCI_SETMARGINWIDTHN, GEANY_SCINTILLA_MARGIN_FOLD, visible ? 16 : 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_CODE_FOLDING_VISIBLE]);
 	}
 }
 

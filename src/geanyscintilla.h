@@ -47,12 +47,22 @@ typedef enum
 }
 GeanyScintillaEOLMode;
 
+typedef enum
+{
+	GEANY_SCINTILLA_MARGIN_LINE_NUMBERS=0,
+	GEANY_SCINTILLA_MARGIN_FOLD=2
+}
+GeanyScintillaMargin;
+
 
 GType geany_scintilla_get_type(void);
 GtkWidget *geany_scintilla_new(void);
 
 gboolean geany_scintilla_get_line_numbers_visible(GeanyScintilla *sci);
 void geany_scintilla_set_line_numbers_visible(GeanyScintilla *sci, gboolean visible);
+
+gboolean geany_scintilla_get_code_folding_visible(GeanyScintilla *sci);
+void geany_scintilla_set_code_folding_visible(GeanyScintilla *sci, gboolean visible);
 
 GeanyScintillaEdgeMode geany_scintilla_get_edge_mode(GeanyScintilla *sci);
 void geany_scintilla_set_edge_mode(GeanyScintilla *sci, GeanyScintillaEdgeMode edge_mode);
