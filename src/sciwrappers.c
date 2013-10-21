@@ -74,13 +74,6 @@ void sci_set_folding_margin_visible(ScintillaObject *sci, gboolean set)
 }
 
 
-/* end of lines */
-void sci_set_visible_eols(ScintillaObject *sci, gboolean set)
-{
-	SSM(sci, SCI_SETVIEWEOL, set != FALSE, 0);
-}
-
-
 void sci_set_visible_white_spaces(ScintillaObject *sci, gboolean set)
 {
 	if (set)

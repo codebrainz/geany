@@ -39,7 +39,6 @@ void 				sci_end_undo_action			(ScintillaObject *sci);
 
 gboolean			sci_has_selection			(ScintillaObject *sci);
 
-void				sci_set_visible_eols		(ScintillaObject *sci, gboolean set);
 void				sci_set_lines_wrapped		(ScintillaObject *sci, gboolean set);
 void				sci_set_visible_white_spaces(ScintillaObject *sci, gboolean set);
 void				sci_set_marker_at_line		(ScintillaObject *sci, gint line_number, gint marker);

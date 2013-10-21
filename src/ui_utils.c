@@ -1276,7 +1276,8 @@ void ui_toggle_editor_features(GeanyUIEditorFeatures feature)
 				sci_set_visible_white_spaces(doc->editor->sci, editor_prefs.show_white_space);
 				break;
 			case GEANY_EDITOR_SHOW_LINE_ENDINGS:
-				sci_set_visible_eols(doc->editor->sci, editor_prefs.show_line_endings);
+				geany_scintilla_set_eol_visible(GEANY_SCINTILLA(doc->editor->sci),
+					editor_prefs.show_line_endings);
 				break;
 			case GEANY_EDITOR_SHOW_INDENTATION_GUIDES:
 				editor_set_indentation_guides(doc->editor);
