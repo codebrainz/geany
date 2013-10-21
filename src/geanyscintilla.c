@@ -27,6 +27,7 @@ enum
 	PROP_MODIFIED,
 	PROP_UNDO_COLLECTION,
 	PROP_ZOOM_LEVEL,
+	PROP_EOL_MODE,
 	N_PROPERTIES
 };
 
@@ -121,6 +122,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 		g_param_spec_int("zoom-level", "Zoom Level", "Zoom level of the editor",
 			-10, 20, 0, G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_EOL_MODE] =
+		g_param_spec_enum("eol-mode", "EOL Mode", "The type of end-of-line character(s)",
+			GEANY_TYPE_SCINTILLA_EOL_MODE, GEANY_SCINTILLA_EOL_MODE_LF,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -171,6 +177,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_ZOOM_LEVEL:
 			geany_scintilla_set_zoom_level(sci, g_value_get_int(value));
 			break;
+		case PROP_EOL_MODE:
+			geany_scintilla_set_eol_mode(sci, g_value_get_enum(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -220,6 +229,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_ZOOM_LEVEL:
 			g_value_set_int(value, geany_scintilla_get_zoom_level(sci));
+			break;
+		case PROP_EOL_MODE:
+			g_value_set_enum(value, geany_scintilla_get_eol_mode(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -699,4 +711,31 @@ void geany_scintilla_zoom_out(GeanyScintilla *sci)
 	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
 	SSM(sci, SCI_ZOOMOUT, 0, 0);
 	/* property notification emitted from SCN_ZOOM handler */
+}
+
+
+GeanyScintillaEOLMode
+geany_scintilla_get_eol_mode(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), GEANY_SCINTILLA_EOL_MODE_LF);
+	return SSM(sci, SCI_GETEOLMODE, 0, 0);
+}
+
+
+void
+geany_scintilla_set_eol_mode(GeanyScintilla *sci, GeanyScintillaEOLMode eol_mode)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (eol_mode != geany_scintilla_get_eol_mode(sci))
+	{
+		SSM(sci, SCI_SETEOLMODE, eol_mode, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci), geany_scintilla_pspecs[PROP_EOL_MODE]);
+	}
+}
+
+
+void geany_scintilla_convert_eols(GeanyScintilla *sci, GeanyScintillaEOLMode eol_mode)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_CONVERTEOLS, eol_mode, 0);
 }

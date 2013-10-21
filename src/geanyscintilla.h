@@ -39,6 +39,14 @@ typedef enum
 }
 GeanyScintillaEdgeMode;
 
+typedef enum
+{
+	GEANY_SCINTILLA_EOL_MODE_CRLF,
+	GEANY_SCINTILLA_EOL_MODE_CR,
+	GEANY_SCINTILLA_EOL_MODE_LF
+}
+GeanyScintillaEOLMode;
+
 
 GType geany_scintilla_get_type(void);
 GtkWidget *geany_scintilla_new(void);
@@ -84,6 +92,10 @@ void geany_scintilla_zoom_in(GeanyScintilla *sci);
 void geany_scintilla_zoom_out(GeanyScintilla *sci);
 #define geany_scintilla_zoom_reset(sci) \
 	geany_scintilla_set_zoom_level(sci, 0)
+
+GeanyScintillaEOLMode geany_scintilla_get_eol_mode(GeanyScintilla *sci);
+void geany_scintilla_set_eol_mode(GeanyScintilla *sci, GeanyScintillaEOLMode eol_mode);
+void geany_scintilla_convert_eols(GeanyScintilla *sci, GeanyScintillaEOLMode eol_mode);
 
 G_END_DECLS
 
