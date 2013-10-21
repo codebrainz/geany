@@ -34,6 +34,7 @@ enum
 	PROP_USE_TABS,
 	PROP_TAB_INDENTS,
 	PROP_BACKSPACE_UNINDENTS,
+	PROP_ENABLE_OVERTYPE,
 	N_PROPERTIES
 };
 
@@ -156,6 +157,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether the backspace key removes indentation inside indentation whitespace",
 			TRUE, G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_ENABLE_OVERTYPE] =
+		g_param_spec_boolean("enable-overtype", "Overtype Enabled",
+			"Whether overtype/insert mode is enabled", FALSE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -228,6 +234,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_BACKSPACE_UNINDENTS:
 			geany_scintilla_set_backspace_unindents(sci, g_value_get_boolean(value));
 			break;
+		case PROP_ENABLE_OVERTYPE:
+			geany_scintilla_set_enable_overtype(sci, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -299,6 +308,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_BACKSPACE_UNINDENTS:
 			g_value_set_boolean(value, geany_scintilla_get_backspace_unindents(sci));
+			break;
+		case PROP_ENABLE_OVERTYPE:
+			g_value_set_boolean(value, geany_scintilla_get_enable_overtype(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -959,5 +971,26 @@ geany_scintilla_set_backspace_unindents(GeanyScintilla *sci, gboolean unindents)
 		SSM(sci, SCI_SETBACKSPACEUNINDENTS, unindents, 0);
 		g_object_notify_by_pspec(G_OBJECT(sci),
 			geany_scintilla_pspecs[PROP_BACKSPACE_UNINDENTS]);
+	}
+}
+
+
+gboolean
+geany_scintilla_get_enable_overtype(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return SSM(sci, SCI_GETOVERTYPE, 0, 0);
+}
+
+
+void
+geany_scintilla_set_enable_overtype(GeanyScintilla *sci, gboolean overtype)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (overtype != geany_scintilla_get_enable_overtype(sci))
+	{
+		SSM(sci, SCI_SETOVERTYPE, overtype, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_ENABLE_OVERTYPE]);
 	}
 }

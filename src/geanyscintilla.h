@@ -124,6 +124,9 @@ void geany_scintilla_set_tab_indents(GeanyScintilla *sci, gboolean tab_indents);
 gboolean geany_scintilla_get_backspace_unindents(GeanyScintilla *sci);
 void geany_scintilla_set_backspace_unindents(GeanyScintilla *sci, gboolean unindents);
 
+gboolean geany_scintilla_get_enable_overtype(GeanyScintilla *sci);
+void geany_scintilla_set_enable_overtype(GeanyScintilla *sci, gboolean overtype);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */
