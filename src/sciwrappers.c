@@ -74,15 +74,6 @@ void sci_set_folding_margin_visible(ScintillaObject *sci, gboolean set)
 }
 
 
-void sci_set_lines_wrapped(ScintillaObject *sci, gboolean set)
-{
-	if (set)
-		SSM(sci, SCI_SETWRAPMODE, SC_WRAP_WORD, 0);
-	else
-		SSM(sci, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
-}
-
-
 /** Sets all text.
  * @param sci Scintilla widget.
  * @param text Text. */

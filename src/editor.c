@@ -4504,7 +4504,7 @@ void editor_set_line_wrapping(GeanyEditor *editor, gboolean wrap)
 	g_return_if_fail(editor != NULL);
 
 	editor->line_wrapping = wrap;
-	sci_set_lines_wrapped(editor->sci, wrap);
+	geany_scintilla_set_line_wrapping_enabled(GEANY_SCINTILLA(editor->sci), wrap);
 }
 
 
@@ -4790,7 +4790,7 @@ static ScintillaObject *create_new_sci(GeanyEditor *editor)
 	setup_sci_keys(sci);
 
 	sci_set_symbol_margin(sci, editor_prefs.show_markers_margin);
-	sci_set_lines_wrapped(sci, editor_prefs.line_wrapping);
+	geany_scintilla_set_line_wrapping_enabled(GEANY_SCINTILLA(sci), editor_prefs.line_wrapping);
 	sci_set_caret_policy_x(sci, CARET_JUMPS | CARET_EVEN, 0);
 	/*sci_set_caret_policy_y(sci, CARET_JUMPS | CARET_EVEN, 0);*/
 	SSM(sci, SCI_AUTOCSETSEPARATOR, '\n', 0);

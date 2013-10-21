@@ -2874,7 +2874,8 @@ GeanyDocument *document_clone(GeanyDocument *old_doc)
 	doc->readonly = old_doc->readonly;
 	doc->has_bom = old_doc->has_bom;
 	document_set_encoding(doc, old_doc->encoding);
-	sci_set_lines_wrapped(doc->editor->sci, doc->editor->line_wrapping);
+	geany_scintilla_set_line_wrapping_enabled(GEANY_SCINTILLA(doc->editor->sci),
+		doc->editor->line_wrapping);
 	geany_scintilla_set_read_only(GEANY_SCINTILLA(doc->editor->sci), doc->readonly);
 
 	/* update ui */
