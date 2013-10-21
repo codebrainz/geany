@@ -69,6 +69,8 @@ void geany_scintilla_insert_text_length(GeanyScintilla *sci, gssize pos, gssize 
 
 gboolean geany_scintilla_get_can_undo(GeanyScintilla *sci);
 gboolean geany_scintilla_get_can_redo(GeanyScintilla *sci);
+void geany_scintilla_undo(GeanyScintilla *sci);
+void geany_scintilla_redo(GeanyScintilla *sci);
 
 G_END_DECLS
 

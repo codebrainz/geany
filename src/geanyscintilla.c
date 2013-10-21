@@ -50,6 +50,7 @@ static guint32 geany_int_from_color(const GdkColor *gdk_color);
 
 
 static void geany_scintilla_update_line_numbers(GeanyScintilla *sci);
+static void geany_scintilla_update_undo_state(GeanyScintilla *sci);
 
 
 G_DEFINE_TYPE(GeanyScintilla, geany_scintilla, scintilla_get_type())
@@ -213,21 +214,7 @@ on_scintilla_notify(GeanyScintilla *sci, guint id, struct SCNotification *notif,
 				g_object_notify_by_pspec(G_OBJECT(sci),
 					geany_scintilla_pspecs[PROP_TEXT]);
 
-				/* Check if CANUNDO changed and emit prop notification */
-				if (SSM(sci, SCI_CANUNDO, 0, 0) != sci->priv->can_undo)
-				{
-					sci->priv->can_undo = SSM(sci, SCI_CANUNDO, 0, 0);
-					g_object_notify_by_pspec(G_OBJECT(sci),
-						geany_scintilla_pspecs[PROP_CAN_UNDO]);
-				}
-
-				/* Check if CANREDO changed and emit prop notification */
-				if (SSM(sci, SCI_CANREDO, 0, 0) != sci->priv->can_redo)
-				{
-					sci->priv->can_redo = SSM(sci, SCI_CANREDO, 0, 0);
-					g_object_notify_by_pspec(G_OBJECT(sci),
-						geany_scintilla_pspecs[PROP_CAN_REDO]);
-				}
+				geany_scintilla_update_undo_state(sci);
 			}
 			break;
 		case SCN_ZOOM:
@@ -526,6 +513,27 @@ void geany_scintilla_insert_text_length(GeanyScintilla *sci, gssize pos, gssize 
 }
 
 
+/* Emit property notifications when the can-undo/can-redo states change */
+static void
+geany_scintilla_update_undo_state(GeanyScintilla *sci)
+{
+	gboolean new_state = SSM(sci, SCI_CANUNDO, 0, 0);
+	if (new_state != sci->priv->can_undo)
+	{
+		sci->priv->can_undo = new_state;
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_CAN_UNDO]);
+	}
+	new_state = SSM(sci, SCI_CANREDO, 0, 0);
+	if (new_state != sci->priv->can_redo)
+	{
+		sci->priv->can_redo = new_state;
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_CAN_REDO]);
+	}
+}
+
+
 gboolean
 geany_scintilla_get_can_undo(GeanyScintilla *sci)
 {
@@ -539,4 +547,22 @@ geany_scintilla_get_can_redo(GeanyScintilla *sci)
 {
 	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
 	return sci->priv->can_redo;
+}
+
+
+void
+geany_scintilla_undo(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_UNDO, 0, 0);
+	geany_scintilla_update_undo_state(sci);
+}
+
+
+void
+geany_scintilla_redo(GeanyScintilla *sci)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_REDO, 0, 0);
+	geany_scintilla_update_undo_state(sci);
 }
