@@ -117,6 +117,13 @@ void geany_scintilla_copy(GeanyScintilla *sci);
 void geany_scintilla_paste(GeanyScintilla *sci);
 void geany_scintilla_clear(GeanyScintilla *sci);
 
+gboolean geany_scintilla_get_use_tabs(GeanyScintilla *sci);
+void geany_scintilla_set_use_tabs(GeanyScintilla *sci, gboolean use_tabs);
+gboolean geany_scintilla_get_tab_indents(GeanyScintilla *sci);
+void geany_scintilla_set_tab_indents(GeanyScintilla *sci, gboolean tab_indents);
+gboolean geany_scintilla_get_backspace_unindents(GeanyScintilla *sci);
+void geany_scintilla_set_backspace_unindents(GeanyScintilla *sci, gboolean unindents);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */

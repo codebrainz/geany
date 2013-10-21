@@ -31,6 +31,9 @@ enum
 	PROP_EOL_MODE,
 	PROP_EOL_VISIBLE,
 	PROP_WHITESPACE_VISIBLE,
+	PROP_USE_TABS,
+	PROP_TAB_INDENTS,
+	PROP_BACKSPACE_UNINDENTS,
 	N_PROPERTIES
 };
 
@@ -138,6 +141,21 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether to show whitespace", FALSE,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_USE_TABS] =
+		g_param_spec_boolean("use-tabs", "Use Tab Indentation",
+			"Whether to use tabs for indentation", TRUE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
+	geany_scintilla_pspecs[PROP_TAB_INDENTS] =
+		g_param_spec_boolean("tab-indents", "Tab Indents",
+			"Whether tab key inserts indentation inside indentation whitespace",
+			TRUE, G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
+	geany_scintilla_pspecs[PROP_BACKSPACE_UNINDENTS] =
+		g_param_spec_boolean("backspace-unindents", "Backspace Unindents",
+			"Whether the backspace key removes indentation inside indentation whitespace",
+			TRUE, G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -201,6 +219,15 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_WHITESPACE_VISIBLE:
 			geany_scintilla_set_whitespace_visible(sci, g_value_get_boolean(value));
 			break;
+		case PROP_USE_TABS:
+			geany_scintilla_set_use_tabs(sci, g_value_get_boolean(value));
+			break;
+		case PROP_TAB_INDENTS:
+			geany_scintilla_set_tab_indents(sci, g_value_get_boolean(value));
+			break;
+		case PROP_BACKSPACE_UNINDENTS:
+			geany_scintilla_set_backspace_unindents(sci, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -263,6 +290,15 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_WHITESPACE_VISIBLE:
 			g_value_set_boolean(value, geany_scintilla_get_whitespace_visible(sci));
+			break;
+		case PROP_USE_TABS:
+			g_value_set_boolean(value, geany_scintilla_get_use_tabs(sci));
+			break;
+		case PROP_TAB_INDENTS:
+			g_value_set_boolean(value, geany_scintilla_get_tab_indents(sci));
+			break;
+		case PROP_BACKSPACE_UNINDENTS:
+			g_value_set_boolean(value, geany_scintilla_get_backspace_unindents(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -861,4 +897,67 @@ geany_scintilla_clear(GeanyScintilla *sci)
 {
 	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
 	SSM(sci, SCI_CLEAR, 0, 0);
+}
+
+
+gboolean
+geany_scintilla_get_use_tabs(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return SSM(sci, SCI_GETUSETABS, 0, 0);
+}
+
+
+void
+geany_scintilla_set_use_tabs(GeanyScintilla *sci, gboolean use_tabs)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (use_tabs != geany_scintilla_get_use_tabs(sci))
+	{
+		SSM(sci, SCI_SETUSETABS, use_tabs, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_USE_TABS]);
+	}
+}
+
+
+gboolean
+geany_scintilla_get_tab_indents(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return SSM(sci, SCI_GETTABINDENTS, 0, 0);
+}
+
+
+void
+geany_scintilla_set_tab_indents(GeanyScintilla *sci, gboolean tab_indents)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (tab_indents != geany_scintilla_get_tab_indents(sci))
+	{
+		SSM(sci, SCI_SETTABINDENTS, tab_indents, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_TAB_INDENTS]);
+	}
+}
+
+
+gboolean
+geany_scintilla_get_backspace_unindents(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return SSM(sci, SCI_GETBACKSPACEUNINDENTS, 0, 0);
+}
+
+
+void
+geany_scintilla_set_backspace_unindents(GeanyScintilla *sci, gboolean unindents)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (unindents != geany_scintilla_get_backspace_unindents(sci))
+	{
+		SSM(sci, SCI_SETBACKSPACEUNINDENTS, unindents, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_BACKSPACE_UNINDENTS]);
+	}
 }
