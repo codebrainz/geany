@@ -12,6 +12,7 @@ struct GeanyScintillaPrivate_
 	gboolean can_redo;
 	gboolean modified;
 	gboolean undo_collection;
+	guint current_pos;
 };
 
 enum
@@ -37,6 +38,7 @@ enum
 	PROP_ENABLE_OVERTYPE,
 	PROP_READ_ONLY,
 	PROP_LINE_WRAPPING_ENABLED,
+	PROP_CURRENT_POSITION,
 	N_PROPERTIES
 };
 
@@ -60,6 +62,7 @@ static guint32 geany_int_from_color(const GdkColor *gdk_color);
 static void geany_scintilla_update_line_numbers(GeanyScintilla *sci);
 static void geany_scintilla_update_undo_state(GeanyScintilla *sci);
 static void geany_scintilla_update_modified_state(GeanyScintilla *sci);
+static void geany_scintilla_update_current_pos(GeanyScintilla *sci);
 
 
 G_DEFINE_TYPE(GeanyScintilla, geany_scintilla, scintilla_get_type())
@@ -174,6 +177,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether line-wrapping is enabled", FALSE,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_CURRENT_POSITION] =
+		g_param_spec_uint("current-position", "Current Caret Position",
+			"The position of the caret", 0, G_MAXUINT, 0,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -254,6 +262,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 			break;
 		case PROP_LINE_WRAPPING_ENABLED:
 			geany_scintilla_set_line_wrapping_enabled(sci, g_value_get_boolean(value));
+			break;
+		case PROP_CURRENT_POSITION:
+			geany_scintilla_set_current_position(sci, g_value_get_uint(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -336,6 +347,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 		case PROP_LINE_WRAPPING_ENABLED:
 			g_value_set_boolean(value, geany_scintilla_get_line_wrapping_enabled(sci));
 			break;
+		case PROP_CURRENT_POSITION:
+			g_value_set_uint(value, geany_scintilla_get_current_position(sci));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -365,6 +379,7 @@ on_scintilla_notify(GeanyScintilla *sci, guint id, struct SCNotification *notif,
 					geany_scintilla_pspecs[PROP_TEXT]);
 
 				geany_scintilla_update_undo_state(sci);
+				geany_scintilla_update_current_pos(sci);
 			}
 			break;
 		case SCN_ZOOM:
@@ -1070,6 +1085,19 @@ geany_scintilla_set_line_wrapping_enabled(GeanyScintilla *sci, gboolean enabled)
 }
 
 
+static void
+geany_scintilla_update_current_pos(GeanyScintilla *sci)
+{
+	guint new_pos = SSM(sci, SCI_GETCURRENTPOS, 0, 0);
+	if (new_pos != sci->priv->current_pos)
+	{
+		sci->priv->current_pos = new_pos;
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_CURRENT_POSITION]);
+	}
+}
+
+
 void
 geany_scintilla_goto_position(GeanyScintilla *sci, guint pos, gboolean unfold)
 {
@@ -1077,6 +1105,7 @@ geany_scintilla_goto_position(GeanyScintilla *sci, guint pos, gboolean unfold)
 	if (unfold)
 		SSM(sci, SCI_ENSUREVISIBLE, SSM(sci, SCI_LINEFROMPOSITION, pos, 0), 0);
 	SSM(sci, SCI_GOTOPOS, pos, 0);
+	geany_scintilla_update_current_pos(sci);
 }
 
 
@@ -1086,4 +1115,22 @@ geany_scintilla_goto_line(GeanyScintilla *sci, guint line)
 	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
 	SSM(sci, SCI_ENSUREVISIBLE, line, 0);
 	SSM(sci, SCI_GOTOLINE, line, 0);
+	geany_scintilla_update_current_pos(sci);
+}
+
+
+guint
+geany_scintilla_get_current_position(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), 0);
+	return sci->priv->current_pos;
+}
+
+
+void
+geany_scintilla_set_current_position(GeanyScintilla *sci, guint pos)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	SSM(sci, SCI_SETCURRENTPOS, pos, 0);
+	geany_scintilla_update_current_pos(sci);
 }

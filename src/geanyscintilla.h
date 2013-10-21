@@ -138,6 +138,9 @@ void geany_scintilla_set_line_wrapping_enabled(GeanyScintilla *sci, gboolean ena
 void geany_scintilla_goto_position(GeanyScintilla *sci, guint pos, gboolean unfold);
 void geany_scintilla_goto_line(GeanyScintilla *sci, guint line);
 
+guint geany_scintilla_get_current_position(GeanyScintilla *sci);
+void geany_scintilla_set_current_position(GeanyScintilla *sci, guint pos);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */
