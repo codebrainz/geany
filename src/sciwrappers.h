@@ -39,7 +39,6 @@ gboolean			sci_has_selection			(ScintillaObject *sci);
 void 				sci_empty_undo_buffer		(ScintillaObject *sci);
 void 				sci_end_undo_action			(ScintillaObject *sci);
 void 				sci_start_undo_action		(ScintillaObject *sci);
-gboolean			sci_is_modified				(ScintillaObject *sci);
 
 void				sci_set_visible_eols		(ScintillaObject *sci, gboolean set);
 void				sci_set_lines_wrapped		(ScintillaObject *sci, gboolean set);

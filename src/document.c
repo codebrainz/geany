@@ -2556,7 +2556,7 @@ gboolean document_can_undo(GeanyDocument *doc)
 static void update_changed_state(GeanyDocument *doc)
 {
 	doc->changed =
-		(sci_is_modified(doc->editor->sci) ||
+		(geany_scintilla_get_modified(GEANY_SCINTILLA(doc->editor->sci)) ||
 		doc->has_bom != doc->priv->saved_encoding.has_bom ||
 		! utils_str_equal(doc->encoding, doc->priv->saved_encoding.encoding));
 	document_set_text_changed(doc, doc->changed);
