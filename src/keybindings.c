@@ -35,6 +35,7 @@
 
 #include "keybindings.h"
 #include "support.h"
+#include "geanyscintilla.h"
 #include "utils.h"
 #include "ui_utils.h"
 #include "document.h"
@@ -2069,7 +2070,7 @@ static gboolean cb_func_editor_action(guint key_id)
 			switch (kb->key)
 			{
 				case GDK_space:
-					sci_add_text(doc->editor->sci, " ");
+					geany_scintilla_add_text(GEANY_SCINTILLA(doc->editor->sci), " ");
 					break;
 				case GDK_Tab:
 					sci_send_command(doc->editor->sci, SCI_TAB);

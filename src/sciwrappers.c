@@ -117,15 +117,6 @@ void sci_convert_eols(ScintillaObject *sci, gint eolmode)
 }
 
 
-void sci_add_text(ScintillaObject *sci, const gchar *text)
-{
-	if (text != NULL)
-	{ /* if null text is passed scintilla will segfault */
-		SSM(sci, SCI_ADDTEXT, strlen(text), (sptr_t) text);
-	}
-}
-
-
 /** Sets all text.
  * @param sci Scintilla widget.
  * @param text Text. */
@@ -922,7 +913,7 @@ void sci_selection_duplicate(ScintillaObject *sci)
  * @param text Text. */
 void sci_insert_text(ScintillaObject *sci, gint pos, const gchar *text)
 {
-	SSM(sci, SCI_INSERTTEXT, (uptr_t) pos, (sptr_t) text);
+	geany_scintilla_insert_text(GEANY_SCINTILLA(sci), pos, text);
 }
 
 

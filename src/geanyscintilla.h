@@ -62,6 +62,10 @@ void geany_scintilla_get_text_range_string(GeanyScintilla *sci, GString *out_str
 	guint start, guint end);
 void geany_scintilla_set_text(GeanyScintilla *sci, const gchar *text);
 guint geany_scintilla_get_text_length(GeanyScintilla *sci);
+void geany_scintilla_insert_text_length(GeanyScintilla *sci, gssize pos, gssize len, const gchar *text);
+#define geany_scintilla_insert_text(sci, pos, text) \
+	geany_scintilla_insert_text_length(sci, pos, -1, text)
+#define geany_scintilla_add_text(sci, text) geany_scintilla_insert_text(sci, -1, text)
 
 G_END_DECLS
 

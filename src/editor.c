@@ -984,7 +984,7 @@ static void partial_complete(ScintillaObject *sci, const gchar *text)
 {
 	gint pos = sci_get_current_position(sci);
 
-	sci_insert_text(sci, pos, text);
+	geany_scintilla_insert_text(GEANY_SCINTILLA(sci), pos, text);
 	sci_set_current_position(sci, pos + strlen(text), TRUE);
 }
 
@@ -1110,9 +1110,7 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object, GeanyEditor *edi
 
 		case SCN_USERLISTSELECTION:
 			if (nt->listType == 1)
-			{
-				sci_add_text(sci, nt->text);
-			}
+				geany_scintilla_add_text(GEANY_SCINTILLA(sci), nt->text);
 			break;
 
 		case SCN_AUTOCSELECTION:
@@ -1480,7 +1478,7 @@ static void insert_indent_after_line(GeanyEditor *editor, gint line)
 	{
 		text = get_whitespace(iprefs, size);
 	}
-	sci_add_text(sci, text);
+	geany_scintilla_add_text(GEANY_SCINTILLA(sci), text);
 	g_free(text);
 }
 
@@ -1519,7 +1517,7 @@ static void auto_close_chars(ScintillaObject *sci, gint pos, gchar c)
 
 	if (closing_char != NULL)
 	{
-		sci_add_text(sci, closing_char);
+		geany_scintilla_add_text(GEANY_SCINTILLA(sci), closing_char);
 		sci_set_current_position(sci, pos, TRUE);
 	}
 }
@@ -2416,11 +2414,11 @@ void editor_insert_text_block(GeanyEditor *editor, const gchar *text, gint inser
 	idx = replace_cursor_markers(editor, buf);
 	if (idx >= 0)
 	{
-		sci_insert_text(sci, insert_pos, buf->str);
+		geany_scintilla_insert_text_length(GEANY_SCINTILLA(sci), insert_pos, buf->len, buf->str);
 		sci_set_current_position(sci, insert_pos + idx, FALSE);
 	}
 	else
-		sci_insert_text(sci, insert_pos, buf->str);
+		geany_scintilla_insert_text_length(GEANY_SCINTILLA(sci), insert_pos, buf->len, buf->str);
 
 	snippet_cursor_insert_pos = sci_get_current_position(sci);
 
@@ -2826,9 +2824,9 @@ static void real_comment_multiline(GeanyEditor *editor, gint line_start, gint la
 	str_end = g_strdup_printf("%s%s", (cc != NULL) ? cc : "", eol);
 
 	/* insert the comment strings */
-	sci_insert_text(editor->sci, line_start, str_begin);
+	geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), line_start, str_begin);
 	line_len = sci_get_position_from_line(editor->sci, last_line + 2);
-	sci_insert_text(editor->sci, line_len, str_end);
+	geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), line_len, str_end);
 
 	g_free(str_begin);
 	g_free(str_end);
@@ -3305,11 +3303,11 @@ void editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_line
 				if (toggle)
 				{
 					gchar *text = g_strconcat(co, editor_prefs.comment_toggle_mark, NULL);
-					sci_insert_text(editor->sci, start, text);
+					geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), start, text);
 					g_free(text);
 				}
 				else
-					sci_insert_text(editor->sci, start, co);
+					geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), start, co);
 			}
 			/* use multi line comment */
 			else
@@ -3523,7 +3521,7 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 			continuation = "+"; /* for nested comments in D */
 
 		result = g_strconcat(whitespace, continuation, " ", NULL);
-		sci_add_text(sci, result);
+		geany_scintilla_add_text(GEANY_SCINTILLA(sci), result);
 		g_free(result);
 
 		g_free(previous_line);
@@ -3587,7 +3585,7 @@ void editor_insert_multiline_comment(GeanyEditor *editor)
 		text = g_strdup("\n\n\n");
 		text_len = 3;
 	}
-	sci_insert_text(editor->sci, pos, text);
+	geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), pos, text);
 	g_free(text);
 
 	/* select the inserted lines for commenting */
@@ -3661,7 +3659,7 @@ void editor_insert_alternative_whitespace(GeanyEditor *editor)
 			break;
 	}
 	text = get_whitespace(&iprefs, iprefs.width);
-	sci_add_text(editor->sci, text);
+	geany_scintilla_add_text(GEANY_SCINTILLA(editor->sci), text);
 	g_free(text);
 }
 
@@ -3874,7 +3872,7 @@ static void smart_line_indentation(GeanyEditor *editor, gint first_line, gint la
 			sci_set_selection(editor->sci, sel_start, sel_end);
 			sci_replace_sel(editor->sci, "");
 		}
-		sci_insert_text(editor->sci, sel_start, indent);
+		geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), sel_start, indent);
 	}
 }
 
@@ -3966,7 +3964,7 @@ void editor_indentation_by_one_space(GeanyEditor *editor, gint pos, gboolean dec
 		}
 		else
 		{
-			sci_insert_text(editor->sci, indentation_end, " ");
+			geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), indentation_end, " ");
 			count++;
 			if (i == first_line)
 				first_line_offset = 1;
@@ -4203,7 +4201,7 @@ void editor_insert_color(GeanyEditor *editor, const gchar *colour)
 		sci_replace_sel(editor->sci, replacement);
 	}
 	else
-		sci_add_text(editor->sci, colour);
+		geany_scintilla_add_text(GEANY_SCINTILLA(editor->sci), colour);
 }
 
 
@@ -4472,7 +4470,7 @@ void editor_ensure_final_newline(GeanyEditor *editor)
 	{
 		const gchar *eol = editor_get_eol_char(editor);
 
-		sci_insert_text(editor->sci, end_document, eol);
+		geany_scintilla_insert_text(GEANY_SCINTILLA(editor->sci), end_document, eol);
 	}
 }
 
@@ -5059,9 +5057,7 @@ static void change_tab_indentation(GeanyEditor *editor, gint line, gboolean incr
 	gint pos = sci_get_position_from_line(sci, line);
 
 	if (increase)
-	{
-		sci_insert_text(sci, pos, "\t");
-	}
+		geany_scintilla_insert_text(GEANY_SCINTILLA(sci), pos, "\t");
 	else
 	{
 		if (sci_get_char_at(sci, pos) == '\t')

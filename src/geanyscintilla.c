@@ -1,5 +1,6 @@
 #include "geanyscintilla.h"
 #include "geanyenums.h"
+#include <string.h>
 
 #define SSM(s, m, w, l) \
 	scintilla_send_message(SCINTILLA(s), (guint)(m), (uptr_t)(w), (sptr_t)(l))
@@ -447,8 +448,40 @@ geany_scintilla_set_text(GeanyScintilla *sci, const gchar *text)
 	}
 }
 
-guint geany_scintilla_get_text_length(GeanyScintilla *sci)
+
+guint
+geany_scintilla_get_text_length(GeanyScintilla *sci)
 {
 	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), 0);
 	return SSM(sci, SCI_GETLENGTH, 0, 0);
+}
+
+
+/* If pos is < 0 then insert at current position, if len < 0, measure text
+ * with strlen(). */
+void geany_scintilla_insert_text_length(GeanyScintilla *sci, gssize pos, gssize len, const gchar *text)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	g_return_if_fail(text == NULL && len > 0);
+
+	if (text == NULL)
+		text = "";
+
+	if (len < 0 && pos >= 0)
+		SSM(sci, SCI_INSERTTEXT, pos, text);
+	else
+	{
+		if (len < 0)
+			len = strlen(text);
+
+		if (pos < 0)
+			SSM(sci, SCI_ADDTEXT, len, text);
+		else
+		{ /* Scintilla doesn't seem to have an "insert with length" message */
+			guint cur_pos = SSM(sci, SCI_GETCURRENTPOS, 0, 0);
+			SSM(sci, SCI_SETCURRENTPOS, pos, 0);
+			SSM(sci, SCI_ADDTEXT, len, text);
+			SSM(sci, SCI_SETCURRENTPOS, cur_pos, 0);
+		}
+	}
 }
