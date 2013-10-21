@@ -99,6 +99,9 @@ void geany_scintilla_convert_eols(GeanyScintilla *sci, GeanyScintillaEOLMode eol
 gboolean geany_scintilla_get_eol_visible(GeanyScintilla *sci);
 void geany_scintilla_set_eol_visible(GeanyScintilla *sci, gboolean eol_visible);
 
+gboolean geany_scintilla_get_whitespace_visible(GeanyScintilla *sci);
+void geany_scintilla_set_whitespace_visible(GeanyScintilla *sci, gboolean visible);
+
 G_END_DECLS
 
 #endif /* GEANYSCINTILLA_H_ */

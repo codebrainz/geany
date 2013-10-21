@@ -29,6 +29,7 @@ enum
 	PROP_ZOOM_LEVEL,
 	PROP_EOL_MODE,
 	PROP_EOL_VISIBLE,
+	PROP_WHITESPACE_VISIBLE,
 	N_PROPERTIES
 };
 
@@ -133,6 +134,11 @@ geany_scintilla_class_init(GeanyScintillaClass *klass)
 			"Whether to show end-of-lines", FALSE,
 			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
 
+	geany_scintilla_pspecs[PROP_WHITESPACE_VISIBLE] =
+		g_param_spec_boolean("whitespace-visible", "Whitespace Visible",
+			"Whether to show whitespace", FALSE,
+			G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+
 	g_object_class_install_properties(g_object_class, N_PROPERTIES,
 		geany_scintilla_pspecs);
 
@@ -189,6 +195,9 @@ geany_scintilla_set_property(GObject *obj, guint prop_id, const GValue *value,
 		case PROP_EOL_VISIBLE:
 			geany_scintilla_set_eol_visible(sci, g_value_get_boolean(value));
 			break;
+		case PROP_WHITESPACE_VISIBLE:
+			geany_scintilla_set_whitespace_visible(sci, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
 			break;
@@ -244,6 +253,9 @@ geany_scintilla_get_property(GObject *obj, guint prop_id, GValue *value,
 			break;
 		case PROP_EOL_VISIBLE:
 			g_value_set_boolean(value, geany_scintilla_get_eol_visible(sci));
+			break;
+		case PROP_WHITESPACE_VISIBLE:
+			g_value_set_boolean(value, geany_scintilla_get_whitespace_visible(sci));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -767,5 +779,26 @@ void geany_scintilla_set_eol_visible(GeanyScintilla *sci, gboolean eol_visible)
 	{
 		SSM(sci, SCI_SETVIEWEOL, eol_visible, 0);
 		g_object_notify_by_pspec(G_OBJECT(sci), geany_scintilla_pspecs[PROP_EOL_VISIBLE]);
+	}
+}
+
+
+gboolean
+geany_scintilla_get_whitespace_visible(GeanyScintilla *sci)
+{
+	g_return_val_if_fail(GEANY_IS_SCINTILLA(sci), FALSE);
+	return SSM(sci, SCI_GETVIEWWS, 0, 0);
+}
+
+
+void
+geany_scintilla_set_whitespace_visible(GeanyScintilla *sci, gboolean visible)
+{
+	g_return_if_fail(GEANY_IS_SCINTILLA(sci));
+	if (visible != geany_scintilla_get_whitespace_visible(sci))
+	{
+		SSM(sci, SCI_SETVIEWWS, visible, 0);
+		g_object_notify_by_pspec(G_OBJECT(sci),
+			geany_scintilla_pspecs[PROP_WHITESPACE_VISIBLE]);
 	}
 }
