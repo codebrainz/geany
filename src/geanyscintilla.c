@@ -428,6 +428,8 @@ geany_scintilla_init(GeanyScintilla *self)
 
 	self->priv->can_undo = SSM(self, SCI_CANUNDO, 0, 0);
 	self->priv->can_redo = SSM(self, SCI_CANREDO, 0, 0);
+	self->priv->current_pos = SSM(self, SCI_GETCURRENTPOS, 0, 0);
+	self->priv->current_line = SSM(self, SCI_GETCURLINE, 0, 0);
 }
 
 
