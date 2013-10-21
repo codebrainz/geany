@@ -242,7 +242,7 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc,
 				/* RO = read-only */
 				g_string_append(stats_str, (doc->readonly) ? _("RO ") :
 					/* OVR = overwrite/overtype, INS = insert */
-					(sci_get_overtype(doc->editor->sci) ? _("OVR") : _("INS")));
+					(geany_scintilla_get_enable_overtype(GEANY_SCINTILLA(doc->editor->sci)) ? _("OVR") : _("INS")));
 				break;
 			case 'r':
 				if (doc->readonly)

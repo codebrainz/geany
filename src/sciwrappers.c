@@ -947,12 +947,6 @@ gint sci_find_matching_brace(ScintillaObject *sci, gint pos)
 }
 
 
-gint sci_get_overtype(ScintillaObject *sci)
-{
-	return (gint) SSM(sci, SCI_GETOVERTYPE, 0, 0);
-}
-
-
 gint sci_get_pos_at_line_sel_start(ScintillaObject *sci, gint line)
 {
 	return (gint) SSM(sci, SCI_GETLINESELSTARTPOSITION, (uptr_t) line, 0);
