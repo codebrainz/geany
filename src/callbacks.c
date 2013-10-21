@@ -650,14 +650,14 @@ G_MODULE_EXPORT void on_tv_notebook_switch_page_after(GtkNotebook *notebook, gpo
 }
 
 
-static void convert_eol(gint mode)
+static void convert_eol(GeanyScintillaEOLMode mode)
 {
 	GeanyDocument *doc = document_get_current();
 
 	g_return_if_fail(doc != NULL);
 
-	sci_convert_eols(doc->editor->sci, mode);
-	sci_set_eol_mode(doc->editor->sci, mode);
+	geany_scintilla_convert_eols(GEANY_SCINTILLA(doc->editor->sci), mode);
+	geany_scintilla_set_eol_mode(GEANY_SCINTILLA(doc->editor->sci), mode);
 	ui_update_statusbar(doc, -1);
 }
 
@@ -667,7 +667,7 @@ G_MODULE_EXPORT void on_crlf_activate(GtkCheckMenuItem *menuitem, gpointer user_
 	if (ignore_callback || ! gtk_check_menu_item_get_active(menuitem))
 		return;
 
-	convert_eol(SC_EOL_CRLF);
+	convert_eol(GEANY_SCINTILLA_EOL_MODE_CRLF);
 }
 
 
@@ -676,7 +676,7 @@ G_MODULE_EXPORT void on_lf_activate(GtkCheckMenuItem *menuitem, gpointer user_da
 	if (ignore_callback || ! gtk_check_menu_item_get_active(menuitem))
 		return;
 
-	convert_eol(SC_EOL_LF);
+	convert_eol(GEANY_SCINTILLA_EOL_MODE_LF);
 }
 
 
@@ -685,7 +685,7 @@ G_MODULE_EXPORT void on_cr_activate(GtkCheckMenuItem *menuitem, gpointer user_da
 	if (ignore_callback || ! gtk_check_menu_item_get_active(menuitem))
 		return;
 
-	convert_eol(SC_EOL_CR);
+	convert_eol(GEANY_SCINTILLA_EOL_MODE_CR);
 }
 
 

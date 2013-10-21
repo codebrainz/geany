@@ -99,24 +99,6 @@ void sci_set_lines_wrapped(ScintillaObject *sci, gboolean set)
 }
 
 
-gint sci_get_eol_mode(ScintillaObject *sci)
-{
-	return (gint) SSM(sci, SCI_GETEOLMODE, 0, 0);
-}
-
-
-void sci_set_eol_mode(ScintillaObject *sci, gint eolmode)
-{
-	SSM(sci, SCI_SETEOLMODE, (uptr_t) eolmode, 0);
-}
-
-
-void sci_convert_eols(ScintillaObject *sci, gint eolmode)
-{
-	SSM(sci, SCI_CONVERTEOLS, (uptr_t) eolmode, 0);
-}
-
-
 /** Sets all text.
  * @param sci Scintilla widget.
  * @param text Text. */

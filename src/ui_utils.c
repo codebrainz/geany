@@ -945,10 +945,10 @@ void ui_document_show_hide(GeanyDocument *doc)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), doc->has_bom);
 	ui_widget_set_sensitive(item, encodings_is_unicode_charset(doc->encoding));
 
-	switch (sci_get_eol_mode(doc->editor->sci))
+	switch (geany_scintilla_get_eol_mode(GEANY_SCINTILLA(doc->editor->sci)))
 	{
-		case SC_EOL_CR: widget_name = "cr"; break;
-		case SC_EOL_LF: widget_name = "lf"; break;
+		case GEANY_SCINTILLA_EOL_MODE_CR: widget_name = "cr"; break;
+		case GEANY_SCINTILLA_EOL_MODE_LF: widget_name = "lf"; break;
 		default: widget_name = "crlf"; break;
 	}
 	gtk_check_menu_item_set_active(

@@ -806,7 +806,7 @@ static void on_char_added(GeanyEditor *editor, SCNotification *nt)
 	{
 		case '\r':
 		{	/* simple indentation (only for CR format) */
-			if (sci_get_eol_mode(sci) == SC_EOL_CR)
+			if (geany_scintilla_get_eol_mode(GEANY_SCINTILLA(sci)) == GEANY_SCINTILLA_EOL_MODE_CR)
 				on_new_line_added(editor);
 			break;
 		}
@@ -4220,7 +4220,7 @@ gint editor_get_eol_char_mode(GeanyEditor *editor)
 	gint mode = file_prefs.default_eol_character;
 
 	if (editor != NULL)
-		mode = sci_get_eol_mode(editor->sci);
+		mode = geany_scintilla_get_eol_mode(GEANY_SCINTILLA(editor->sci));
 
 	return mode;
 }
@@ -4241,7 +4241,7 @@ const gchar *editor_get_eol_char_name(GeanyEditor *editor)
 	gint mode = file_prefs.default_eol_character;
 
 	if (editor != NULL)
-		mode = sci_get_eol_mode(editor->sci);
+		mode = geany_scintilla_get_eol_mode(GEANY_SCINTILLA(editor->sci));
 
 	return utils_get_eol_name(mode);
 }
@@ -4262,7 +4262,7 @@ gint editor_get_eol_char_len(GeanyEditor *editor)
 	gint mode = file_prefs.default_eol_character;
 
 	if (editor != NULL)
-		mode = sci_get_eol_mode(editor->sci);
+		mode = geany_scintilla_get_eol_mode(GEANY_SCINTILLA(editor->sci));
 
 	switch (mode)
 	{
@@ -4287,7 +4287,7 @@ const gchar *editor_get_eol_char(GeanyEditor *editor)
 	gint mode = file_prefs.default_eol_character;
 
 	if (editor != NULL)
-		mode = sci_get_eol_mode(editor->sci);
+		mode = geany_scintilla_get_eol_mode(GEANY_SCINTILLA(editor->sci));
 
 	return utils_get_eol_char(mode);
 }

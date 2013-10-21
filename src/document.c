@@ -711,7 +711,8 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, 
 	else
 		sci_clear_all(doc->editor->sci);
 
-	sci_set_eol_mode(doc->editor->sci, file_prefs.default_eol_character);
+	geany_scintilla_set_eol_mode(GEANY_SCINTILLA(doc->editor->sci),
+		file_prefs.default_eol_character);
 
 	geany_scintilla_set_enable_undo_collection(GEANY_SCINTILLA(doc->editor->sci), TRUE);
 
@@ -1165,7 +1166,7 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 
 		/* detect & set line endings */
 		editor_mode = utils_get_line_endings(filedata.data, filedata.len);
-		sci_set_eol_mode(doc->editor->sci, editor_mode);
+		geany_scintilla_set_eol_mode(GEANY_SCINTILLA(doc->editor->sci), editor_mode);
 		g_free(filedata.data);
 
 		geany_scintilla_set_enable_undo_collection(GEANY_SCINTILLA(doc->editor->sci), TRUE);
@@ -1724,7 +1725,10 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 		editor_ensure_final_newline(doc->editor);
 	/* ensure newlines are consistent */
 	if (fp->ensure_convert_new_lines)
-		sci_convert_eols(doc->editor->sci, sci_get_eol_mode(doc->editor->sci));
+	{
+		geany_scintilla_convert_eols(GEANY_SCINTILLA(doc->editor->sci),
+			geany_scintilla_get_eol_mode(GEANY_SCINTILLA(doc->editor->sci)));
+	}
 
 	/* notify plugins which may wish to modify the document before it's saved */
 	g_signal_emit_by_name(geany_object, "document-before-save", doc);
