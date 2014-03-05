@@ -180,6 +180,55 @@ GeanyKeyBinding *keybindings_set_item(GeanyKeyGroup *group, gsize key_id,
 }
 
 
+/**
+ * Set a keybinding by index with associated user-supplied data.
+ *
+ * This function is similar to keybindings_set_item except that the calback
+ * function accepts a @a user_data parameter which plugins can use to attach
+ * an arbitrary pointer to be passed along to the @a callback function when
+ * the keybinding is activated. It also omits the "key" and "mod" arguments
+ * that keybindings_set_item accepts since plugins should not use those anyway.
+ *
+ * @param group The GeanyKeyGroup of the keybinding.
+ * @param key_id The index of the keybinding in the @a group.
+ * @param name The name of the keybinding used in config files.
+ * @param label The human-readable name of the keybinding.
+ * @param menu_item Optional widget to set an accelerator for.
+ * @param callback A function to call when the keybinding is triggered.
+ * @param user_data User-supplied pointer to pass to @a callback or @c NULL
+ * if not needed.
+ * @param destroy_func A function to call, passing @a user_data, when the
+ * GeanyKeyBinding is being destroyed. Can be @c NULL if not needed.
+ *
+ * @return A pointer to the keybinding inside the @a group that was used to
+ * store the set keybinding item.
+ *
+ * @since 1.24, plugin API 217
+ * @see keybindings_set_item, plugin_set_key_group
+ */
+GeanyKeyBinding *keybindings_set_item_full(GeanyKeyGroup *group, gsize key_id,
+		const gchar *name, const gchar *label, GtkWidget *menu_item,
+		GeanyKeyBindingCallback callback, gpointer user_data,
+		GDestroyNotify destroy_func)
+{
+	GeanyKeyBinding *kb;
+
+	g_return_val_if_fail(group != NULL, NULL);
+	g_return_val_if_fail(name != NULL, NULL);
+	g_return_val_if_fail(label != NULL, NULL);
+	g_return_val_if_fail(callback != NULL, NULL);
+
+	kb = keybindings_set_item(group, key_id, NULL, 0, 0, name, label, menu_item);
+
+	g_assert(kb != NULL);
+	kb->kb_callback = callback;
+	kb->user_data = user_data;
+	kb->destroy_func = destroy_func;
+
+	return kb;
+}
+
+
 static void add_kb_group(GeanyKeyGroup *group,
 		const gchar *name, const gchar *label, GeanyKeyGroupCallback callback, gboolean plugin)
 {
@@ -1261,6 +1310,12 @@ static gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *ev, gpointer 
 				if (kb->callback)
 				{
 					kb->callback(kb->id);
+					return TRUE;
+				}
+				/* otherwise try the new-style keybinding callback */
+				else if (kb->kb_callback)
+				{
+					kb->kb_callback(kb->id, kb->user_data);
 					return TRUE;
 				}
 				else if (group->callback)
@@ -2574,7 +2629,19 @@ GeanyKeyGroup *keybindings_set_group(GeanyKeyGroup *group, const gchar *section_
 		group = g_new0(GeanyKeyGroup, 1);
 		add_kb_group(group, section_name, label, callback, TRUE);
 	}
-	g_free(group->plugin_keys);
+	else
+	{
+		/* call destroy notifier before freeing the old keybindings if
+		 * called a second or more times. */
+		for (gsize i = 0; i < group->plugin_key_count; i++)
+		{
+			GeanyKeyBinding *kb = &group->plugin_keys[i];
+			if (kb->destroy_func != NULL)
+				kb->destroy_func(kb->user_data);
+		}
+		g_free(group->plugin_keys);
+	}
+
 	group->plugin_keys = g_new0(GeanyKeyBinding, count);
 	group->plugin_key_count = count;
 	g_ptr_array_set_size(group->key_items, 0);
@@ -2587,6 +2654,13 @@ void keybindings_free_group(GeanyKeyGroup *group)
 	GeanyKeyBinding *kb;
 
 	g_ptr_array_free(group->key_items, TRUE);
+
+	for (gsize i = 0; i < group->plugin_key_count; i++)
+	{
+		GeanyKeyBinding *kb = &group->plugin_keys[i];
+		if (kb->destroy_func != NULL)
+			kb->destroy_func(kb->user_data);
+	}
 
 	if (group->plugin)
 	{

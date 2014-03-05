@@ -24,8 +24,13 @@
 
 G_BEGIN_DECLS
 
+
 /** Function pointer type used for keybinding callbacks. */
 typedef void (*GeanyKeyCallback) (guint key_id);
+
+/** Function pointer type used for new-style keybinding callbacks.
+ * @see keybindings_set_item_full */
+typedef void (*GeanyKeyBindingCallback) (guint key_id, gpointer user_data);
 
 /** Represents a single keybinding action.
  * Use keybindings_set_item() to set. */
@@ -44,6 +49,9 @@ typedef struct GeanyKeyBinding
 	guint id;
 	guint default_key;
 	GdkModifierType default_mods;
+	GeanyKeyBindingCallback kb_callback; /**< New-style keybinding callback function */
+	gpointer user_data;                  /**< User-supplied pointer to pass to kb_callback */
+	GDestroyNotify destroy_func;         /**< Function to pass user_data to when freeing the keybinding */
 }
 GeanyKeyBinding;
 
@@ -268,6 +276,11 @@ void keybindings_free_group(GeanyKeyGroup *group);
 GeanyKeyBinding *keybindings_set_item(GeanyKeyGroup *group, gsize key_id,
 		GeanyKeyCallback callback, guint key, GdkModifierType mod,
 		const gchar *name, const gchar *label, GtkWidget *menu_item);
+
+GeanyKeyBinding *keybindings_set_item_full(GeanyKeyGroup *group, gsize key_id,
+		const gchar *name, const gchar *label, GtkWidget *menu_item,
+		GeanyKeyBindingCallback callback, gpointer user_data,
+		GDestroyNotify destroy_func);
 
 GeanyKeyBinding *keybindings_get_item(GeanyKeyGroup *group, gsize key_id);
 
