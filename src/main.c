@@ -40,6 +40,7 @@
 # include <locale.h>
 #endif
 
+#include "extensions.h"
 #include "main.h"
 #include "prefix.h"
 #include "prefs.h"
@@ -1135,6 +1136,7 @@ gint main(gint argc, gchar **argv)
 	/* inits */
 	main_init();
 
+	ext_init(); // Initialize the extensions system (ie. libpeas and friends)
 	encodings_init();
 	editor_init();
 
@@ -1270,6 +1272,7 @@ void main_quit(void)
 	plugins_finalize();
 #endif
 
+	ext_finalize(); // Unload extensions and cleanup engine
 	navqueue_free();
 	keybindings_free();
 	notebook_free();

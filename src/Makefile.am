@@ -15,6 +15,7 @@ SRCS = \
 	document.c document.h \
 	editor.c editor.h \
 	encodings.c encodings.h \
+	extensions.c extensions.h \
 	filetypes.c filetypes.h \
 	geanyentryaction.c geanyentryaction.h \
 	geanymenubuttonaction.c geanymenubuttonaction.h \
@@ -58,6 +59,7 @@ geany_include_HEADERS = \
 	document.h \
 	editor.h \
 	encodings.h \
+	extensions.h \
 	filetypes.h \
 	geany.h \
 	gtkcompat.h \
@@ -80,7 +82,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/scintilla/include \
 	-I$(top_srcdir)/tagmanager/src \
-	@GTK_CFLAGS@ @GTHREAD_CFLAGS@
+	@GTK_CFLAGS@ @GTHREAD_CFLAGS@ @PEAS_CFLAGS@
 
 # tell automake we have a C++ file so it uses the C++ linker we need for Scintilla
 nodist_EXTRA_geany_SOURCES = dummy.cxx
@@ -110,6 +112,12 @@ AM_CFLAGS = -DGEANY_DATADIR=\"data\" \
 			-DGEANY_PRIVATE \
 			-DGTK \
 			-DG_LOG_DOMAIN=\""Geany"\"
+
+if WITH_EXTENSIONS
+geany_LDADD += $(PEAS_LIBS)
+AM_CFLAGS += $(PEAS_CFLAGS) \
+	-DGEANY_EXT_MODULE_DIR=\"""\" -DGEANY_EXT_DATA_DIR=\"""\"
+endif
 
 geany_LDFLAGS =	-mwindows -mms-bitfields
 
@@ -143,6 +151,13 @@ AM_CFLAGS = -DGEANY_DATADIR=\""$(datadir)"\" \
 			-DGEANY_PRIVATE \
 			-DGTK \
 			-DG_LOG_DOMAIN=\""Geany"\"
+
+if WITH_EXTENSIONS
+geany_LDADD += $(PEAS_LIBS)
+AM_CFLAGS += $(PEAS_CFLAGS) \
+	-DGEANY_EXT_MODULE_DIR=\""$(libdir)/geany/extensions"\" \
+	-DGEANY_EXT_DATA_DIR=\""$(pkgdatadir)/extensions"\"
+endif
 
 clean-local:
 

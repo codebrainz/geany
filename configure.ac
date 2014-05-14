@@ -86,6 +86,7 @@ gthread_modules="gthread-2.0"
 PKG_CHECK_MODULES([GTHREAD], [$gthread_modules])
 AC_SUBST([GTHREAD_CFLAGS])
 AC_SUBST([GTHREAD_LIBS])
+GEANY_EXTENSIONS
 
 # --disable-deprecated switch for GTK2 purification
 AC_ARG_ENABLE([deprecated],
