@@ -1,0 +1,5 @@
+[Plugin]
+Module=demo
+Name=Demo Extension
+Description=A simple demonstration extension for Geany
+Authors=Matthew Brush <matt@geany.org>

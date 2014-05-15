@@ -141,6 +141,8 @@ AC_CONFIG_FILES([
 		scintilla/include/Makefile
 		src/Makefile
 		plugins/Makefile
+		extensions/Makefile
+		extensions/demo/Makefile
 		po/Makefile.in
 		data/Makefile
 		doc/Makefile
