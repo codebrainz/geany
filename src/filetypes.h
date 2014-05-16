@@ -28,10 +28,6 @@ G_BEGIN_DECLS
 #include "Scintilla.h"
 #include "ScintillaWidget.h"
 
-#ifdef GEANY_PRIVATE
-#include "build.h"
-#endif
-
 
 /* Do not change the order, only append. */
 typedef enum
@@ -117,6 +113,8 @@ GeanyFiletypeGroupID;
 #define FILETYPE_ID(filetype_ptr) \
 	(((filetype_ptr) != NULL) ? (filetype_ptr)->id : GEANY_FILETYPES_NONE)
 
+struct GeanyBuildCommand;
+
 /** Represents a filetype. */
 struct GeanyFiletype
 {
@@ -138,7 +136,7 @@ struct GeanyFiletype
 	gboolean		  comment_use_indent;
 	GeanyFiletypeGroupID group;
 	gchar			 *error_regex_string;
-	GeanyFiletype	 *lexer_filetype;
+	struct GeanyFiletype	 *lexer_filetype;
 	gchar			 *mime_type;
 	GIcon			 *icon;
 	gchar			 *comment_single; /* single-line comment */
@@ -150,13 +148,13 @@ struct GeanyFiletype
 #ifdef GEANY_PRIVATE
 	/* Do not use following fields in plugins */
 	/* TODO: move these fields into filetypesprivate.h */
-	GeanyBuildCommand *filecmds;
-	GeanyBuildCommand *ftdefcmds;
-	GeanyBuildCommand *execcmds;
-	GeanyBuildCommand *homefilecmds;
-	GeanyBuildCommand *homeexeccmds;
-	GeanyBuildCommand *projfilecmds;
-	GeanyBuildCommand *projexeccmds;
+	struct GeanyBuildCommand *filecmds;
+	struct GeanyBuildCommand *ftdefcmds;
+	struct GeanyBuildCommand *execcmds;
+	struct GeanyBuildCommand *homefilecmds;
+	struct GeanyBuildCommand *homeexeccmds;
+	struct GeanyBuildCommand *projfilecmds;
+	struct GeanyBuildCommand *projexeccmds;
 	gint			 project_list_entry;
 	gchar			 *projerror_regex_string;
 	gchar			 *homeerror_regex_string;
@@ -168,14 +166,14 @@ extern GPtrArray *filetypes_array;
 /** Wraps filetypes_array so it can be used with C array syntax.
  * Example: filetypes[GEANY_FILETYPES_C]->name = ...;
  * @see filetypes_index(). */
-#define filetypes	((GeanyFiletype **)GEANY(filetypes_array)->pdata)
+#define filetypes	((struct GeanyFiletype **)GEANY(filetypes_array)->pdata)
 
 extern GSList *filetypes_by_title;
 
 
-GeanyFiletype *filetypes_lookup_by_name(const gchar *name);
+struct GeanyFiletype *filetypes_lookup_by_name(const gchar *name);
 
-GeanyFiletype *filetypes_find(GCompareFunc predicate, gpointer user_data);
+struct GeanyFiletype *filetypes_find(GCompareFunc predicate, gpointer user_data);
 
 
 void filetypes_init(void);
@@ -187,36 +185,38 @@ void filetypes_reload_extensions(void);
 void filetypes_reload(void);
 
 
-GeanyFiletype *filetypes_index(gint idx);
+struct GeanyFiletype *filetypes_index(gint idx);
 
 const GSList *filetypes_get_sorted_by_name(void);
 
-const gchar *filetypes_get_display_name(GeanyFiletype *ft);
+const gchar *filetypes_get_display_name(struct GeanyFiletype *ft);
 
-GeanyFiletype *filetypes_detect_from_document(GeanyDocument *doc);
+struct GeanyDocument;
 
-GeanyFiletype *filetypes_detect_from_extension(const gchar *utf8_filename);
+struct GeanyFiletype *filetypes_detect_from_document(struct GeanyDocument *doc);
 
-GeanyFiletype *filetypes_detect_from_file(const gchar *utf8_filename);
+struct GeanyFiletype *filetypes_detect_from_extension(const gchar *utf8_filename);
+
+struct GeanyFiletype *filetypes_detect_from_file(const gchar *utf8_filename);
 
 void filetypes_free_types(void);
 
 void filetypes_load_config(guint ft_id, gboolean reload);
 
-void filetypes_save_commands(GeanyFiletype *ft);
+void filetypes_save_commands(struct GeanyFiletype *ft);
 
-void filetypes_select_radio_item(const GeanyFiletype *ft);
+void filetypes_select_radio_item(const struct GeanyFiletype *ft);
 
-GtkFileFilter *filetypes_create_file_filter(const GeanyFiletype *ft);
+GtkFileFilter *filetypes_create_file_filter(const struct GeanyFiletype *ft);
 
 GtkFileFilter *filetypes_create_file_filter_all_source(void);
 
-gboolean filetype_has_tags(GeanyFiletype *ft);
+gboolean filetype_has_tags(struct GeanyFiletype *ft);
 
-gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
+gboolean filetypes_parse_error_message(struct GeanyFiletype *ft, const gchar *message,
 		gchar **filename, gint *line);
 
-gboolean filetype_get_comment_open_close(const GeanyFiletype *ft, gboolean single_first,
+gboolean filetype_get_comment_open_close(const struct GeanyFiletype *ft, gboolean single_first,
 		const gchar **co, const gchar **cc);
 
 G_END_DECLS

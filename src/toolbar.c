@@ -883,17 +883,17 @@ static gboolean tb_editor_foreach_used(GtkTreeModel *model, GtkTreePath *path,
 static void tb_editor_write_markup(TBEditorWidget *tbw)
 {
 	/* <ui> must be the first tag, otherwise gtk_ui_manager_add_ui_from_string() will fail. */
-	const gchar *template = "<ui>\n<!--\n\
-This is Geany's toolbar UI definition.\nThe DTD can be found at \n\
-http://library.gnome.org/devel/gtk/stable/GtkUIManager.html#GtkUIManager.description.\n\n\
-You can re-order all items and freely add and remove available actions.\n\
-You cannot add new actions which are not listed in the documentation.\n\
-Everything you add or change must be inside the /ui/toolbar/ path.\n\n\
-For changes to take effect, you need to restart Geany. Alternatively you can use the toolbar\n\
-editor in Geany.\n\n\
-A list of available actions can be found in the documentation included with Geany or\n\
-at http://www.geany.org/manual/current/index.html#customizing-the-toolbar.\n-->\n\
-\t<toolbar name='GeanyToolbar'>\n";
+	const gchar *template = "<ui>\n<!--\n"
+"This is Geany's toolbar UI definition.\nThe DTD can be found at \n"
+"http://library.gnome.org/devel/gtk/stable/GtkUIManager.html#GtkUIManager.description.\n\n"
+"You can re-order all items and freely add and remove available actions.\n"
+"You cannot add new actions which are not listed in the documentation.\n"
+"Everything you add or change must be inside the /ui/toolbar/ path.\n\n"
+"For changes to take effect, you need to restart Geany. Alternatively you can use the toolbar\n"
+"editor in Geany.\n\n"
+"A list of available actions can be found in the documentation included with Geany or\n"
+"at http://www.geany.org/manual/current/index.html#customizing-the-toolbar.\n-->\n"
+"\t<toolbar name='GeanyToolbar'>\n";
 	gchar *filename;
 	GString *str = g_string_new(template);
 

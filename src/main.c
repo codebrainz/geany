@@ -85,6 +85,10 @@
 # define N_(String) (String)
 #endif
 
+#ifdef HAVE_PEAS
+# include <girepository.h>
+#endif
+
 
 GeanyApp	*app;
 gboolean	ignore_callback;	/* hack workaround for GTK+ toggle button callback problem */
@@ -557,6 +561,9 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 	g_option_context_add_main_entries(context, entries, GETTEXT_PACKAGE);
 	g_option_group_set_translation_domain(g_option_context_get_main_group(context), GETTEXT_PACKAGE);
 	g_option_context_add_group(context, gtk_get_option_group(FALSE));
+#ifdef HAVE_PEAS
+	g_option_context_add_group(context, g_irepository_get_option_group());
+#endif
 	g_option_context_parse(context, argc, argv, &error);
 	g_option_context_free(context);
 
@@ -751,8 +758,8 @@ static gint create_config_dir(void)
 		if (saved_errno == 0 && ! g_file_test(templates_readme, G_FILE_TEST_EXISTS))
 		{
 			gchar *text = g_strconcat(
-"There are several template files in this directory. For these templates you can use wildcards.\n\
-For more information read the documentation (in ", app->docdir, G_DIR_SEPARATOR_S "index.html or visit " GEANY_HOMEPAGE ").",
+"There are several template files in this directory. For these templates you can use wildcards.\n"
+"For more information read the documentation (in ", app->docdir, G_DIR_SEPARATOR_S "index.html or visit " GEANY_HOMEPAGE ").",
 					NULL);
 			utils_write_file(templates_readme, text);
 			g_free(text);

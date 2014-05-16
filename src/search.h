@@ -112,9 +112,11 @@ void search_find_again(gboolean change_direction);
 
 void search_find_usage(const gchar *search_text, const gchar *original_search_text, gint flags, gboolean in_session);
 
-void search_find_selection(GeanyDocument *doc, gboolean search_backwards);
+struct GeanyDocument;
 
-gint search_mark_all(GeanyDocument *doc, const gchar *search_text, gint flags);
+void search_find_selection(struct GeanyDocument *doc, gboolean search_backwards);
+
+gint search_mark_all(struct GeanyDocument *doc, const gchar *search_text, gint flags);
 
 gint search_replace_match(struct _ScintillaObject *sci, const GeanyMatchInfo *match, const gchar *replace_text);
 

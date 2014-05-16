@@ -43,6 +43,7 @@
 #include "sciwrappers.h"
 #include "ui_utils.h"
 #include "symbols.h"
+#include "build.h"
 
 #include "tm_parser.h"
 
