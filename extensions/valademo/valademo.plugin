@@ -1,0 +1,5 @@
+[Plugin]
+Module=valademo
+Name=Demo Vala Extension
+Description=A simple demonstration Vala extension for Geany
+Authors=Matthew Brush <matt@geany.org>

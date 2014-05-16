@@ -76,7 +76,8 @@ geany_include_HEADERS = \
 	templates.h \
 	toolbar.h \
 	ui_utils.h \
-	utils.h
+	utils.h \
+	wincmd.h
 
 
 AM_CPPFLAGS = \
