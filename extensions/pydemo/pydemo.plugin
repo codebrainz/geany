@@ -1,0 +1,6 @@
+[Plugin]
+Module=pydemo
+Loader=python
+Name=Demo Python Extension
+Description=A simple demonstration Python extension for Geany
+Authors=Matthew Brush <matt@geany.org>

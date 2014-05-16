@@ -8,6 +8,7 @@
 #include "extensions.h"
 #include <libpeas/peas.h>
 #include <libpeas-gtk/peas-gtk.h>
+#include <girepository.h>
 
 #if !defined(GEANY_EXT_MODULE_DIR) || !defined(GEANY_EXT_DATA_DIR)
 # error "GEANY_EXT_MODULE_DIR and GEANY_EXT_DATA_DIR must be defined"
@@ -18,6 +19,7 @@ typedef struct GeanyDocument GeanyDocument; // for ui_utils.h include
 #include "ui_utils.h" // for ui_builder_get_object()
 #include "geany.h" // for geany_debug and geany_object
 #include "geanyobject.h" // for GeanyObject
+
 
 static PeasEngine *ext_engine = NULL;
 static PeasExtensionSet *ext_set = NULL;
@@ -61,9 +63,12 @@ void ext_init(void)
 {
 	if (!ext_engine)
 	{
+		// Add the typelib search paths
+		g_irepository_prepend_search_path(GEANY_TYPELIB_DIR);
+
 		ext_engine = peas_engine_get_default();
 
-		// TODO: enable any loaders needed
+		peas_engine_enable_loader(ext_engine, "python");
 
 		// Add user search path
 		gchar *mod_dir = g_build_filename(g_get_user_config_dir(), "geany", "extensions", NULL);

@@ -117,7 +117,8 @@ AM_CFLAGS = -DGEANY_DATADIR=\"data\" \
 if WITH_EXTENSIONS
 geany_LDADD += $(PEAS_LIBS)
 AM_CFLAGS += $(PEAS_CFLAGS) \
-	-DGEANY_EXT_MODULE_DIR=\"""\" -DGEANY_EXT_DATA_DIR=\"""\"
+	-DGEANY_EXT_MODULE_DIR=\"""\" -DGEANY_EXT_DATA_DIR=\"""\" \
+	-DGEANY_TYPELIB_DIR=\"""\"
 endif
 
 geany_LDFLAGS =	-mwindows -mms-bitfields
@@ -157,7 +158,8 @@ if WITH_EXTENSIONS
 geany_LDADD += $(PEAS_LIBS)
 AM_CFLAGS += $(PEAS_CFLAGS) \
 	-DGEANY_EXT_MODULE_DIR=\""$(libdir)/geany/extensions"\" \
-	-DGEANY_EXT_DATA_DIR=\""$(pkgdatadir)/extensions"\"
+	-DGEANY_EXT_DATA_DIR=\""$(pkgdatadir)/extensions"\" \
+	-DGEANY_TYPELIB_DIR=\""$(libdir)/girepository-1.0"\"
 endif
 
 clean-local:
