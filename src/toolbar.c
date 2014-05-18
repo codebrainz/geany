@@ -347,7 +347,9 @@ GtkWidget *toolbar_init(void)
 	uim = gtk_ui_manager_new();
 	group = gtk_action_group_new("GeanyToolbar");
 
+#ifdef GETTEXT_PACKAGE
 	gtk_action_group_set_translation_domain(group, GETTEXT_PACKAGE);
+#endif
 	gtk_action_group_add_actions(group, ui_entries, ui_entries_n, NULL);
 
 	/* Create our custom actions */

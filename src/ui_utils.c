@@ -1984,9 +1984,15 @@ void ui_init_stock_items(void)
 {
 	GtkStockItem items[] =
 	{
+#ifdef GETTEXT_PACKAGE
 		{ GEANY_STOCK_SAVE_ALL, N_("Save All"), 0, 0, GETTEXT_PACKAGE },
 		{ GEANY_STOCK_CLOSE_ALL, N_("Close All"), 0, 0, GETTEXT_PACKAGE },
 		{ GEANY_STOCK_BUILD, N_("Build"), 0, 0, GETTEXT_PACKAGE }
+#else
+		{ GEANY_STOCK_SAVE_ALL, N_("Save All") },
+		{ GEANY_STOCK_CLOSE_ALL, N_("Close All") },
+		{ GEANY_STOCK_BUILD, N_("Build") }
+#endif
 	};
 
 	gtk_stock_add(items, G_N_ELEMENTS(items));
@@ -2211,7 +2217,9 @@ void ui_init_builder(void)
 
 	builder = gtk_builder_new();
 
+#ifdef GETTEXT_PACKAGE
 	gtk_builder_set_translation_domain(builder, GETTEXT_PACKAGE);
+#endif
 
 	error = NULL;
 	interface_file = g_build_filename(app->datadir, "geany.glade", NULL);

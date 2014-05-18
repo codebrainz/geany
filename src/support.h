@@ -25,6 +25,8 @@
  * @see GLib's @c gi18n-lib.h.
  **/
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 #include "geany.h"
@@ -33,10 +35,11 @@ G_BEGIN_DECLS
 # include <glib/gi18n-lib.h>
 #else
 # define textdomain(String) (String)
-# define bind_textdomain_codeset(String) (String)
+# define bind_textdomain_codeset(String,Codeset) (String)
 # define bindtextdomain(Domain,Charset) (Domain)
-# define ngettext(String) (String)
+# define ngettext(String,PluralString,Number) (String)
 # define _(String) String
+# define C_(Context,String) String
 # define Q_(String) g_strip_context((String), (String))
 # define N_(String) String
 #endif
