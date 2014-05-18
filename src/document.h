@@ -75,7 +75,7 @@ extern GeanyFilePrefs file_prefs;
 /**
  *  Structure for representing an open tab with all its properties.
  **/
-struct GeanyDocument
+typedef struct GeanyDocument
 {
 	/** Flag used to check if this document is valid when iterating @ref documents_array. */
 	gboolean		 is_valid;
@@ -113,7 +113,8 @@ struct GeanyDocument
 	gchar 			*real_path;
 
 	struct GeanyDocumentPrivate *priv;	/* should be last, append fields before this item */
-};
+}
+GeanyDocument;
 
 extern GPtrArray *documents_array;
 

@@ -23,11 +23,13 @@
 #ifndef GEANY_FILETYPES_H
 #define GEANY_FILETYPES_H 1
 
-G_BEGIN_DECLS
-
 #include "Scintilla.h"
 #include "ScintillaWidget.h"
 
+G_BEGIN_DECLS
+
+/* Forward-declared to avoid including document.h here */
+struct GeanyDocument;
 
 /* Do not change the order, only append. */
 typedef enum
@@ -175,7 +177,7 @@ const GSList *filetypes_get_sorted_by_name(void);
 
 const gchar *filetypes_get_display_name(GeanyFiletype *ft);
 
-GeanyFiletype *filetypes_detect_from_document(GeanyDocument *doc);
+GeanyFiletype *filetypes_detect_from_document(struct GeanyDocument *doc);
 
 GeanyFiletype *filetypes_detect_from_extension(const gchar *utf8_filename);
 

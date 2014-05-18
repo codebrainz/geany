@@ -30,6 +30,9 @@
 
 G_BEGIN_DECLS
 
+/* Forward-declared to avoid including document.h here */
+struct GeanyDocument;
+
 #define GEANY_TEMPLATES_INDENT 3
 #define GEANY_TEMPLATES_FORMAT_YEAR              C_("DefaultYear", "%Y")
 #define GEANY_TEMPLATES_FORMAT_DATE              C_("DefaultDate", "%Y-%m-%d")
@@ -69,11 +72,11 @@ void templates_init(void);
 
 gchar *templates_get_template_fileheader(gint filetype_idx, const gchar *fname);
 
-gchar *templates_get_template_changelog(GeanyDocument *doc);
+gchar *templates_get_template_changelog(struct GeanyDocument *doc);
 
-gchar *templates_get_template_function(GeanyDocument *doc, const gchar *func_name);
+gchar *templates_get_template_function(struct GeanyDocument *doc, const gchar *func_name);
 
-gchar *templates_get_template_licence(GeanyDocument *doc, gint licence_type);
+gchar *templates_get_template_licence(struct GeanyDocument *doc, gint licence_type);
 
 void templates_replace_common(GString *tmpl, const gchar *fname,
 	GeanyFiletype *ft, const gchar *func_name);
