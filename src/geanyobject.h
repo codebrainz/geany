@@ -30,6 +30,7 @@ G_BEGIN_DECLS
 /* Forward-declared to avoid including their headers here */
 struct GeanyDocument;
 struct GeanyEditor;
+struct GeanyFiletype;
 
 typedef enum
 {
@@ -88,7 +89,7 @@ struct _GeanyObjectClass
 	void (*document_reload)(struct GeanyDocument *doc);
 	void (*document_before_save)(struct GeanyDocument *doc);
 	void (*document_save)(struct GeanyDocument *doc);
-	void (*document_filetype_set)(struct GeanyDocument *doc, GeanyFiletype *filetype_old);
+	void (*document_filetype_set)(struct GeanyDocument *doc, struct GeanyFiletype *filetype_old);
 	void (*document_activate)(struct GeanyDocument *doc);
 	void (*document_close)(struct GeanyDocument *doc);
 	void (*project_open)(GKeyFile *keyfile);

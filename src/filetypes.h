@@ -116,7 +116,7 @@ GeanyFiletypeGroupID;
 	(((filetype_ptr) != NULL) ? (filetype_ptr)->id : GEANY_FILETYPES_NONE)
 
 /** Represents a filetype. */
-struct GeanyFiletype
+typedef struct GeanyFiletype
 {
 	filetype_id		  id;				/**< Index in @c filetypes_array. */
 	/** Represents the langType of tagmanager (see the table
@@ -136,7 +136,7 @@ struct GeanyFiletype
 	gboolean		  comment_use_indent;
 	GeanyFiletypeGroupID group;
 	gchar			 *error_regex_string;
-	GeanyFiletype	 *lexer_filetype;
+	struct GeanyFiletype	 *lexer_filetype;
 	gchar			 *mime_type;
 	GIcon			 *icon;
 	gchar			 *comment_single; /* single-line comment */
@@ -145,7 +145,8 @@ struct GeanyFiletype
 	gint			  indent_width;
 
 	struct GeanyFiletypePrivate	*priv;	/* must be last, append fields before this item */
-};
+}
+GeanyFiletype;
 
 extern GPtrArray *filetypes_array;
 
