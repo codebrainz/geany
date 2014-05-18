@@ -158,7 +158,7 @@ extern GeanyEditorPrefs editor_prefs;
 
 
 /** Editor-owned fields for each document. */
-struct GeanyEditor
+typedef struct GeanyEditor
 {
 	struct GeanyDocument	*document;		/**< The document associated with the editor. */
 	ScintillaObject	*sci;			/**< The Scintilla editor @c GtkWidget. */
@@ -169,7 +169,8 @@ struct GeanyEditor
 	GeanyIndentType	 indent_type;	/* Use editor_get_indent_prefs() instead. */
 	gboolean		 line_breaking;	/**< Whether to split long lines as you type. */
 	gint			 indent_width;
-};
+}
+GeanyEditor;
 
 
 typedef struct

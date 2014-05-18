@@ -60,7 +60,6 @@ G_BEGIN_DECLS
 
 
 /* Common forward declarations */
-typedef struct GeanyEditor GeanyEditor;
 typedef struct GeanyFiletype GeanyFiletype;
 
 

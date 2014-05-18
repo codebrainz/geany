@@ -27,8 +27,9 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including document.h here */
+/* Forward-declared to avoid including their headers here */
 struct GeanyDocument;
+struct GeanyEditor;
 
 typedef enum
 {
@@ -97,7 +98,7 @@ struct _GeanyObjectClass
 	void (*project_dialog_confirmed)(GtkWidget *notebook);
 	void (*project_dialog_close)(GtkWidget *notebook);
 	void (*update_editor_menu)(const gchar *word, gint click_pos, struct GeanyDocument *doc);
-	gboolean (*editor_notify)(GeanyEditor *editor, gpointer scnt);
+	gboolean (*editor_notify)(struct GeanyEditor *editor, gpointer scnt);
 	void (*geany_startup_complete)(void);
 	void (*build_start)(void);
 	void (*save_settings)(GKeyFile *keyfile);
