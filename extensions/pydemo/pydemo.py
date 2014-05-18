@@ -7,13 +7,15 @@ class PyDemo(GObject.Object, Geany.WinCmd):
 	
 	def __init__(self):
 		GObject.Object.__init__(self)
-		print(sorted(dir(Geany)))
+		for a in sorted(dir(Geany)):
+			print("Attr: ", a)
+		Geany.ui_set_statusbar(False, "PyDemo.__init__()")
 	
-	def do_activate(self):
-		pass
+	def activate(self):
+		Geany.ui_set_statusbar(False, "PyDemo.activate()")
 	
-	def do_deactivate(self):
-		pass
+	def deactivate(self):
+		Geany.ui_set_statusbar(False, "PyDemo.deactivate()")
 	
-	def do_update_state(self):
-		pass
+	def update_state(self):
+		Geany.ui_set_statusbar(False, "PyDemo.update_state()")

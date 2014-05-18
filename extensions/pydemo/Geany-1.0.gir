@@ -1,0 +1,1249 @@
+<?xml version="1.0"?>
+<!-- This file was automatically generated from C sources - DO NOT EDIT!
+To affect the contents of this file, edit the original C definitions,
+and/or use gtk-doc annotations.  -->
+<repository version="1.2"
+            xmlns="http://www.gtk.org/introspection/core/1.0"
+            xmlns:c="http://www.gtk.org/introspection/c/1.0"
+            xmlns:glib="http://www.gtk.org/introspection/glib/1.0">
+  <include name="Gtk" version="3.0"/>
+  <include name="Peas" version="1.0"/>
+  <package name="geany"/>
+  <namespace name="Geany"
+             version="1.0"
+             shared-library=""
+             c:identifier-prefixes="Geany"
+             c:symbol-prefixes="geany">
+    <record name="AutoSeparator" c:type="GeanyAutoSeparator">
+      <field name="widget" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="show_count" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+      <field name="item_count" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+    </record>
+    <record name="InterfacePrefs" c:type="GeanyInterfacePrefs">
+      <field name="sidebar_symbol_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="sidebar_openfiles_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="editor_font" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+      <field name="tagbar_font" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+      <field name="msgwin_font" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+      <field name="show_notebook_tabs" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="tab_pos_editor" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+      <field name="tab_pos_msgwin" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+      <field name="tab_pos_sidebar" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+      <field name="statusbar_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="show_symbol_list_expanders" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="notebook_double_click_hides_widgets" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="highlighting_invert_all" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="sidebar_pos" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+      <field name="msgwin_status_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="msgwin_compiler_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="msgwin_messages_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="msgwin_scribble_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="use_native_windows_dialogs" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="compiler_tab_autoscroll" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="msgwin_orientation" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+    </record>
+    <record name="MainWidgets" c:type="GeanyMainWidgets">
+      <field name="window" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="toolbar" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="sidebar_notebook" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="notebook" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="editor_menu" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="tools_menu" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="progressbar" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="message_window_notebook" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="project_menu" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+    </record>
+    <constant name="STOCK_BUILD"
+              value="geany-build"
+              c:type="GEANY_STOCK_BUILD">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="STOCK_CLOSE_ALL"
+              value="geany-close-all"
+              c:type="GEANY_STOCK_CLOSE_ALL">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="STOCK_SAVE_ALL"
+              value="geany-save-all"
+              c:type="GEANY_STOCK_SAVE_ALL">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <callback name="TVMatchCallback">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="arg0" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </callback>
+    <enumeration name="UIEditorFeatures" c:type="GeanyUIEditorFeatures">
+      <member name="markers_margin"
+              value="0"
+              c:identifier="GEANY_EDITOR_SHOW_MARKERS_MARGIN">
+      </member>
+      <member name="line_numbers"
+              value="1"
+              c:identifier="GEANY_EDITOR_SHOW_LINE_NUMBERS">
+      </member>
+      <member name="white_space"
+              value="2"
+              c:identifier="GEANY_EDITOR_SHOW_WHITE_SPACE">
+      </member>
+      <member name="indentation_guides"
+              value="3"
+              c:identifier="GEANY_EDITOR_SHOW_INDENTATION_GUIDES">
+      </member>
+      <member name="line_endings"
+              value="4"
+              c:identifier="GEANY_EDITOR_SHOW_LINE_ENDINGS">
+      </member>
+    </enumeration>
+    <record name="UIPrefs" c:type="UIPrefs">
+      <field name="geometry" writable="1">
+        <array zero-terminated="0" c:type="gint" fixed-size="5">
+          <type name="gint" c:type="gint"/>
+        </array>
+      </field>
+      <field name="fullscreen" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="sidebar_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="sidebar_page" writable="1">
+        <type name="gint" c:type="gint"/>
+      </field>
+      <field name="msgwindow_visible" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="allow_always_save" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="statusbar_template" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+      <field name="new_document_after_close" writable="1">
+        <type name="gboolean" c:type="gboolean"/>
+      </field>
+      <field name="recent_queue" writable="1">
+        <type name="GLib.Queue" c:type="GQueue*"/>
+      </field>
+      <field name="recent_projects_queue" writable="1">
+        <type name="GLib.Queue" c:type="GQueue*"/>
+      </field>
+      <field name="custom_date_format" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+      <field name="custom_commands" writable="1">
+        <type name="utf8" c:type="gchar**"/>
+      </field>
+      <field name="custom_commands_labels" writable="1">
+        <type name="utf8" c:type="gchar**"/>
+      </field>
+    </record>
+    <record name="UIWidgets" c:type="UIWidgets">
+      <field name="toolbar_menu" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="recent_files_menuitem" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="recent_files_menu_menubar" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="print_page_setup" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="recent_projects_menuitem" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="recent_projects_menu_menubar" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="open_colorsel" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="open_fontsel" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="prefs_dialog" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+      <field name="statusbar" writable="1">
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </field>
+    </record>
+    <constant name="UI_UTILS_H" value="1" c:type="GEANY_UI_UTILS_H">
+      <type name="gint" c:type="gint"/>
+    </constant>
+    <interface name="WinCmd"
+               c:symbol-prefix="win_cmd"
+               c:type="GeanyWinCmd"
+               glib:type-name="GeanyWinCmd"
+               glib:get-type="geany_win_cmd_get_type"
+               glib:type-struct="WinCmdInterface">
+      <method name="activate" c:identifier="geany_win_cmd_activate">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="cmd" transfer-ownership="none">
+            <type name="WinCmd" c:type="GeanyWinCmd*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="deactivate" c:identifier="geany_win_cmd_deactivate">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="cmd" transfer-ownership="none">
+            <type name="WinCmd" c:type="GeanyWinCmd*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="update_state" c:identifier="geany_win_cmd_update_state">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="cmd" transfer-ownership="none">
+            <type name="WinCmd" c:type="GeanyWinCmd*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <property name="window"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="Gtk.Window"/>
+      </property>
+    </interface>
+    <record name="WinCmdInterface"
+            c:type="GeanyWinCmdInterface"
+            disguised="1"
+            glib:is-gtype-struct-for="WinCmd">
+    </record>
+    <record name="WinCmdInterface_" c:type="GeanyWinCmdInterface_">
+      <field name="g_iface" writable="1">
+        <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+      </field>
+      <field name="activate">
+        <callback name="activate">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="cmd" transfer-ownership="none">
+              <type name="WinCmd" c:type="GeanyWinCmd*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="deactivate">
+        <callback name="deactivate">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="cmd" transfer-ownership="none">
+              <type name="WinCmd" c:type="GeanyWinCmd*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="update_state">
+        <callback name="update_state">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="cmd" transfer-ownership="none">
+              <type name="WinCmd" c:type="GeanyWinCmd*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+    </record>
+    <function name="create_edit_menu1"
+              c:identifier="create_edit_menu1"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+    </function>
+    <function name="create_prefs_dialog"
+              c:identifier="create_prefs_dialog"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+    </function>
+    <function name="create_project_dialog"
+              c:identifier="create_project_dialog"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+    </function>
+    <function name="create_toolbar_popup_menu1"
+              c:identifier="create_toolbar_popup_menu1"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+    </function>
+    <function name="create_window1"
+              c:identifier="create_window1"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+    </function>
+    <function name="ui_add_config_file_menu_item"
+              c:identifier="ui_add_config_file_menu_item">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="real_path" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="label" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="parent" transfer-ownership="none">
+          <type name="Gtk.Container" c:type="GtkContainer*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_add_document_sensitive"
+              c:identifier="ui_add_document_sensitive">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="widget" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_add_recent_document"
+              c:identifier="ui_add_recent_document">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_add_recent_project_file"
+              c:identifier="ui_add_recent_project_file">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="utf8_filename" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_auto_separator_add_ref"
+              c:identifier="ui_auto_separator_add_ref">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="autosep" transfer-ownership="none">
+          <type name="AutoSeparator" c:type="GeanyAutoSeparator*"/>
+        </parameter>
+        <parameter name="item" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_builder_get_object"
+              c:identifier="ui_builder_get_object"
+              introspectable="0">
+      <return-value>
+        <type name="gpointer" c:type="gpointer"/>
+      </return-value>
+      <parameters>
+        <parameter name="name" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_button_new_with_image"
+              c:identifier="ui_button_new_with_image"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="stock_id" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="text" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_combo_box_add_to_history"
+              c:identifier="ui_combo_box_add_to_history">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="combo_entry" transfer-ownership="none">
+          <type name="Gtk.ComboBoxText" c:type="GtkComboBoxText*"/>
+        </parameter>
+        <parameter name="text" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="history_len" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_combo_box_prepend_text_once"
+              c:identifier="ui_combo_box_prepend_text_once">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="combo" transfer-ownership="none">
+          <type name="Gtk.ComboBoxText" c:type="GtkComboBoxText*"/>
+        </parameter>
+        <parameter name="text" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_create_encodings_combo_box"
+              c:identifier="ui_create_encodings_combo_box"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="has_detect" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+        <parameter name="default_enc" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_create_insert_date_menu_items"
+              c:identifier="ui_create_insert_date_menu_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_create_insert_menu_items"
+              c:identifier="ui_create_insert_menu_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_create_recent_menus"
+              c:identifier="ui_create_recent_menus">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_dialog_set_primary_button_order"
+              c:identifier="ui_dialog_set_primary_button_order"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="dialog" transfer-ownership="none">
+          <type name="Gtk.Dialog" c:type="GtkDialog*"/>
+        </parameter>
+        <parameter name="response" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+        <parameter name="arg2" transfer-ownership="none">
+          <varargs>
+          </varargs>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_dialog_vbox_new"
+              c:identifier="ui_dialog_vbox_new"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="dialog" transfer-ownership="none">
+          <type name="Gtk.Dialog" c:type="GtkDialog*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_document_buttons_update"
+              c:identifier="ui_document_buttons_update">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_document_show_hide"
+              c:identifier="ui_document_show_hide">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_editable_insert_text_callback"
+              c:identifier="ui_editable_insert_text_callback">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="editable" transfer-ownership="none">
+          <type name="Gtk.Editable" c:type="GtkEditable*"/>
+        </parameter>
+        <parameter name="new_text" transfer-ownership="none">
+          <type name="utf8" c:type="gchar*"/>
+        </parameter>
+        <parameter name="new_text_len" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+        <parameter name="position" transfer-ownership="none">
+          <type name="gint" c:type="gint*"/>
+        </parameter>
+        <parameter name="data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_encodings_combo_box_get_active_encoding"
+              c:identifier="ui_encodings_combo_box_get_active_encoding">
+      <return-value transfer-ownership="none">
+        <type name="gint" c:type="gint"/>
+      </return-value>
+      <parameters>
+        <parameter name="combo" transfer-ownership="none">
+          <type name="Gtk.ComboBox" c:type="GtkComboBox*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_encodings_combo_box_set_active_encoding"
+              c:identifier="ui_encodings_combo_box_set_active_encoding">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="combo" transfer-ownership="none">
+          <type name="Gtk.ComboBox" c:type="GtkComboBox*"/>
+        </parameter>
+        <parameter name="enc" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_entry_add_activate_backward_signal"
+              c:identifier="ui_entry_add_activate_backward_signal">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="entry" transfer-ownership="none">
+          <type name="Gtk.Entry" c:type="GtkEntry*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_entry_add_clear_icon"
+              c:identifier="ui_entry_add_clear_icon">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="entry" transfer-ownership="none">
+          <type name="Gtk.Entry" c:type="GtkEntry*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_finalize_builder" c:identifier="ui_finalize_builder">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_focus_current_document"
+              c:identifier="ui_focus_current_document">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_frame_new_with_alignment"
+              c:identifier="ui_frame_new_with_alignment"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="label_text" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="alignment" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget**"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_get_gtk_settings_integer"
+              c:identifier="ui_get_gtk_settings_integer">
+      <return-value transfer-ownership="none">
+        <type name="gint" c:type="gint"/>
+      </return-value>
+      <parameters>
+        <parameter name="property_name" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="default_value" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_get_mime_icon"
+              c:identifier="ui_get_mime_icon"
+              introspectable="0">
+      <return-value>
+        <type name="Gio.Icon" c:type="GIcon*"/>
+      </return-value>
+      <parameters>
+        <parameter name="mime_type" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_hbutton_box_copy_layout"
+              c:identifier="ui_hbutton_box_copy_layout">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="master" transfer-ownership="none">
+          <type name="Gtk.ButtonBox" c:type="GtkButtonBox*"/>
+        </parameter>
+        <parameter name="copy" transfer-ownership="none">
+          <type name="Gtk.ButtonBox" c:type="GtkButtonBox*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_image_menu_item_new"
+              c:identifier="ui_image_menu_item_new"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="stock_id" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="label" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_init" c:identifier="ui_init">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_init_builder" c:identifier="ui_init_builder">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_init_prefs" c:identifier="ui_init_prefs">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_init_stock_items" c:identifier="ui_init_stock_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_init_toolbar_widgets"
+              c:identifier="ui_init_toolbar_widgets">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_is_keyval_enter_or_return"
+              c:identifier="ui_is_keyval_enter_or_return">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="keyval" transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_label_new_bold"
+              c:identifier="ui_label_new_bold"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="text" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_label_set_markup"
+              c:identifier="ui_label_set_markup"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="label" transfer-ownership="none">
+          <type name="Gtk.Label" c:type="GtkLabel*"/>
+        </parameter>
+        <parameter name="format" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="arg2" transfer-ownership="none">
+          <varargs>
+          </varargs>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_lookup_stock_label"
+              c:identifier="ui_lookup_stock_label">
+      <return-value transfer-ownership="none">
+        <type name="utf8" c:type="const gchar*"/>
+      </return-value>
+      <parameters>
+        <parameter name="stock_id" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_lookup_widget"
+              c:identifier="ui_lookup_widget"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="widget" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="widget_name" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_menu_add_document_items"
+              c:identifier="ui_menu_add_document_items"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="menu" transfer-ownership="none">
+          <type name="Gtk.Menu" c:type="GtkMenu*"/>
+        </parameter>
+        <parameter name="active" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+        <parameter name="callback" transfer-ownership="none">
+          <type name="GObject.Callback" c:type="GCallback"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_menu_add_document_items_sorted"
+              c:identifier="ui_menu_add_document_items_sorted"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="menu" transfer-ownership="none">
+          <type name="Gtk.Menu" c:type="GtkMenu*"/>
+        </parameter>
+        <parameter name="active" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+        <parameter name="callback" transfer-ownership="none">
+          <type name="GObject.Callback" c:type="GCallback"/>
+        </parameter>
+        <parameter name="sort_func" transfer-ownership="none">
+          <type name="GLib.CompareFunc" c:type="GCompareFunc"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_menu_item_get_text"
+              c:identifier="ui_menu_item_get_text">
+      <return-value transfer-ownership="full">
+        <type name="utf8" c:type="gchar*"/>
+      </return-value>
+      <parameters>
+        <parameter name="menu_item" transfer-ownership="none">
+          <type name="Gtk.MenuItem" c:type="GtkMenuItem*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_menu_sort_by_label"
+              c:identifier="ui_menu_sort_by_label">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="menu" transfer-ownership="none">
+          <type name="Gtk.Menu" c:type="GtkMenu*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_path_box_new"
+              c:identifier="ui_path_box_new"
+              introspectable="0">
+      <return-value>
+        <type name="Gtk.Widget" c:type="GtkWidget*"/>
+      </return-value>
+      <parameters>
+        <parameter name="title" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="action" transfer-ownership="none">
+          <type name="Gtk.FileChooserAction" c:type="GtkFileChooserAction"/>
+        </parameter>
+        <parameter name="entry" transfer-ownership="none">
+          <type name="Gtk.Entry" c:type="GtkEntry*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_progress_bar_start"
+              c:identifier="ui_progress_bar_start">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="text" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_progress_bar_stop" c:identifier="ui_progress_bar_stop">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_save_buttons_toggle"
+              c:identifier="ui_save_buttons_toggle">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="enable" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_set_editor_font" c:identifier="ui_set_editor_font">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="font_name" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_set_fullscreen" c:identifier="ui_set_fullscreen">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_set_search_entry_background"
+              c:identifier="ui_set_search_entry_background">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="widget" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="success" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_set_statusbar"
+              c:identifier="ui_set_statusbar"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="log" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+        <parameter name="format" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="arg2" transfer-ownership="none">
+          <varargs>
+          </varargs>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_set_window_title" c:identifier="ui_set_window_title">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_setup_open_button_callback"
+              c:identifier="ui_setup_open_button_callback">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="open_btn" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="title" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="action" transfer-ownership="none">
+          <type name="Gtk.FileChooserAction" c:type="GtkFileChooserAction"/>
+        </parameter>
+        <parameter name="entry" transfer-ownership="none">
+          <type name="Gtk.Entry" c:type="GtkEntry*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_sidebar_show_hide" c:identifier="ui_sidebar_show_hide">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_statusbar_showhide"
+              c:identifier="ui_statusbar_showhide">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="state" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_swap_sidebar_pos" c:identifier="ui_swap_sidebar_pos">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_table_add_row"
+              c:identifier="ui_table_add_row"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="table" transfer-ownership="none">
+          <type name="Gtk.Table" c:type="GtkTable*"/>
+        </parameter>
+        <parameter name="row" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+        <parameter name="arg2" transfer-ownership="none">
+          <varargs>
+          </varargs>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_toggle_editor_features"
+              c:identifier="ui_toggle_editor_features">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="feature" transfer-ownership="none">
+          <type name="UIEditorFeatures" c:type="GeanyUIEditorFeatures"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_tree_model_iter_any_next"
+              c:identifier="ui_tree_model_iter_any_next">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="model" transfer-ownership="none">
+          <type name="Gtk.TreeModel" c:type="GtkTreeModel*"/>
+        </parameter>
+        <parameter name="iter" transfer-ownership="none">
+          <type name="Gtk.TreeIter" c:type="GtkTreeIter*"/>
+        </parameter>
+        <parameter name="down" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_tree_view_find_next"
+              c:identifier="ui_tree_view_find_next"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="treeview" transfer-ownership="none">
+          <type name="Gtk.TreeView" c:type="GtkTreeView*"/>
+        </parameter>
+        <parameter name="cb" transfer-ownership="none">
+          <type name="TVMatchCallback" c:type="TVMatchCallback"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_tree_view_find_previous"
+              c:identifier="ui_tree_view_find_previous"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="treeview" transfer-ownership="none">
+          <type name="Gtk.TreeView" c:type="GtkTreeView*"/>
+        </parameter>
+        <parameter name="cb" transfer-ownership="none">
+          <type name="TVMatchCallback" c:type="TVMatchCallback"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_fold_items" c:identifier="ui_update_fold_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_update_insert_include_item"
+              c:identifier="ui_update_insert_include_item">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+        <parameter name="item" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_menu_copy_items"
+              c:identifier="ui_update_menu_copy_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_popup_copy_items"
+              c:identifier="ui_update_popup_copy_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_popup_goto_items"
+              c:identifier="ui_update_popup_goto_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="enable" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_popup_reundo_items"
+              c:identifier="ui_update_popup_reundo_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_statusbar" c:identifier="ui_update_statusbar">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+        <parameter name="pos" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_tab_status" c:identifier="ui_update_tab_status">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="doc" transfer-ownership="none">
+          <type name="gpointer" c:type="GeanyDocument*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_update_view_editor_menu_items"
+              c:identifier="ui_update_view_editor_menu_items">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+    </function>
+    <function name="ui_widget_modify_font_from_string"
+              c:identifier="ui_widget_modify_font_from_string">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="wid" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="str" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_widget_set_sensitive"
+              c:identifier="ui_widget_set_sensitive">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="widget" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="set" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_widget_set_tooltip_text"
+              c:identifier="ui_widget_set_tooltip_text">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="widget" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="text" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="ui_widget_show_hide" c:identifier="ui_widget_show_hide">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="widget" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="show" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+  </namespace>
+</repository>
