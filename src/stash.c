@@ -76,15 +76,13 @@
  * should be efficient enough.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+
+#include "geany.h"		/* necessary for utils.h, otherwise use gtk/gtk.h */
+#include <stdlib.h>		/* only for atoi() */
+#include "support.h"	/* only for _("text") */
+#include "utils.h"		/* only for foreach_*, utils_get_setting_*(). Stash should not depend on Geany. */
 
 #include "stash.h"
-#include "support.h" /* for _() */
-#include "utils.h"   /* for foreach macros */
-
-#include <stdlib.h>  /* only for atoi() */
 
 
 /* GTK3 removed ComboBoxEntry, but we need a value to differentiate combo box with and
@@ -200,9 +198,8 @@ static void handle_string_setting(StashGroup *group, StashPref *se,
 	{
 		case SETTING_READ:
 			g_free(*setting);
-			*setting = g_key_file_get_string(config, group->name, se->key_name, NULL);
-			if (!*setting)
-				*setting = g_strdup(se->default_value);
+			*setting = utils_get_setting_string(config, group->name, se->key_name,
+				se->default_value);
 			break;
 		case SETTING_WRITE:
 			g_key_file_set_string(config, group->name, se->key_name,
@@ -243,11 +240,11 @@ static void handle_strv_setting(StashGroup *group, StashPref *se,
 
 static void keyfile_action(SettingAction action, StashGroup *group, GKeyFile *keyfile)
 {
+	StashPref *entry;
 	guint i;
 
-	for (i = 0; i < group->entries->len; i++)
+	foreach_ptr_array(entry, i, group->entries)
 	{
-		StashPref *entry = group->entries->pdata[i];
 		/* don't override settings with default values */
 		if (!group->use_defaults && action == SETTING_READ &&
 			!g_key_file_has_key(keyfile, group->name, entry->key_name, NULL))
@@ -367,11 +364,11 @@ StashGroup *stash_group_new(const gchar *name)
  * @param group . */
 void stash_group_free_settings(StashGroup *group)
 {
+	StashPref *entry;
 	guint i;
 
-	for (i = 0; i < group->entries->len; i++)
+	foreach_ptr_array(entry, i, group->entries)
 	{
-		StashPref *entry = group->entries->pdata[i];
 		if (entry->setting_type == G_TYPE_STRING)
 			g_free(*(gchararray *) entry->setting);
 		else if (entry->setting_type == G_TYPE_STRV)
@@ -388,11 +385,11 @@ void stash_group_free_settings(StashGroup *group)
  * @param group . */
 void stash_group_free(StashGroup *group)
 {
+	StashPref *entry;
 	guint i;
 
-	for (i = 0; i < group->entries->len; i++)
+	foreach_ptr_array(entry, i, group->entries)
 	{
-		StashPref *entry = group->entries->pdata[i];
 		if (entry->widget_type == GTK_TYPE_RADIO_BUTTON)
 		{
 			g_free(entry->extra.radio_buttons);
@@ -686,11 +683,11 @@ static void handle_widget_property(GtkWidget *widget, StashPref *entry,
 
 static void pref_action(PrefAction action, StashGroup *group, GtkWidget *owner)
 {
+	StashPref *entry;
 	guint i;
 
-	for (i = 0; i < group->entries->len; i++)
+	foreach_ptr_array(entry, i, group->entries)
 	{
-		StashPref *entry = group->entries->pdata[i];
 		GtkWidget *widget;
 
 		/* ignore settings with no widgets */
@@ -807,8 +804,8 @@ void stash_group_add_radio_buttons(StashGroup *group, gint *setting,
 		add_widget_pref(group, G_TYPE_INT, setting, key_name, GINT_TO_POINTER(default_value),
 			GTK_TYPE_RADIO_BUTTON, NULL);
 	va_list args;
-	gsize i, count = 1;
-	EnumWidget *array;
+	gsize count = 1;
+	EnumWidget *item, *array;
 
 	/* count pairs of args */
 	va_start(args, enum_id);
@@ -825,9 +822,8 @@ void stash_group_add_radio_buttons(StashGroup *group, gint *setting,
 	entry->extra.radio_buttons = array;
 
 	va_start(args, enum_id);
-	for (i = 0; i < count; i ++)
+	foreach_c_array(item, array, count)
 	{
-		EnumWidget *item = &array[i];
 		if (item == array)
 		{
 			/* first element */
@@ -1082,18 +1078,16 @@ static void stash_tree_append_pref(StashGroup *group, StashPref *entry, GtkListS
 static void stash_tree_append_prefs(GPtrArray *group_array,
 	GtkListStore *store, PrefAction action)
 {
+	StashGroup *group;
 	guint i, j;
+	StashPref *entry;
 
-	for (i = 0; i < group_array->len; i++)
+	foreach_ptr_array(group, i, group_array)
 	{
-		StashGroup *group = group_array->pdata[i];
 		if (group->various)
 		{
-			for (j = 0; j < group->entries->len; i++)
-			{
-				StashPref *entry = group->entries->pdata[i];
+			foreach_ptr_array(entry, j, group->entries)
 				stash_tree_append_pref(group, entry, store, action);
-			}
 		}
 	}
 }
