@@ -27,7 +27,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct GeanyDocument GeanyDocument;
+/* Forward-declared to avoid including document.h here */
+struct GeanyDocument;
 
 /* General printing preferences. */
 typedef struct PrintingPrefs
@@ -46,7 +47,7 @@ extern PrintingPrefs printing_prefs;
 
 void printing_page_setup_gtk(void);
 
-void printing_print_doc(GeanyDocument *doc);
+void printing_print_doc(struct GeanyDocument *doc);
 
 G_END_DECLS
 

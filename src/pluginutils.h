@@ -30,30 +30,32 @@
 
 G_BEGIN_DECLS
 
-typedef struct GeanyPlugin GeanyPlugin;
+/* avoid including plugindata.h otherwise this redefines the GEANY() macro */
+struct GeanyPlugin;
 
-void plugin_add_toolbar_item(GeanyPlugin *plugin, GtkToolItem *item);
 
-void plugin_module_make_resident(GeanyPlugin *plugin);
+void plugin_add_toolbar_item(struct GeanyPlugin *plugin, GtkToolItem *item);
 
-void plugin_signal_connect(GeanyPlugin *plugin,
+void plugin_module_make_resident(struct GeanyPlugin *plugin);
+
+void plugin_signal_connect(struct GeanyPlugin *plugin,
 		GObject *object, const gchar *signal_name, gboolean after,
 		GCallback callback, gpointer user_data);
 
-guint plugin_timeout_add(GeanyPlugin *plugin, guint interval, GSourceFunc function,
+guint plugin_timeout_add(struct GeanyPlugin *plugin, guint interval, GSourceFunc function,
 		gpointer data);
 
-guint plugin_timeout_add_seconds(GeanyPlugin *plugin, guint interval, GSourceFunc function,
+guint plugin_timeout_add_seconds(struct GeanyPlugin *plugin, guint interval, GSourceFunc function,
 		gpointer data);
 
-guint plugin_idle_add(GeanyPlugin *plugin, GSourceFunc function, gpointer data);
+guint plugin_idle_add(struct GeanyPlugin *plugin, GSourceFunc function, gpointer data);
 
-GeanyKeyGroup *plugin_set_key_group(GeanyPlugin *plugin,
+struct GeanyKeyGroup *plugin_set_key_group(struct GeanyPlugin *plugin,
 		const gchar *section_name, gsize count, GeanyKeyGroupCallback callback);
 
-void plugin_show_configure(GeanyPlugin *plugin);
+void plugin_show_configure(struct GeanyPlugin *plugin);
 
-void plugin_builder_connect_signals(GeanyPlugin *plugin,
+void plugin_builder_connect_signals(struct GeanyPlugin *plugin,
 	GtkBuilder *builder, gpointer user_data);
 
 G_END_DECLS

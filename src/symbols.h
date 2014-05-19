@@ -27,7 +27,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct GeanyDocument GeanyDocument;
+/* Forward-declared to avoid including document.h here */
+struct GeanyDocument;
 
 extern const guint TM_GLOBAL_TYPE_MASK;
 

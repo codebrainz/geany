@@ -28,9 +28,9 @@
 G_BEGIN_DECLS
 
 /* Forward-declared to avoid including their headers here */
-typedef struct GeanyDocument GeanyDocument;
-typedef struct GeanyEditor GeanyEditor;
-typedef struct GeanyFiletype GeanyFiletype;
+struct GeanyDocument;
+struct GeanyEditor;
+struct GeanyFiletype;
 struct SCNotification;
 
 typedef enum
@@ -85,22 +85,22 @@ struct _GeanyObjectClass
 {
 	GObjectClass parent_class;
 
-	void (*document_new)(GeanyDocument *doc);
-	void (*document_open)(GeanyDocument *doc);
-	void (*document_reload)(GeanyDocument *doc);
-	void (*document_before_save)(GeanyDocument *doc);
-	void (*document_save)(GeanyDocument *doc);
-	void (*document_filetype_set)(GeanyDocument *doc, GeanyFiletype *filetype_old);
-	void (*document_activate)(GeanyDocument *doc);
-	void (*document_close)(GeanyDocument *doc);
+	void (*document_new)(struct GeanyDocument *doc);
+	void (*document_open)(struct GeanyDocument *doc);
+	void (*document_reload)(struct GeanyDocument *doc);
+	void (*document_before_save)(struct GeanyDocument *doc);
+	void (*document_save)(struct GeanyDocument *doc);
+	void (*document_filetype_set)(struct GeanyDocument *doc, struct GeanyFiletype *filetype_old);
+	void (*document_activate)(struct GeanyDocument *doc);
+	void (*document_close)(struct GeanyDocument *doc);
 	void (*project_open)(GKeyFile *keyfile);
 	void (*project_save)(GKeyFile *keyfile);
 	void (*project_close)(void);
 	void (*project_dialog_open)(GtkWidget *notebook);
 	void (*project_dialog_confirmed)(GtkWidget *notebook);
 	void (*project_dialog_close)(GtkWidget *notebook);
-	void (*update_editor_menu)(const gchar *word, gint click_pos, GeanyDocument *doc);
-	gboolean (*editor_notify)(GeanyEditor *editor, gpointer scnt);
+	void (*update_editor_menu)(const gchar *word, gint click_pos, struct GeanyDocument *doc);
+	gboolean (*editor_notify)(struct GeanyEditor *editor, gpointer scnt);
 	void (*geany_startup_complete)(void);
 	void (*build_start)(void);
 	void (*save_settings)(GKeyFile *keyfile);
