@@ -25,7 +25,7 @@
 #define GEANY_HIGHLIGHTING_MAPPINGS_H 1
 
 #include <glib.h>
-#include "Scintilla.h"
+#include "sciwrappers.h"
 
 G_BEGIN_DECLS
 

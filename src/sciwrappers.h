@@ -24,9 +24,17 @@
 
 #include <gtk/gtk.h>
 #include "Scintilla.h"
+#include "SciLexer.h"
+#ifndef GTK
+# define GTK 1
+#endif
 #include "ScintillaWidget.h"
 
 G_BEGIN_DECLS
+
+/* Do not use this macro or scintilla_send_message() unless the message you
+ * need is not wrapped here. Do not use this macro from plugins ever. */
+#define SSM(s, m, w, l) scintilla_send_message(s, m, w, l)
 
 gchar*				sci_get_string				(ScintillaObject *sci, guint msg, gulong wParam);
 

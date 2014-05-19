@@ -35,10 +35,6 @@ G_BEGIN_DECLS
 
 #include "tm_tagmanager.h"
 
-#ifndef PLAT_GTK
-#   define PLAT_GTK 1	/* needed when including ScintillaWidget.h */
-#endif
-
 /* Compatibility for sharing macros between API and core, overridden in plugindata.h */
 #define GEANY(symbol_name) symbol_name
 

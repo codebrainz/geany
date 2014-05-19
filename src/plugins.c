@@ -27,9 +27,6 @@
 
 #include <string.h>
 
-#include "Scintilla.h"
-#include "ScintillaWidget.h"
-
 #include "prefix.h"
 #include "plugins.h"
 #include "plugindata.h"

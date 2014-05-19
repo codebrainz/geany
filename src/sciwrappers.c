@@ -38,9 +38,6 @@
 #include "sciwrappers.h"
 #include "utils.h"
 
-#define SSM(s, m, w, l) scintilla_send_message(s, m, w, l)
-
-
 /* line numbers visibility */
 void sci_set_line_numbers(ScintillaObject *sci, gboolean set, gint extra_width)
 {

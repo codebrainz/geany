@@ -33,8 +33,7 @@
 
 G_BEGIN_DECLS
 
-#include "Scintilla.h"
-#include "ScintillaWidget.h"
+#include "sciwrappers.h"
 #include "editor.h"
 #include "search.h"
 

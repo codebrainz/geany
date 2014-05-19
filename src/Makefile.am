@@ -115,7 +115,6 @@ AM_CFLAGS = -DGEANY_DATADIR=\"data\" \
 			-DGEANY_LOCALEDIR=\"\" \
 			-DGEANY_PREFIX=\"\" \
 			-DGEANY_PRIVATE \
-			-DGTK \
 			-DG_LOG_DOMAIN=\""Geany"\"
 
 geany_LDFLAGS =	-mwindows -mms-bitfields
@@ -148,7 +147,6 @@ AM_CFLAGS = -DGEANY_DATADIR=\""$(datadir)"\" \
 			-DGEANY_LOCALEDIR=\""$(localedir)"\" \
 			-DGEANY_PREFIX=\""$(prefix)"\" \
 			-DGEANY_PRIVATE \
-			-DGTK \
 			-DG_LOG_DOMAIN=\""Geany"\"
 
 clean-local:

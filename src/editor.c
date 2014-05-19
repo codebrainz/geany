@@ -62,12 +62,6 @@
 #include "highlighting.h"
 #include "gtkcompat.h"
 
-
-/* Note: use sciwrappers.h instead where possible.
- * Do not use SSM in files unrelated to scintilla. */
-#define SSM(s, m, w, l) scintilla_send_message(s, m, w, l)
-
-
 static GHashTable *snippet_hash = NULL;
 static GQueue *snippet_offsets = NULL;
 static gint snippet_cursor_insert_pos;

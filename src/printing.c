@@ -41,7 +41,6 @@
 #include "ui_utils.h"
 #include "msgwindow.h"
 #include "highlighting.h"
-#include "Scintilla.h"
 
 
 PrintingPrefs printing_prefs;
