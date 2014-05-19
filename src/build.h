@@ -28,9 +28,8 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including their headers here */
-struct GeanyDocument;
-struct GeanyFiletype;
+typedef struct GeanyDocument GeanyDocument;
+typedef struct GeanyFiletype GeanyFiletype;
 
 /* Order is important (see GBO_TO_GBG, GBO_TO_CMD below) */
 /* * Geany Known Build Commands.
@@ -170,7 +169,7 @@ void build_init(void);
 void build_finalize(void);
 
 /* menu configuration dialog functions */
-GtkWidget *build_commands_table(struct GeanyDocument *doc, GeanyBuildSource dst, BuildTableData *data, struct GeanyFiletype *ft);
+GtkWidget *build_commands_table(GeanyDocument *doc, GeanyBuildSource dst, BuildTableData *data, struct GeanyFiletype *ft);
 
 void build_read_project(struct GeanyFiletype *ft, BuildTableData build_properties);
 
@@ -181,7 +180,7 @@ gboolean build_parse_make_dir(const gchar *string, gchar **prefix);
 
 /* build menu functions */
 
-void build_menu_update(struct GeanyDocument *doc);
+void build_menu_update(GeanyDocument *doc);
 
 void build_toolbutton_build_clicked(GtkAction *action, gpointer user_data);
 

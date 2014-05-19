@@ -27,6 +27,8 @@
 
 G_BEGIN_DECLS
 
+typedef struct StashGroup StashGroup;
+
 extern GPtrArray *pref_groups;
 
 
@@ -34,11 +36,9 @@ void configuration_init(void);
 
 void configuration_finalize(void);
 
-struct StashGroup;
+void configuration_add_pref_group(StashGroup *group, gboolean for_prefs_dialog);
 
-void configuration_add_pref_group(struct StashGroup *group, gboolean for_prefs_dialog);
-
-void configuration_add_various_pref_group(struct StashGroup *group);
+void configuration_add_various_pref_group(StashGroup *group);
 
 void configuration_save(void);
 

@@ -482,14 +482,14 @@ typedef struct UIUtilsFuncs
 	void		(*ui_progress_bar_start) (const gchar *text);
 	void		(*ui_progress_bar_stop) (void);
 	void		(*ui_entry_add_clear_icon) (GtkEntry *entry);
-	void		(*ui_menu_add_document_items) (GtkMenu *menu, struct GeanyDocument *active,
+	void		(*ui_menu_add_document_items) (GtkMenu *menu, GeanyDocument *active,
 				GCallback callback);
 	void		(*ui_widget_modify_font_from_string) (GtkWidget *widget, const gchar *str);
 	gboolean	(*ui_is_keyval_enter_or_return) (guint keyval);
 	gint		(*ui_get_gtk_settings_integer) (const gchar *property_name, gint default_value);
 	void		(*ui_combo_box_add_to_history) (GtkComboBoxText *combo_entry,
 				const gchar *text, gint history_len);
-	void		(*ui_menu_add_document_items_sorted) (GtkMenu *menu, struct GeanyDocument *active,
+	void		(*ui_menu_add_document_items_sorted) (GtkMenu *menu, GeanyDocument *active,
 				GCallback callback, GCompareFunc compare_func);
 	const gchar* (*ui_lookup_stock_label)(const gchar *stock_id);
 }
@@ -524,7 +524,7 @@ typedef struct MsgWinFuncs
 	/* status_add() does not set the status bar - use ui->set_statusbar() instead. */
 	void		(*msgwin_status_add) (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 	void		(*msgwin_compiler_add) (gint msg_color, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
-	void		(*msgwin_msg_add) (gint msg_color, gint line, struct GeanyDocument *doc,
+	void		(*msgwin_msg_add) (gint msg_color, gint line, GeanyDocument *doc,
 				 const gchar *format, ...) G_GNUC_PRINTF (4, 5);
 	void		(*msgwin_clear_tab) (gint tabnum);
 	void		(*msgwin_switch_tab) (gint tabnum, gboolean show);
@@ -544,7 +544,7 @@ typedef struct EncodingFuncs
 EncodingFuncs;
 
 
-struct GeanyKeyGroup;
+typedef struct GeanyKeyGroup GeanyKeyGroup;
 /* avoid including keybindings.h */
 typedef void (*_GeanyKeyCallback) (guint key_id);
 
@@ -552,20 +552,21 @@ typedef void (*_GeanyKeyCallback) (guint key_id);
 typedef struct KeybindingFuncs
 {
 	void		(*keybindings_send_command) (guint group_id, guint key_id);
-	struct GeanyKeyBinding* (*keybindings_set_item) (struct GeanyKeyGroup *group, gsize key_id,
+	GeanyKeyBinding* (*keybindings_set_item) (GeanyKeyGroup *group, gsize key_id,
 					_GeanyKeyCallback callback, guint key, GdkModifierType mod,
 					const gchar *name, const gchar *label, GtkWidget *menu_item);
-	struct GeanyKeyBinding* (*keybindings_get_item)(struct GeanyKeyGroup *group, gsize key_id);
+	GeanyKeyBinding* (*keybindings_get_item)(GeanyKeyGroup *group, gsize key_id);
 
 }
 KeybindingFuncs;
 
 
 /* See highlighting.h */
+typedef struct GeanyLexerStyle GeanyLexerStyle;
 typedef struct HighlightingFuncs
 {
-	const struct GeanyLexerStyle* (*highlighting_get_style) (gint ft_id, gint style_id);
-	void		(*highlighting_set_styles) (struct _ScintillaObject *sci, struct GeanyFiletype *ft);
+	const GeanyLexerStyle* (*highlighting_get_style) (gint ft_id, gint style_id);
+	void		(*highlighting_set_styles) (struct _ScintillaObject *sci, GeanyFiletype *ft);
 	gboolean	(*highlighting_is_string_style) (gint lexer, gint style);
 	gboolean	(*highlighting_is_comment_style) (gint lexer, gint style);
 	gboolean	(*highlighting_is_code_style) (gint lexer, gint style);
@@ -612,40 +613,40 @@ TagManagerFuncs;
 /* See navqueue.h */
 typedef struct NavQueueFuncs
 {
-	gboolean		(*navqueue_goto_line) (struct GeanyDocument *old_doc, struct GeanyDocument *new_doc,
+	gboolean		(*navqueue_goto_line) (GeanyDocument *old_doc, GeanyDocument *new_doc,
 					 gint line);
 }
 NavQueueFuncs;
 
 
-struct GeanyEditor;
+typedef struct GeanyEditor GeanyEditor;
 
 /* See editor.h */
 typedef struct EditorFuncs
 {
-	const struct GeanyIndentPrefs* (*editor_get_indent_prefs)(struct GeanyEditor *editor);
-	struct _ScintillaObject* (*editor_create_widget)(struct GeanyEditor *editor);
+	const GeanyIndentPrefs* (*editor_get_indent_prefs)(GeanyEditor *editor);
+	struct _ScintillaObject* (*editor_create_widget)(GeanyEditor *editor);
 
-	void	(*editor_indicator_set_on_range) (struct GeanyEditor *editor, gint indic, gint start, gint end);
-	void	(*editor_indicator_set_on_line) (struct GeanyEditor *editor, gint indic, gint line);
-	void	(*editor_indicator_clear) (struct GeanyEditor *editor, gint indic);
+	void	(*editor_indicator_set_on_range) (GeanyEditor *editor, gint indic, gint start, gint end);
+	void	(*editor_indicator_set_on_line) (GeanyEditor *editor, gint indic, gint line);
+	void	(*editor_indicator_clear) (GeanyEditor *editor, gint indic);
 
-	void	(*editor_set_indent_type)(struct GeanyEditor *editor, GeanyIndentType type);
-	gchar*	(*editor_get_word_at_pos) (struct GeanyEditor *editor, gint pos, const gchar *wordchars);
+	void	(*editor_set_indent_type)(GeanyEditor *editor, GeanyIndentType type);
+	gchar*	(*editor_get_word_at_pos) (GeanyEditor *editor, gint pos, const gchar *wordchars);
 
-	const gchar*	(*editor_get_eol_char_name) (struct GeanyEditor *editor);
-	gint			(*editor_get_eol_char_len) (struct GeanyEditor *editor);
-	const gchar*	(*editor_get_eol_char) (struct GeanyEditor *editor);
+	const gchar*	(*editor_get_eol_char_name) (GeanyEditor *editor);
+	gint			(*editor_get_eol_char_len) (GeanyEditor *editor);
+	const gchar*	(*editor_get_eol_char) (GeanyEditor *editor);
 
-	void	(*editor_insert_text_block) (struct GeanyEditor *editor, const gchar *text,
+	void	(*editor_insert_text_block) (GeanyEditor *editor, const gchar *text,
 			 gint insert_pos, gint cursor_index, gint newline_indent_size,
 			 gboolean replace_newlines);
 
-	gint	(*editor_get_eol_char_mode) (struct GeanyEditor *editor);
-	gboolean (*editor_goto_pos) (struct GeanyEditor *editor, gint pos, gboolean mark);
+	gint	(*editor_get_eol_char_mode) (GeanyEditor *editor);
+	gboolean (*editor_goto_pos) (GeanyEditor *editor, gint pos, gboolean mark);
 
-	const gchar* (*editor_find_snippet) (struct GeanyEditor *editor, const gchar *snippet_name);
-	void	(*editor_insert_snippet) (struct GeanyEditor *editor, gint pos, const gchar *snippet);
+	const gchar* (*editor_find_snippet) (GeanyEditor *editor, const gchar *snippet_name);
+	void	(*editor_insert_snippet) (GeanyEditor *editor, gint pos, const gchar *snippet);
 }
 EditorFuncs;
 
@@ -661,7 +662,7 @@ typedef struct PluginFuncs
 	void	(*plugin_signal_connect) (GeanyPlugin *plugin,
 		GObject *object, const gchar *signal_name, gboolean after,
 		GCallback callback, gpointer user_data);
-	struct GeanyKeyGroup* (*plugin_set_key_group)(GeanyPlugin *plugin,
+	GeanyKeyGroup* (*plugin_set_key_group)(GeanyPlugin *plugin,
 		const gchar *section_name, gsize count, _GeanyKeyGroupCallback callback);
 	void	(*plugin_show_configure)(GeanyPlugin *plugin);
 	guint	(*plugin_timeout_add) (GeanyPlugin *plugin, guint interval, GSourceFunc function,

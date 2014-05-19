@@ -29,8 +29,8 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
+typedef struct GeanyDocument GeanyDocument;
+typedef struct GeanyFiletypePrivate GeanyFiletypePrivate;
 
 /* Do not change the order, only append. */
 typedef enum
@@ -145,7 +145,7 @@ typedef struct GeanyFiletype
 	gint			  indent_type;
 	gint			  indent_width;
 
-	struct GeanyFiletypePrivate	*priv;	/* must be last, append fields before this item */
+	GeanyFiletypePrivate	*priv;	/* must be last, append fields before this item */
 }
 GeanyFiletype;
 
@@ -179,7 +179,7 @@ const GSList *filetypes_get_sorted_by_name(void);
 
 const gchar *filetypes_get_display_name(GeanyFiletype *ft);
 
-GeanyFiletype *filetypes_detect_from_document(struct GeanyDocument *doc);
+GeanyFiletype *filetypes_detect_from_document(GeanyDocument *doc);
 
 GeanyFiletype *filetypes_detect_from_extension(const gchar *utf8_filename);
 

@@ -26,8 +26,7 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
+typedef struct GeanyDocument GeanyDocument;
 
 /**
  * Various colors for use in the compiler and messages treeviews when adding messages.
@@ -82,10 +81,10 @@ void msgwin_switch_tab(gint tabnum, gboolean show);
 
 void msgwin_clear_tab(gint tabnum);
 
-void msgwin_msg_add(gint msg_color, gint line, struct GeanyDocument *doc, const gchar *format, ...)
+void msgwin_msg_add(gint msg_color, gint line, GeanyDocument *doc, const gchar *format, ...)
 			G_GNUC_PRINTF (4, 5);
 
-void msgwin_msg_add_string(gint msg_color, gint line, struct GeanyDocument *doc, const gchar *string);
+void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc, const gchar *string);
 
 void msgwin_compiler_add(gint msg_color, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 

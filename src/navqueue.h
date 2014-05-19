@@ -33,8 +33,7 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
+typedef struct GeanyDocument GeanyDocument;
 
 void navqueue_init(void);
 
@@ -42,7 +41,7 @@ void navqueue_free(void);
 
 void navqueue_remove_file(const gchar *filename);
 
-gboolean navqueue_goto_line(struct GeanyDocument *old_doc, struct GeanyDocument *new_doc, gint line);
+gboolean navqueue_goto_line(GeanyDocument *old_doc, GeanyDocument *new_doc, gint line);
 
 void navqueue_go_back(void);
 

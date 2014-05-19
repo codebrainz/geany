@@ -32,10 +32,9 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including their headers here */
-struct GeanyDocument;
-struct _ScintillaObject;
-struct Sci_TextToFind;
+typedef struct GeanyDocument GeanyDocument;
+typedef struct _ScintillaObject ScintillaObject;
+typedef struct Sci_TextToFind Sci_TextToFind;
 
 /* the flags given in the search dialog for "find next", also used by the search bar */
 typedef struct GeanySearchData
@@ -105,23 +104,23 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir);
 
 void geany_match_info_free(GeanyMatchInfo *info);
 
-gint search_find_prev(struct _ScintillaObject *sci, const gchar *str, gint flags, GeanyMatchInfo **match_);
+gint search_find_prev(ScintillaObject *sci, const gchar *str, gint flags, GeanyMatchInfo **match_);
 
-gint search_find_next(struct _ScintillaObject *sci, const gchar *str, gint flags, GeanyMatchInfo **match_);
+gint search_find_next(ScintillaObject *sci, const gchar *str, gint flags, GeanyMatchInfo **match_);
 
-gint search_find_text(struct _ScintillaObject *sci, gint flags, struct Sci_TextToFind *ttf, GeanyMatchInfo **match_);
+gint search_find_text(ScintillaObject *sci, gint flags, struct Sci_TextToFind *ttf, GeanyMatchInfo **match_);
 
 void search_find_again(gboolean change_direction);
 
 void search_find_usage(const gchar *search_text, const gchar *original_search_text, gint flags, gboolean in_session);
 
-void search_find_selection(struct GeanyDocument *doc, gboolean search_backwards);
+void search_find_selection(GeanyDocument *doc, gboolean search_backwards);
 
-gint search_mark_all(struct GeanyDocument *doc, const gchar *search_text, gint flags);
+gint search_mark_all(GeanyDocument *doc, const gchar *search_text, gint flags);
 
-gint search_replace_match(struct _ScintillaObject *sci, const GeanyMatchInfo *match, const gchar *replace_text);
+gint search_replace_match(ScintillaObject *sci, const GeanyMatchInfo *match, const gchar *replace_text);
 
-guint search_replace_range(struct _ScintillaObject *sci, struct Sci_TextToFind *ttf,
+guint search_replace_range(ScintillaObject *sci, struct Sci_TextToFind *ttf,
 		gint flags, const gchar *replace_text);
 
 G_END_DECLS

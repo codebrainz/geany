@@ -29,8 +29,7 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
+typedef struct GeanyDocument GeanyDocument;
 
 /** Default character set to define which characters should be treated as part of a word. */
 #define GEANY_WORDCHARS					"_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -161,7 +160,7 @@ extern GeanyEditorPrefs editor_prefs;
 /** Editor-owned fields for each document. */
 typedef struct GeanyEditor
 {
-	struct GeanyDocument	*document;		/**< The document associated with the editor. */
+	GeanyDocument	*document;		/**< The document associated with the editor. */
 	ScintillaObject	*sci;			/**< The Scintilla editor @c GtkWidget. */
 	gboolean		 line_wrapping;	/**< @c TRUE if line wrapping is enabled. */
 	gboolean		 auto_indent;	/**< @c TRUE if auto-indentation is enabled. */
@@ -187,7 +186,7 @@ typedef struct SCNotification SCNotification;
 
 void editor_init(void);
 
-GeanyEditor *editor_create(struct GeanyDocument *doc);
+GeanyEditor *editor_create(GeanyDocument *doc);
 
 void editor_destroy(GeanyEditor *editor);
 
