@@ -28,12 +28,10 @@
 #ifndef GEANY_DIALOGS_H
 #define GEANY_DIALOGS_H 1
 
+#include "document.h"
 #include "gtkcompat.h"
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
 
 typedef void (*GeanyInputCallback)(const gchar *text);
 

@@ -29,12 +29,10 @@
 #ifndef GEANY_NAVQUEUE_H
 #define GEANY_NAVQUEUE_H 1
 
+#include "document.h"
 #include <glib.h>
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
 
 void navqueue_init(void);
 

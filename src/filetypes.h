@@ -29,7 +29,7 @@
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including document.h here */
+/* Forward-declared to avoid including document.h since it includes this header */
 struct GeanyDocument;
 
 /* Do not change the order, only append. */

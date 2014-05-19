@@ -24,12 +24,10 @@
 #define GEANY_HIGHLIGHTING_H 1
 
 #include <glib.h>
+#include "filetypes.h"
 #include "sciwrappers.h"
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including filetypes.h here */
-struct GeanyFiletype;
 
 /** Fields representing the different attributes of a Scintilla lexer style.
  * @see Scintilla messages @c SCI_STYLEGETFORE, etc, for use with scintilla_send_message(). */

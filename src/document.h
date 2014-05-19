@@ -30,6 +30,7 @@
 #define GEANY_DOCUMENT_H 1
 
 #include "editor.h"
+#include "filetypes.h"
 #include "geany.h"
 #include "sciwrappers.h"
 #include "search.h"
@@ -37,9 +38,6 @@
 #include <glib.h>
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including filetypes.h here */
-struct GeanyFiletype;
 
 #if defined(G_OS_WIN32)
 # define GEANY_DEFAULT_EOL_CHARACTER SC_EOL_CRLF

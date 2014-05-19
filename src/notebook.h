@@ -22,12 +22,10 @@
 #ifndef GEANY_NOTEBOOK_H
 #define GEANY_NOTEBOOK_H 1
 
+#include "document.h"
 #include <glib.h>
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
 
 void notebook_init(void);
 

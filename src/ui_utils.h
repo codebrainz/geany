@@ -22,13 +22,11 @@
 #ifndef GEANY_UI_UTILS_H
 #define GEANY_UI_UTILS_H 1
 
+#include "document.h"
 #include <stdarg.h>
 #include "gtkcompat.h"
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
 
 /** Sets a name to lookup @a widget from @a owner.
  * @param owner Usually a window, dialog or popup menu.

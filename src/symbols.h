@@ -23,12 +23,10 @@
 #ifndef GEANY_SYMBOLS_H
 #define GEANY_SYMBOLS_H 1
 
+#include "document.h"
 #include <glib.h>
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including document.h here */
-struct GeanyDocument;
 
 extern const guint TM_GLOBAL_TYPE_MASK;
 

@@ -28,13 +28,12 @@
 #ifndef GEANY_TEMPLATES_H
 #define GEANY_TEMPLATES_H 1
 
+#include "document.h"
+#include "filetypes.h"
 #include <glib.h>
 
 G_BEGIN_DECLS
 
-/* Forward-declared to avoid including their headers here */
-struct GeanyDocument;
-struct GeanyFiletype;
 struct filetype;
 
 #define GEANY_TEMPLATES_INDENT 3

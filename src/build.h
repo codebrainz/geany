@@ -24,13 +24,11 @@
 #ifndef GEANY_BUILD_H
 #define GEANY_BUILD_H 1
 
+#include "document.h"
+#include "filetypes.h"
 #include "gtkcompat.h"
 
 G_BEGIN_DECLS
-
-/* Forward-declared to avoid including their headers here */
-struct GeanyDocument;
-struct GeanyFiletype;
 
 /* Order is important (see GBO_TO_GBG, GBO_TO_CMD below) */
 /* * Geany Known Build Commands.
