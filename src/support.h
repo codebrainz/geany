@@ -28,18 +28,14 @@
 #ifndef GEANY_SUPPORT_H
 #define GEANY_SUPPORT_H 1
 
-#include <glib.h>
-
 G_BEGIN_DECLS
-
-#include "geany.h"
 
 #ifdef GETTEXT_PACKAGE
 # include <glib/gi18n-lib.h>
 #else
 # define textdomain(String) (String)
-# define bind_textdomain_codeset(String,Codeset) (String)
-# define bindtextdomain(Domain,Charset) (Domain)
+# define bind_textdomain_codeset(String,Codeset)
+# define bindtextdomain(Domain,Charset)
 # define ngettext(String,PluralString,Number) (String)
 # define _(String) String
 # define C_(Context,String) String

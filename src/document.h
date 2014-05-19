@@ -29,13 +29,14 @@
 #ifndef GEANY_DOCUMENT_H
 #define GEANY_DOCUMENT_H 1
 
+#include "editor.h"
+#include "geany.h"
+#include "sciwrappers.h"
+#include "search.h"
+
 #include <glib.h>
 
 G_BEGIN_DECLS
-
-#include "sciwrappers.h"
-#include "editor.h"
-#include "search.h"
 
 /* Forward-declared to avoid including filetypes.h here */
 struct GeanyFiletype;
@@ -128,7 +129,7 @@ extern GPtrArray *documents_array;
  *
  * Example: @code GeanyDocument *doc = documents[i]; @endcode
  * @see documents_array(). */
-#define documents ((GeanyDocument **)GEANY(documents_array)->pdata)
+#define documents ((GeanyDocument **)(documents_array->pdata))
 
 /** @deprecated Use @ref foreach_document() instead.
  * Iterates all valid documents.
@@ -152,8 +153,8 @@ extern GPtrArray *documents_array;
  * }
  * @endcode */
 #define foreach_document(i) \
-	for (i = 0; i < GEANY(documents_array)->len; i++)\
-		if (!documents[i]->is_valid)\
+	for (i = 0; i < documents_array->len; i++)\
+		if (!((GeanyDocument*)documents_array->pdata[i])->is_valid)\
 			{}\
 		else /* prevent outside 'else' matching our macro 'if' */
 
@@ -170,7 +171,6 @@ extern GPtrArray *documents_array;
  **/
 #define DOC_FILENAME(doc) \
 	(G_LIKELY((doc)->file_name != NULL) ? ((doc)->file_name) : GEANY_STRING_UNTITLED)
-
 
 
 /* These functions will replace the older functions. For now they have a documents_ prefix. */

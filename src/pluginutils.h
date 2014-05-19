@@ -25,7 +25,7 @@
 
 #ifdef HAVE_PLUGINS
 
-#include <gtk/gtk.h>
+#include "gtkcompat.h"
 #include "keybindings.h"	/* GeanyKeyGroupCallback */
 
 G_BEGIN_DECLS

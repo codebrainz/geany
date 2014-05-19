@@ -23,6 +23,8 @@
 #ifndef GEANY_SOCKET_H
 #define GEANY_SOCKET_H 1
 
+#ifdef HAVE_SOCKET
+
 #include <glib.h>
 
 G_BEGIN_DECLS
@@ -45,5 +47,7 @@ gboolean socket_lock_input_cb(GIOChannel *source, GIOCondition condition, gpoint
 gint socket_finalize(void);
 
 G_END_DECLS
+
+#endif /* HAVE_SOCKET */
 
 #endif /* GEANY_SOCKET_H */

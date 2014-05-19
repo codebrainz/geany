@@ -25,15 +25,9 @@
 #ifndef GEANY_H
 #define GEANY_H 1
 
-#include <gtk/gtk.h>
+#include "gtkcompat.h"
 
 G_BEGIN_DECLS
-
-#if defined(HAVE_CONFIG_H) && defined(GEANY_PRIVATE)
-#	include "config.h"
-#endif
-
-#include "tm_tagmanager.h"
 
 /* Compatibility for sharing macros between API and core, overridden in plugindata.h */
 #define GEANY(symbol_name) symbol_name
@@ -52,31 +46,6 @@ G_BEGIN_DECLS
 #define GEANY_DEFAULT_DIALOG_HEIGHT		350
 #define GEANY_WINDOW_DEFAULT_WIDTH		900
 #define GEANY_WINDOW_DEFAULT_HEIGHT		600
-
-
-/** Important application fields. */
-typedef struct GeanyApp
-{
-	gboolean			debug_mode;		/**< @c TRUE if debug messages should be printed. */
-	/** User configuration directory, usually @c ~/.config/geany.
-	 * This is a full path read by @ref tm_get_real_path().
-	 * @note Plugin configuration files should be saved as:
-	 * @code g_build_path(G_DIR_SEPARATOR_S, geany->app->configdir, "plugins", "pluginname",
-	 * 	"file.conf", NULL); @endcode */
-	gchar				*configdir;
-	gchar				*datadir;
-	gchar				*docdir;
-	const TMWorkspace	*tm_workspace;	/**< TagManager workspace/session tags. */
-	struct GeanyProject	*project;		/**< Currently active project or @c NULL if none is open. */
-}
-GeanyApp;
-
-extern GeanyApp *app;
-
-extern GObject *geany_object;
-
-
-extern gboolean	ignore_callback;
 
 
 /* prototype is here so that all files can use it. */

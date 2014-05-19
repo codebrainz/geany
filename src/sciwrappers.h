@@ -22,7 +22,7 @@
 #ifndef GEANY_SCI_WRAPPERS_H
 #define GEANY_SCI_WRAPPERS_H 1
 
-#include <gtk/gtk.h>
+#include "gtkcompat.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
 #ifndef GTK

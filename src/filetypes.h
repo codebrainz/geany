@@ -25,6 +25,7 @@
 
 #include <glib.h>
 #include "sciwrappers.h"
+#include "tm_source_file.h" /* for langType */
 
 G_BEGIN_DECLS
 
@@ -153,7 +154,7 @@ extern GPtrArray *filetypes_array;
 /** Wraps filetypes_array so it can be used with C array syntax.
  * Example: filetypes[GEANY_FILETYPES_C]->name = ...;
  * @see filetypes_index(). */
-#define filetypes	((GeanyFiletype **)GEANY(filetypes_array)->pdata)
+#define filetypes	((GeanyFiletype **)(filetypes_array->pdata))
 
 extern GSList *filetypes_by_title;
 

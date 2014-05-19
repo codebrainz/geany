@@ -23,7 +23,7 @@
 #ifndef GEANY_OBJECT_H
 #define GEANY_OBJECT_H 1
 
-#include <glib-object.h>
+#include "gtkcompat.h"
 
 G_BEGIN_DECLS
 
@@ -31,6 +31,7 @@ G_BEGIN_DECLS
 struct GeanyDocument;
 struct GeanyEditor;
 struct GeanyFiletype;
+struct SCNotification;
 
 typedef enum
 {
@@ -78,7 +79,7 @@ struct _GeanyObject
 	/* add your public declarations here */
 };
 
-struct SCNotification;
+extern GObject *geany_object;
 
 struct _GeanyObjectClass
 {

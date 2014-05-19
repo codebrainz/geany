@@ -24,17 +24,20 @@
  * About dialog and credits.
  */
 
-#include "about.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include "app.h"
+#include "gb.c"
 #include "geany.h"
-#include "utils.h"
-#include "ui_utils.h"
-#include "support.h"
 #include "geanywraplabel.h"
 #include "main.h"
-#include "templates.h"
+#include "support.h"
+#include "ui_utils.h"
+#include "utils.h"
 
-#include "gb.c"
-
+#include "gtkcompat.h"
 
 #define HEADER "<span size=\"larger\" weight=\"bold\">Geany %s</span>"
 #define INFO "<span size=\"larger\" weight=\"bold\">%s</span>"

@@ -24,38 +24,36 @@
  * User Interface general utility functions.
  */
 
-#include "geany.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include "ui_utils.h"
+
+#include "app.h"
+#include "callbacks.h"
+#include "dialogs.h"
+#include "documentprivate.h"
+#include "encodings.h"
+#include "filetypes.h"
+#include "geanymenubuttonaction.h"
+#include "keyfile.h"
+#include "main.h"
+#include "msgwindow.h"
+#include "prefs.h"
+#include "project.h"
+#include "sidebar.h"
+#include "stash.h"
 #include "support.h"
+#include "symbols.h"
+#include "toolbar.h"
+#include "utils.h"
+
+#include "gtkcompat.h"
 
 #include <string.h>
 #include <ctype.h>
 #include <gdk/gdkkeysyms.h>
-
-#include "ui_utils.h"
-#include "dialogs.h"
-#include "prefs.h"
-#include "sciwrappers.h"
-#include "document.h"
-#include "documentprivate.h"
-#include "filetypes.h"
-#include "support.h"
-#include "msgwindow.h"
-#include "utils.h"
-#include "callbacks.h"
-#include "encodings.h"
-#include "sidebar.h"
-#include "win32.h"
-#include "project.h"
-#include "editor.h"
-#include "plugins.h"
-#include "symbols.h"
-#include "toolbar.h"
-#include "geanymenubuttonaction.h"
-#include "main.h"
-#include "stash.h"
-#include "keyfile.h"
-#include "gtkcompat.h"
 
 
 #define DEFAULT_STATUSBAR_TEMPLATE N_(\
@@ -1989,9 +1987,9 @@ void ui_init_stock_items(void)
 		{ GEANY_STOCK_CLOSE_ALL, N_("Close All"), 0, 0, GETTEXT_PACKAGE },
 		{ GEANY_STOCK_BUILD, N_("Build"), 0, 0, GETTEXT_PACKAGE }
 #else
-		{ GEANY_STOCK_SAVE_ALL, N_("Save All") },
-		{ GEANY_STOCK_CLOSE_ALL, N_("Close All") },
-		{ GEANY_STOCK_BUILD, N_("Build") }
+		{ GEANY_STOCK_SAVE_ALL, N_("Save All"), 0, 0, NULL },
+		{ GEANY_STOCK_CLOSE_ALL, N_("Close All"), 0, 0, NULL },
+		{ GEANY_STOCK_BUILD, N_("Build"), 0, 0, NULL }
 #endif
 	};
 

@@ -24,6 +24,7 @@
 #define GEANY_DOCUMENT_PRIVATE_H 1
 
 #include <glib.h>
+#include "document.h"
 
 G_BEGIN_DECLS
 

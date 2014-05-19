@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 /* Forward-declared to avoid including their headers here */
 struct GeanyDocument;
 struct GeanyFiletype;
+struct filetype;
 
 #define GEANY_TEMPLATES_INDENT 3
 #define GEANY_TEMPLATES_FORMAT_YEAR              C_("DefaultYear", "%Y")
@@ -68,8 +69,6 @@ GeanyTemplatePrefs;
 
 extern GeanyTemplatePrefs template_prefs;
 
-
-struct filetype;
 
 void templates_init(void);
 

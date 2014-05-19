@@ -25,6 +25,7 @@
 
 #include <glib.h>
 #include "sciwrappers.h"
+#include "tm_tag.h" /* for TMTag */
 
 G_BEGIN_DECLS
 

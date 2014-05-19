@@ -28,7 +28,7 @@
 #ifndef GEANY_DIALOGS_H
 #define GEANY_DIALOGS_H 1
 
-#include <glib.h>
+#include "gtkcompat.h"
 
 G_BEGIN_DECLS
 

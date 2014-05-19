@@ -24,7 +24,7 @@
 #ifndef GEANY_BUILD_H
 #define GEANY_BUILD_H 1
 
-#include <glib.h>
+#include "gtkcompat.h"
 
 G_BEGIN_DECLS
 

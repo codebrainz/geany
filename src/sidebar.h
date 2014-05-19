@@ -24,7 +24,7 @@
 #ifndef GEANY_SIDEBAR_H
 #define GEANY_SIDEBAR_H 1
 
-#include <gtk/gtk.h>
+#include "gtkcompat.h"
 
 G_BEGIN_DECLS
 
