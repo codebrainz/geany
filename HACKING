@@ -372,6 +372,23 @@ Inside a source file the includes section should be ordered like this:
 
 5. Everything else that should not influence 1-4.
 
+Including in Header Files
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Headers should also include what they use. All of the types should defined in
+order to allow the header to be included stand-alone. For example, if a
+header uses a ``GtkWidget*``, it should ``#include <gtk/gtk.h>``. Or, if a
+headers uses a ``GPtrArray*``, it should ``#include <glib.h>`` to ensure that
+all of the types are declared, whether by pointers/opaquely or fully, as
+required. Since all headers will use a ``G_BEGIN_DECLS`` and ``G_END_DECLS``
+guard for C++, the bare minimum for a header is to include ``glib.h`` or
+``<gtk/gtk.h>`` or ``gtkcompat.h`` or some other header that makes those
+macros available.
+
+An include can be avoided if the header only uses the type by pointer by
+using a ``typedef`` or forward-declaration. This is useful to avoid circular
+dependencies in the includes.
+
 Committing
 ----------
 
