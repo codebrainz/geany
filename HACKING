@@ -302,6 +302,75 @@ Example::
     {
         ...
 
+Header Includes
+---------------
+
+In order to make including various headers in Geany more convenient, each
+file should include what it uses. If there is a file named ``foo.c``, and a
+file named ``foo.h``, it should be possible to include ``foo.h`` on its own
+without depending on stuff in ``foo.c`` that is included for the first time
+before ``foo.h``.
+
+Private Headers
+^^^^^^^^^^^^^^^
+
+If there is some data that needs to be shared between various parts of the
+core code, put them in a "private header", that is, if the public header is
+called ``foo.h``, then make a ``fooprivate.h`` header that contains the
+non-public functions, types, globals, etc that are needed. In the
+``fooprivate.h`` header, make sure to include ``foo.h`` since any other files
+including this header will need those anyway. Other core source files can
+then just include the ``fooprivate.h`` without exposing that stuff to
+plugins.
+
+Forward Declaration
+^^^^^^^^^^^^^^^^^^^
+
+If another header just needs an opaque pointer to a type, forward-declare
+that type, or use a ``typedef`` so that the full header that defines the
+type is not required. This is an excellent way to break "circular" includes
+and related dependencies.
+
+Order of Includes
+^^^^^^^^^^^^^^^^^
+
+Inside a source file the includes section should be ordered like this:
+
+1. Always include the ``config.h`` file at the start of every source file,
+   for example::
+
+    #ifdef HAVE_CONFIG_H
+    # include "config.h"
+    #endif
+
+   This allows the Autotools and other build systems use the ``./configure``
+   time settings. If you don't do this, there's likely to be a number of
+   macros that you'll have to define in the build system or custom headers.
+
+   Warning: Never include ``config.h`` in headers, and especially in "public"
+   headers that plugins might include.
+
+2. Then include the header that has the same name as the source file (if
+   applicable). For example, for a source file named ``foo.c``, include
+   either the private ``fooprivate.h`` (if there is one) or the ``foo.h``
+   file up front. ``fooprivate.h`` shoud include ``foo.h`` so there is no
+   need for core code that needs the private stuff to include more than
+   ``fooprivate.h``.
+
+3. At this point, it should be safe to include all the headers that declare
+   whatever is needed. If everything generally "includes what it uses" and
+   all files included contain the appropriate multiple-declaration guards
+   then the order of includes is fairly arbitrary. Prefer to use English
+   alphabetic order if possible.
+
+4. By now it doesn't really matter about the order, nothing below here is
+   "our problem". Semi-arbitrarily, you should use an include order like this:
+
+    1. Standard C headers
+    2. Non-standard system headers (eg. ``windows.h`` or ``unistd.h``)
+    3. GLib/GTK+ or related headers
+
+5. Everything else that should not influence 1-4.
 
 Committing
 ----------
