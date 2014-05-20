@@ -35,7 +35,7 @@
 #include "buildprivate.h"
 #include "callbacks.h"
 #include "dialogs.h"
-#include "document.h"
+#include "documentprivate.h"
 #include "encodings.h"
 #include "filetypes.h"
 #include "geanyobject.h"

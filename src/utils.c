@@ -31,7 +31,7 @@
 
 #include "app.h"
 #include "dialogs.h"
-#include "document.h"
+#include "documentprivate.h"
 #include "prefs.h"
 #include "sciwrappers.h"
 #include "support.h"

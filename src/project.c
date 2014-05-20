@@ -32,7 +32,7 @@
 #include "app.h"
 #include "buildprivate.h"
 #include "dialogs.h"
-#include "document.h"
+#include "documentprivate.h"
 #include "editor.h"
 #include "filetypesprivate.h"
 #include "geanyobject.h"

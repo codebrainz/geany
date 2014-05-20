@@ -31,7 +31,7 @@
 #include "search.h"
 
 #include "app.h"
-#include "document.h"
+#include "documentprivate.h"
 #include "encodings.h"
 #include "keyfile.h"
 #include "msgwindow.h"

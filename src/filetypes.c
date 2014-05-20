@@ -36,7 +36,7 @@
 #include "app.h"
 #include "buildprivate.h"
 #include "callbacks.h" /* FIXME: for ignore_callback */
-#include "document.h"
+#include "documentprivate.h"
 #include "filetypesprivate.h"
 #include "geany.h"
 #include "geanyobject.h"

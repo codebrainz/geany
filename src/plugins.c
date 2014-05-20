@@ -32,6 +32,7 @@
 #include "app.h"
 #include "buildprivate.h"
 #include "dialogs.h"
+#include "documentprivate.h"
 #include "encodings.h"
 #include "geanyobject.h"
 #include "geanywraplabel.h"
@@ -86,32 +87,6 @@ static PluginFuncs plugin_funcs = {
 	&plugin_timeout_add_seconds,
 	&plugin_idle_add,
 	&plugin_builder_connect_signals
-};
-
-static DocumentFuncs doc_funcs = {
-	&document_new_file,
-	&document_get_current,
-	&document_get_from_page,
-	&document_find_by_filename,
-	&document_find_by_real_path,
-	&document_save_file,
-	&document_open_file,
-	&document_open_files,
-	&document_remove_page,
-	&document_reload_file,
-	&document_set_encoding,
-	&document_set_text_changed,
-	&document_set_filetype,
-	&document_close,
-	&document_index,
-	&document_save_file_as,
-	&document_rename_file,
-	&document_get_status_color,
-	&document_get_basename_for_display,
-	&document_get_notebook_page,
-	&document_compare_by_display_name,
-	&document_compare_by_tab_order,
-	&document_compare_by_tab_order_reverse
 };
 
 static EditorFuncs editor_funcs = {
@@ -353,7 +328,6 @@ static SymbolsFuncs symbols_funcs = {
 };
 
 static GeanyFunctions geany_functions = {
-	&doc_funcs,
 	&sci_funcs,
 	&template_funcs,
 	&utils_funcs,

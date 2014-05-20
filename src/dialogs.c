@@ -31,7 +31,7 @@
 
 #include "app.h"
 #include "buildprivate.h"
-#include "document.h"
+#include "documentprivate.h"
 #include "encodings.h"
 #include "filetypes.h"
 #include "main.h"
