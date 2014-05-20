@@ -32,6 +32,7 @@
 
 #include "document.h"
 #include "geanyobject.h"
+#include "sciwrappers.h"
 #include "toolbar.h"
 #include "utils.h"
 

@@ -47,11 +47,14 @@
 #include "geanyobject.h"
 #include "main.h"
 #include "navqueue.h"
+#include "sciwrappers.h"
 #include "sidebar.h"
 #include "support.h"
 #include "tm_tag.h"
 #include "ui_utils.h"
 #include "utils.h"
+
+#include "SciLexer.h"
 
 #include "gtkcompat.h"
 

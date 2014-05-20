@@ -32,10 +32,14 @@
 #include "editor.h"
 #include "filetypes.h"
 #include "geany.h"
-#include "sciwrappers.h"
 #include "search.h"
 
+#include "gtkcompat.h" /* Needed by ScintillaWidget.h */
+#include "Scintilla.h" /* Needed by ScintillaWidget.h */
+#include "ScintillaWidget.h" /* For ScintillaObject */
+
 #include <glib.h>
+
 
 G_BEGIN_DECLS
 

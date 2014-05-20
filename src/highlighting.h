@@ -24,9 +24,13 @@
 #define GEANY_HIGHLIGHTING_H 1
 
 #include "filetypes.h"
-#include "sciwrappers.h"
+
+#include "gtkcompat.h" /* Needed by ScintillaWidget.h */
+#include "Scintilla.h" /* Needed by ScintillaWidget.h */
+#include "ScintillaWidget.h" /* for ScintillaObject */
 
 #include <glib.h>
+
 
 G_BEGIN_DECLS
 

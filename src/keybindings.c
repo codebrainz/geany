@@ -43,6 +43,7 @@
 #include "navqueue.h"
 #include "notebook.h"
 #include "prefs.h"
+#include "sciwrappers.h"
 #include "sidebar.h"
 #include "support.h"
 #include "symbols.h"

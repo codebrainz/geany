@@ -41,6 +41,7 @@
 #include "geanyobject.h"
 #include "highlighting.h"
 #include "projectprivate.h"
+#include "sciwrappers.h"
 #include "support.h"
 #include "symbols.h"
 #include "tm_parser.h"

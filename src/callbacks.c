@@ -49,6 +49,7 @@
 #include "pluginutils.h"
 #include "prefs.h"
 #include "printing.h"
+#include "sciwrappers.h"
 #include "sidebar.h"
 #include "socket.h"
 #include "support.h"

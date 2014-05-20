@@ -44,6 +44,7 @@
 #include "navqueue.h"
 #include "notebook.h"
 #include "project.h"
+#include "sciwrappers.h"
 #include "sidebar.h"
 #include "support.h"
 #include "symbols.h"

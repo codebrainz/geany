@@ -42,6 +42,7 @@
 #include "msgwindow.h"
 #include "prefs.h"
 #include "project.h"
+#include "sciwrappers.h"
 #include "sidebar.h"
 #include "stash.h"
 #include "support.h"

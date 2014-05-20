@@ -45,6 +45,7 @@
 #include "prefs.h"
 #include "printing.h"
 #include "project.h"
+#include "sciwrappers.h"
 #include "stash.h"
 #include "support.h"
 #include "templates.h"

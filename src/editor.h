@@ -23,10 +23,14 @@
 #ifndef GEANY_EDITOR_H
 #define GEANY_EDITOR_H 1
 
-#include "sciwrappers.h"
 #include "tm_tag.h" /* for TMTag */
 
+#include "gtkcompat.h" /* Needed by ScintillaWidget.h */
+#include "Scintilla.h" /* Needed by ScintillaWidget.h */
+#include "ScintillaWidget.h" /* for ScintillaObject */
+
 #include <glib.h>
+
 
 G_BEGIN_DECLS
 

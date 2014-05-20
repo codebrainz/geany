@@ -23,8 +23,11 @@
 #ifndef GEANY_FILETYPES_H
 #define GEANY_FILETYPES_H 1
 
-#include "sciwrappers.h"
 #include "tm_source_file.h" /* for langType */
+
+#include "gtkcompat.h" /* Needed by ScintillaWidget.h */
+#include "Scintilla.h" /* Needed by ScintillaWidget.h */
+#include "ScintillaWidget.h" /* for ScintillaObject */
 
 #include <glib.h>
 

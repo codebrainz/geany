@@ -44,6 +44,7 @@
 #include "pluginprivate.h"
 #include "pluginutils.h"
 #include "prefs.h"
+#include "sciwrappers.h"
 #include "stash.h"
 #include "support.h"
 #include "symbols.h"

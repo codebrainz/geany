@@ -36,6 +36,7 @@
 #include "keyfile.h"
 #include "msgwindow.h"
 #include "prefs.h"
+#include "sciwrappers.h"
 #include "stash.h"
 #include "support.h"
 #include "toolbar.h"

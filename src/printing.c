@@ -38,6 +38,7 @@
 #include "geany.h"
 #include "highlighting.h"
 #include "msgwindow.h"
+#include "sciwrappers.h"
 #include "support.h"
 #include "utils.h"
 #include "ui_utils.h"

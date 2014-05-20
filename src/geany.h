@@ -25,10 +25,9 @@
 #ifndef GEANY_H
 #define GEANY_H 1
 
-#include "gtkcompat.h"
+#include <glib.h>
 
 G_BEGIN_DECLS
-
 
 /* for detailed description look in the documentation, things are not
  * listed in the documentation should not be changed */

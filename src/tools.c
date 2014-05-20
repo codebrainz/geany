@@ -32,6 +32,7 @@
 
 #include "document.h"
 #include "keybindings.h"
+#include "sciwrappers.h"
 #include "support.h"
 #include "ui_utils.h"
 #include "utils.h"
