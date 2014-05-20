@@ -119,7 +119,7 @@ typedef struct GeanyDocument
 }
 GeanyDocument;
 
-extern GPtrArray *documents_array;
+G_MODULE_EXPORT extern GPtrArray *documents_array;
 
 
 /** Wraps @ref documents_array so it can be used with C array syntax.

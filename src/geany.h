@@ -29,9 +29,6 @@
 
 G_BEGIN_DECLS
 
-/* Compatibility for sharing macros between API and core, overridden in plugindata.h */
-#define GEANY(symbol_name) symbol_name
-
 
 /* for detailed description look in the documentation, things are not
  * listed in the documentation should not be changed */
