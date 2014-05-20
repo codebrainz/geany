@@ -23,9 +23,10 @@
 #ifndef GEANY_EDITOR_H
 #define GEANY_EDITOR_H 1
 
-#include <glib.h>
 #include "sciwrappers.h"
 #include "tm_tag.h" /* for TMTag */
+
+#include <glib.h>
 
 G_BEGIN_DECLS
 

@@ -24,6 +24,7 @@
 #define GEANY_PRINTING_H 1
 
 #include "document.h"
+
 #include <glib.h>
 
 G_BEGIN_DECLS

@@ -30,6 +30,7 @@
 
 #include "document.h"
 #include "filetypes.h"
+
 #include <glib.h>
 
 G_BEGIN_DECLS

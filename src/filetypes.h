@@ -23,9 +23,10 @@
 #ifndef GEANY_FILETYPES_H
 #define GEANY_FILETYPES_H 1
 
-#include <glib.h>
 #include "sciwrappers.h"
 #include "tm_source_file.h" /* for langType */
+
+#include <glib.h>
 
 G_BEGIN_DECLS
 

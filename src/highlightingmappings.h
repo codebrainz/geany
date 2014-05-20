@@ -24,8 +24,9 @@
 #ifndef GEANY_HIGHLIGHTING_MAPPINGS_H
 #define GEANY_HIGHLIGHTING_MAPPINGS_H 1
 
-#include <glib.h>
 #include "sciwrappers.h"
+
+#include <glib.h>
 
 G_BEGIN_DECLS
 

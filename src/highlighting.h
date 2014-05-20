@@ -23,9 +23,10 @@
 #ifndef GEANY_HIGHLIGHTING_H
 #define GEANY_HIGHLIGHTING_H 1
 
-#include <glib.h>
 #include "filetypes.h"
 #include "sciwrappers.h"
+
+#include <glib.h>
 
 G_BEGIN_DECLS
 

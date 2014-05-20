@@ -26,6 +26,7 @@
 
 #include "document.h"
 #include "filetypes.h"
+
 #include "gtkcompat.h"
 
 G_BEGIN_DECLS

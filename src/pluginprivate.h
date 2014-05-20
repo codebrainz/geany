@@ -23,10 +23,11 @@
 #ifndef GEANY_PLUGIN_PRIVATE_H
 #define GEANY_PLUGIN_PRIVATE_H 1
 
-#include "gtkcompat.h"
 #include "plugindata.h"
 #include "ui_utils.h"	/* GeanyAutoSeparator */
 #include "keybindings.h"	/* GeanyKeyGroup */
+
+#include "gtkcompat.h"
 
 G_BEGIN_DECLS
 

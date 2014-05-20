@@ -23,6 +23,7 @@
 #define GEANY_UI_UTILS_H 1
 
 #include "document.h"
+
 #include <stdarg.h>
 #include "gtkcompat.h"
 
