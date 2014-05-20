@@ -324,10 +324,9 @@ what they need, without exposing that stuff to plugins.
 Forward Declaration
 ^^^^^^^^^^^^^^^^^^^
 
-If another header just needs an opaque pointer to a type, forward-declare
-that type, or use a ``typedef`` so that the full header that defines the
-type is not required. This is an excellent way to break "circular" includes
-and related dependencies.
+Use forward-declaration of ``struct``s if you just need an opaque pointer
+to the type and the header where that type is declared already includes
+this header already. This will break the circular include depenendency.
 
 Order of Includes
 ^^^^^^^^^^^^^^^^^
@@ -382,9 +381,6 @@ guard for C++, the bare minimum for a header is to include ``glib.h`` or
 ``<gtk/gtk.h>`` or ``gtkcompat.h`` or some other header that makes those
 macros available.
 
-An include can be avoided if the header only uses the type by pointer by
-using a ``typedef`` or forward-declaration. This is useful to avoid circular
-dependencies in the includes.
 
 Committing
 ----------
