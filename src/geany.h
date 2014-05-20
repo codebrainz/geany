@@ -25,6 +25,12 @@
 #ifndef GEANY_H
 #define GEANY_H 1
 
+/* This is included here for compatibility with when GeanyApp used to be
+ * defined in this header. Some plugins (ex. GeanyLua) include individual
+ * headers instead of geanyplugin.h for some reason so they wouldn't
+ * get the GeanyApp definition if this isn't here. */
+#include "app.h"
+
 #include <glib.h>
 
 G_BEGIN_DECLS
