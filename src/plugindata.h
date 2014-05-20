@@ -32,7 +32,7 @@
 #ifndef GEANY_PLUGIN_DATA_H
 #define GEANY_PLUGIN_DATA_H 1
 
-#include "build.h"  /* GeanyBuildGroup, GeanyBuildSource, GeanyBuildCmdEntries enums */
+#include "build.h"  /* GeanyBuildInfo */
 #include "document.h" /* GeanyDocument */
 #include "editor.h"	/* GeanyEditor, GeanyIndentType */
 #include "filetypes.h" /* GeanyFiletype */
@@ -287,7 +287,6 @@ typedef struct GeanyFunctions
 	struct MsgWinFuncs			*p_msgwin;			/**< See msgwindow.h */
 	struct StashFuncs			*p_stash;			/**< See stash.h */
 	struct SymbolsFuncs			*p_symbols;			/**< See symbols.h */
-	struct BuildFuncs			*p_build;			/**< See build.h */
 }
 GeanyFunctions;
 
@@ -723,20 +722,6 @@ typedef struct SymbolsFuncs
 	const gchar*	(*symbols_get_context_separator)(gint ft_id);
 }
 SymbolsFuncs;
-
-/* See build.h */
-typedef struct BuildFuncs
-{
-	void (*build_activate_menu_item)(const GeanyBuildGroup grp, const guint cmd);
-	const gchar *(*build_get_current_menu_item)(const GeanyBuildGroup grp, const guint cmd,
-			const GeanyBuildCmdEntries field);
-	void (*build_remove_menu_item)(const GeanyBuildSource src, const GeanyBuildGroup grp,
-			const gint cmd);
-	void (*build_set_menu_item)(const GeanyBuildSource src, const GeanyBuildGroup grp,
-			const guint cmd, const GeanyBuildCmdEntries field, const gchar *value);
-	guint (*build_get_group_count)(const GeanyBuildGroup grp);
-}
-BuildFuncs;
 
 /* Deprecated aliases */
 #ifndef GEANY_DISABLE_DEPRECATED

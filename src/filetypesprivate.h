@@ -23,7 +23,7 @@
 #ifndef GEANY_FILETYPES_PRIVATE_H
 #define GEANY_FILETYPES_PRIVATE_H 1
 
-#include "build.h"
+#include "buildprivate.h"
 
 #include "gtkcompat.h"
 

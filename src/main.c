@@ -32,7 +32,7 @@
 #include "main.h"
 
 #include "app.h"
-#include "build.h"
+#include "buildprivate.h"
 #include "callbacks.h"
 #include "dialogs.h"
 #include "document.h"

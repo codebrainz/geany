@@ -33,7 +33,7 @@
 
 #include "msgwindow.h"
 
-#include "build.h"
+#include "buildprivate.h"
 #include "document.h"
 #include "callbacks.h"
 #include "filetypes.h"

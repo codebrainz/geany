@@ -30,7 +30,7 @@
 #include "project.h"
 
 #include "app.h"
-#include "build.h"
+#include "buildprivate.h"
 #include "dialogs.h"
 #include "document.h"
 #include "editor.h"

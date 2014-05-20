@@ -17,7 +17,7 @@ bin_PROGRAMS = geany
 SRCS = \
 	about.c about.h \
 	app.h \
-	build.c build.h \
+	build.c build.h buildprivate.h \
 	callbacks.c callbacks.h \
 	dialogs.c dialogs.h \
 	document.c document.h \

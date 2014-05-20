@@ -32,8 +32,10 @@
 # include "config.h"
 #endif
 
-#include "app.h"
 #include "build.h"
+
+#include "app.h"
+#include "buildprivate.h"
 #include "dialogs.h"
 #include "document.h"
 #include "filetypesprivate.h"

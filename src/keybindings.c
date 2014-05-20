@@ -34,7 +34,7 @@
 #include "keybindings.h"
 
 #include "app.h"
-#include "build.h"
+#include "buildprivate.h"
 #include "callbacks.h"
 #include "documentprivate.h"
 #include "filetypes.h"

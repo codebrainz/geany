@@ -34,6 +34,7 @@
 #include "filetypes.h"
 
 #include "app.h"
+#include "buildprivate.h"
 #include "callbacks.h" /* FIXME: for ignore_callback */
 #include "document.h"
 #include "filetypesprivate.h"

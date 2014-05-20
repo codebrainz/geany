@@ -30,7 +30,7 @@
 #include "dialogs.h"
 
 #include "app.h"
-#include "build.h"
+#include "buildprivate.h"
 #include "document.h"
 #include "encodings.h"
 #include "filetypes.h"

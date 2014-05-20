@@ -31,6 +31,7 @@
 #include "document.h"
 
 #include "app.h"
+#include "buildprivate.h"
 #include "callbacks.h" /* for ignore_callback */
 #include "dialogs.h"
 #include "documentprivate.h"
