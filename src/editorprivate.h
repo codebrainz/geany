@@ -70,9 +70,6 @@ extern GeanyEditorPrefs editor_prefs;
 extern EditorInfo editor_info;
 
 
-typedef struct SCNotification SCNotification;
-
-
 void editor_init(void);
 
 GeanyEditor *editor_create(struct GeanyDocument *doc);

@@ -187,6 +187,11 @@ const gchar *editor_find_snippet(GeanyEditor *editor, const gchar *snippet_name)
 G_MODULE_EXPORT
 void editor_insert_snippet(GeanyEditor *editor, gint pos, const gchar *snippet);
 
+/** Do not use this.
+ * @deprecated
+ */
+typedef struct SCNotification SCNotification;
+
 G_END_DECLS
 
 #endif /* GEANY_EDITOR_H */
