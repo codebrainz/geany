@@ -31,13 +31,14 @@
 # include "config.h"
 #endif
 
-#include "keybindingsprivate.h"
+#include "keybindings.h"
 
 #include "app.h"
 #include "build.h"
 #include "callbacks.h"
 #include "documentprivate.h"
 #include "filetypes.h"
+#include "keybindingsprivate.h"
 #include "msgwindow.h"
 #include "navqueue.h"
 #include "notebook.h"

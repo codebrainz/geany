@@ -27,7 +27,7 @@
 # include "config.h"
 #endif
 
-#include "projectprivate.h"
+#include "project.h"
 
 #include "app.h"
 #include "build.h"
@@ -38,6 +38,7 @@
 #include "geanyobject.h"
 #include "keyfile.h"
 #include "main.h"
+#include "projectprivate.h"
 #include "sidebar.h"
 #include "stash.h"
 #include "support.h"

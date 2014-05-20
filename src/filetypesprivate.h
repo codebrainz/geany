@@ -23,10 +23,9 @@
 #ifndef GEANY_FILETYPES_PRIVATE_H
 #define GEANY_FILETYPES_PRIVATE_H 1
 
-#include "filetypes.h"
 #include "build.h"
 
-#include <glib.h>
+#include "gtkcompat.h"
 
 G_BEGIN_DECLS
 

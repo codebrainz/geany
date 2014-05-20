@@ -31,11 +31,12 @@
 # include "config.h"
 #endif
 
-#include "filetypesprivate.h"
+#include "filetypes.h"
 
 #include "app.h"
 #include "callbacks.h" /* FIXME: for ignore_callback */
 #include "document.h"
+#include "filetypesprivate.h"
 #include "geany.h"
 #include "geanyobject.h"
 #include "highlighting.h"

@@ -317,11 +317,9 @@ Private Headers
 If there is some data that needs to be shared between various parts of the
 core code, put them in a "private header", that is, if the public header is
 called ``foo.h``, then make a ``fooprivate.h`` header that contains the
-non-public functions, types, globals, etc that are needed. In the
-``fooprivate.h`` header, make sure to include ``foo.h`` since any other files
-including this header will need those anyway. Other core source files can
-then just include the ``fooprivate.h`` without exposing that stuff to
-plugins.
+non-public functions, types, globals, etc that are needed. Other core source
+files can then just include the ``foo.h`` and/or ``fooprivate.h`` depending
+what they need, without exposing that stuff to plugins.
 
 Forward Declaration
 ^^^^^^^^^^^^^^^^^^^
@@ -352,10 +350,9 @@ Inside a source file the includes section should be ordered like this:
 
 2. Then include the header that has the same name as the source file (if
    applicable). For example, for a source file named ``foo.c``, include
-   either the private ``fooprivate.h`` (if there is one) or the ``foo.h``
-   file up front. ``fooprivate.h`` shoud include ``foo.h`` so there is no
-   need for core code that needs the private stuff to include more than
-   ``fooprivate.h``.
+   the ``foo.h`` below the ``config.h`` include. If there is a
+   ``fooprivate.h``, ``foo.c`` will most likely want to include that too,
+   put it in with includes in #3.
 
 3. At this point, it should be safe to include all the headers that declare
    whatever is needed. If everything generally "includes what it uses" and
