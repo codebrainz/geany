@@ -33,10 +33,11 @@ G_BEGIN_DECLS
 #ifdef GETTEXT_PACKAGE
 # include <glib/gi18n-lib.h>
 #else
+# define GETTEXT_PACKAGE NULL
 # define textdomain(String) (String)
 # define bind_textdomain_codeset(String,Codeset)
 # define bindtextdomain(Domain,Charset)
-# define ngettext(String,PluralString,Number) (String)
+# define ngettext(String,PluralString,Number) (((Number) == 1) ? (String) : (PluralString))
 # define _(String) String
 # define C_(Context,String) String
 # define Q_(String) g_strip_context((String), (String))

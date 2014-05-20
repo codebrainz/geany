@@ -545,12 +545,15 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 	}
 
 	context = g_option_context_new(_("[FILES...]"));
-#ifdef GETTEXT_PACKAGE
+
+	if (GETTEXT_PACKAGE != NULL) /* docs aren't clear if we can pass NULL */
+	{
+		g_option_group_set_translation_domain(
+			g_option_context_get_main_group(context), GETTEXT_PACKAGE);
+	}
+
 	g_option_context_add_main_entries(context, entries, GETTEXT_PACKAGE);
-	g_option_group_set_translation_domain(g_option_context_get_main_group(context), GETTEXT_PACKAGE);
-#else
-	g_option_context_add_main_entries(context, entries, NULL);
-#endif
+
 	g_option_context_add_group(context, gtk_get_option_group(FALSE));
 	g_option_context_parse(context, argc, argv, &error);
 	g_option_context_free(context);
