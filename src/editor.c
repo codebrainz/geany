@@ -43,6 +43,7 @@
 #include "callbacks.h"
 #include "dialogs.h"
 #include "documentprivate.h"
+#include "editorprivate.h"
 #include "filetypesprivate.h"
 #include "geanyobject.h"
 #include "highlighting.h"

@@ -36,6 +36,7 @@
 #include "dialogs.h"
 #include "document.h"
 #include "editor.h"
+#include "editorprivate.h"
 #include "filetypesprivate.h"
 #include "sciwrappers.h"
 #include "support.h"

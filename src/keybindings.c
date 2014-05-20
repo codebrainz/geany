@@ -37,6 +37,7 @@
 #include "buildprivate.h"
 #include "callbacks.h"
 #include "documentprivate.h"
+#include "editorprivate.h"
 #include "filetypes.h"
 #include "keybindingsprivate.h"
 #include "msgwindow.h"

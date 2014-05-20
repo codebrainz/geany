@@ -57,7 +57,7 @@ static gchar *welcome_text = NULL;
 
 
 static gboolean on_editor_notify(GObject *object, GeanyEditor *editor,
-								 SCNotification *nt, gpointer data)
+								 struct SCNotification *nt, gpointer data)
 {
 	/* For detailed documentation about the SCNotification struct, please see
 	 * http://www.scintilla.org/ScintillaDoc.html#Notifications. */

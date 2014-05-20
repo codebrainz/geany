@@ -279,7 +279,6 @@ typedef struct GeanyFunctions
 	struct HighlightingFuncs	*p_highlighting;	/**< See highlighting.h */
 	struct FiletypeFuncs		*p_filetypes;		/**< See filetypes.h */
 	struct NavQueueFuncs		*p_navqueue;		/**< See navqueue.h */
-	struct EditorFuncs			*p_editor;			/**< See editor.h */
 	struct MainFuncs			*p_main;			/**< See main.h */
 	struct PluginFuncs			*p_plugin;			/**< See pluginutils.c */
 	struct ScintillaFuncs		*p_scintilla;		/**< See ScintillaFuncs */
@@ -576,39 +575,6 @@ typedef struct NavQueueFuncs
 					 gint line);
 }
 NavQueueFuncs;
-
-
-struct GeanyEditor;
-
-/* See editor.h */
-typedef struct EditorFuncs
-{
-	const struct GeanyIndentPrefs* (*editor_get_indent_prefs)(struct GeanyEditor *editor);
-	struct _ScintillaObject* (*editor_create_widget)(struct GeanyEditor *editor);
-
-	void	(*editor_indicator_set_on_range) (struct GeanyEditor *editor, gint indic, gint start, gint end);
-	void	(*editor_indicator_set_on_line) (struct GeanyEditor *editor, gint indic, gint line);
-	void	(*editor_indicator_clear) (struct GeanyEditor *editor, gint indic);
-
-	void	(*editor_set_indent_type)(struct GeanyEditor *editor, GeanyIndentType type);
-	gchar*	(*editor_get_word_at_pos) (struct GeanyEditor *editor, gint pos, const gchar *wordchars);
-
-	const gchar*	(*editor_get_eol_char_name) (struct GeanyEditor *editor);
-	gint			(*editor_get_eol_char_len) (struct GeanyEditor *editor);
-	const gchar*	(*editor_get_eol_char) (struct GeanyEditor *editor);
-
-	void	(*editor_insert_text_block) (struct GeanyEditor *editor, const gchar *text,
-			 gint insert_pos, gint cursor_index, gint newline_indent_size,
-			 gboolean replace_newlines);
-
-	gint	(*editor_get_eol_char_mode) (struct GeanyEditor *editor);
-	gboolean (*editor_goto_pos) (struct GeanyEditor *editor, gint pos, gboolean mark);
-
-	const gchar* (*editor_find_snippet) (struct GeanyEditor *editor, const gchar *snippet_name);
-	void	(*editor_insert_snippet) (struct GeanyEditor *editor, gint pos, const gchar *snippet);
-}
-EditorFuncs;
-
 
 /* avoid including keybindings.h */
 typedef gboolean (*_GeanyKeyGroupCallback) (guint key_id);

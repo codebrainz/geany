@@ -303,7 +303,7 @@ static gboolean save_on_focus_out_idle(gpointer p_cur_doc)
  *
  */
 static gboolean on_document_focus_out(GObject *object, GeanyEditor *editor,
-								 SCNotification *nt, gpointer data)
+								 struct SCNotification *nt, gpointer data)
 {
 	if (nt->nmhdr.code == SCN_FOCUSOUT
 		&& enable_autosave_losing_focus

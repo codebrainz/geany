@@ -39,6 +39,7 @@
 #include "dialogs.h"
 #include "documentprivate.h"
 #include "editor.h"
+#include "editorprivate.h"
 #include "encodings.h"
 #include "filetypes.h"
 #include "geanywraplabel.h"

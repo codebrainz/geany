@@ -35,6 +35,7 @@
 #include "callbacks.h" /* for ignore_callback */
 #include "dialogs.h"
 #include "documentprivate.h"
+#include "editorprivate.h"
 #include "encodings.h"
 #include "filetypesprivate.h"
 #include "geany.h" /* FIXME: why is this needed for DOC_FILENAME()? should come from documentprivate.h/document.h */

@@ -42,6 +42,7 @@
 #include "callbacks.h" /* FIXME: for ignore_callback */
 #include "documentprivate.h"
 #include "editor.h"
+#include "editorprivate.h"
 #include "encodings.h"
 #include "filetypesprivate.h"
 #include "geanyobject.h"

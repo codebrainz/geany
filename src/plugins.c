@@ -33,6 +33,7 @@
 #include "buildprivate.h"
 #include "dialogs.h"
 #include "documentprivate.h"
+#include "editorprivate.h"
 #include "encodings.h"
 #include "geanyobject.h"
 #include "geanywraplabel.h"
@@ -87,24 +88,6 @@ static PluginFuncs plugin_funcs = {
 	&plugin_timeout_add_seconds,
 	&plugin_idle_add,
 	&plugin_builder_connect_signals
-};
-
-static EditorFuncs editor_funcs = {
-	&editor_get_indent_prefs,
-	&editor_create_widget,
-	&editor_indicator_set_on_range,
-	&editor_indicator_set_on_line,
-	&editor_indicator_clear,
-	&editor_set_indent_type,
-	&editor_get_word_at_pos,
-	&editor_get_eol_char_name,
-	&editor_get_eol_char_len,
-	&editor_get_eol_char,
-	&editor_insert_text_block,
-	&editor_get_eol_char_mode,
-	&editor_goto_pos,
-	&editor_find_snippet,
-	&editor_insert_snippet
 };
 
 static ScintillaFuncs scintilla_funcs = {
@@ -342,7 +325,6 @@ static GeanyFunctions geany_functions = {
 	&highlighting_funcs,
 	&filetype_funcs,
 	&navqueue_funcs,
-	&editor_funcs,
 	&main_funcs,
 	&plugin_funcs,
 	&scintilla_funcs,

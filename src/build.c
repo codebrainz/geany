@@ -38,6 +38,7 @@
 #include "buildprivate.h"
 #include "dialogs.h"
 #include "document.h"
+#include "editorprivate.h"
 #include "filetypesprivate.h"
 #include "geanymenubuttonaction.h"
 #include "geanyobject.h"

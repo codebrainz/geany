@@ -5,7 +5,9 @@ EXTRA_DIST = \
 	gb.c \
 	win32.c win32.h \
 	plugindata.h \
+	buildprivate.h \
 	documentprivate.h \
+	editorprivate.h \
 	filetypesprivate.h \
 	keybindingsprivate.h \
 	pluginprivate.h \
@@ -17,7 +19,7 @@ bin_PROGRAMS = geany
 SRCS = \
 	about.c about.h \
 	app.h \
-	build.c build.h buildprivate.h \
+	build.c build.h \
 	callbacks.c callbacks.h \
 	dialogs.c dialogs.h \
 	document.c document.h \

@@ -34,6 +34,7 @@
 #include "dialogs.h"
 #include "documentprivate.h"
 #include "editor.h"
+#include "editorprivate.h"
 #include "filetypesprivate.h"
 #include "geanyobject.h"
 #include "keyfile.h"

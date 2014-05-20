@@ -336,7 +336,7 @@ const gchar *chars[][2] ={
 };
 
 static gboolean ht_editor_notify_cb(GObject *object, GeanyEditor *editor,
-									SCNotification *nt, gpointer data);
+									struct SCNotification *nt, gpointer data);
 
 
 PluginCallback plugin_callbacks[] =
@@ -422,7 +422,7 @@ static const gchar *get_entity(gchar *letter)
 
 
 static gboolean ht_editor_notify_cb(GObject *object, GeanyEditor *editor,
-									SCNotification *nt, gpointer data)
+									struct SCNotification *nt, gpointer data)
 {
 	gint lexer;
 

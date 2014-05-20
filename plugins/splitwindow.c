@@ -106,7 +106,7 @@ static void set_line_numbers(ScintillaObject * sci, gboolean set)
 
 
 static void on_sci_notify(ScintillaObject *sci, gint param,
-		SCNotification *nt, gpointer data)
+		struct SCNotification *nt, gpointer data)
 {
 	gint line;
 

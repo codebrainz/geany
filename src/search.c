@@ -32,6 +32,7 @@
 
 #include "app.h"
 #include "documentprivate.h"
+#include "editorprivate.h"
 #include "encodings.h"
 #include "keyfile.h"
 #include "msgwindow.h"

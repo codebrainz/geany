@@ -31,6 +31,7 @@
 #include "tools.h"
 
 #include "document.h"
+#include "editorprivate.h"
 #include "keybindings.h"
 #include "sciwrappers.h"
 #include "support.h"
