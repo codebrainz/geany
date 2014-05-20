@@ -74,11 +74,11 @@ void templates_init(void);
 
 gchar *templates_get_template_fileheader(gint filetype_idx, const gchar *fname);
 
-gchar *templates_get_template_changelog(struct GeanyDocument *doc);
+gchar *templates_get_template_changelog(GeanyDocument *doc);
 
-gchar *templates_get_template_function(struct GeanyDocument *doc, const gchar *func_name);
+gchar *templates_get_template_function(GeanyDocument *doc, const gchar *func_name);
 
-gchar *templates_get_template_licence(struct GeanyDocument *doc, gint licence_type);
+gchar *templates_get_template_licence(GeanyDocument *doc, gint licence_type);
 
 void templates_replace_common(GString *tmpl, const gchar *fname,
 	struct GeanyFiletype *ft, const gchar *func_name);

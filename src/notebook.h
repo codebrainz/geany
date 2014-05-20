@@ -33,7 +33,7 @@ void notebook_init(void);
 void notebook_free(void);
 
 /* Returns page number of notebook page, or -1 on error */
-gint notebook_new_tab(struct GeanyDocument *doc);
+gint notebook_new_tab(GeanyDocument *doc);
 
 /* Always use this instead of gtk_notebook_remove_page(). */
 void notebook_remove_page(gint page_num);

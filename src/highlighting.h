@@ -44,7 +44,7 @@ GeanyLexerStyle;
 
 void highlighting_init_styles(guint filetype_idx, GKeyFile *config, GKeyFile *configh);
 
-void highlighting_set_styles(ScintillaObject *sci, struct GeanyFiletype *ft);
+void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft);
 
 const GeanyLexerStyle *highlighting_get_style(gint ft_id, gint style_id);
 

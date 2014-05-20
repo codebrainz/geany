@@ -46,7 +46,7 @@ extern PrintingPrefs printing_prefs;
 
 void printing_page_setup_gtk(void);
 
-void printing_print_doc(struct GeanyDocument *doc);
+void printing_print_doc(GeanyDocument *doc);
 
 G_END_DECLS
 
