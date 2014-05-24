@@ -103,6 +103,9 @@ GEANY_CHECK_PLUGINS
 # check for mingw specific settings
 GEANY_CHECK_MINGW
 
+# API
+AM_PROG_VALAC
+
 GEANY_CHECK_SOCKET
 GEANY_CHECK_VTE
 GEANY_CHECK_THE_FORCE dnl hehe
@@ -139,6 +142,7 @@ AC_CONFIG_FILES([
 		scintilla/Makefile
 		scintilla/include/Makefile
 		src/Makefile
+		api/Makefile
 		plugins/Makefile
 		po/Makefile.in
 		data/Makefile
