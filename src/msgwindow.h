@@ -76,7 +76,9 @@ void msgwin_init(void);
 
 void msgwin_finalize(void);
 
-void msgwin_show_hide(gboolean show);
+void msgwin_set_visible(gboolean visible);
+
+gboolean msgwin_get_visible(void);
 
 void msgwin_switch_tab(gint tabnum, gboolean show);
 

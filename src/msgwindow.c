@@ -297,7 +297,7 @@ void msgwin_compiler_add_string(gint msg_color, const gchar *msg)
 	gtk_list_store_append(msgwindow.store_compiler, &iter);
 	gtk_list_store_set(msgwindow.store_compiler, &iter, 0, color, 1, utf8_msg, -1);
 
-	if (ui_prefs.msgwindow_visible && interface_prefs.compiler_tab_autoscroll)
+	if (msgwin_get_visible() && interface_prefs.compiler_tab_autoscroll)
 	{
 		path = gtk_tree_model_get_path(
 			gtk_tree_view_get_model(GTK_TREE_VIEW(msgwindow.tree_compiler)), &iter);
@@ -314,17 +314,26 @@ void msgwin_compiler_add_string(gint msg_color, const gchar *msg)
 }
 
 
-void msgwin_show_hide(gboolean show)
+G_MODULE_EXPORT
+void on_toggle_msgwin_action_toggled(GtkToggleAction *action, gpointer user_data)
 {
-	ui_prefs.msgwindow_visible = show;
-	ignore_callback = TRUE;
-	gtk_check_menu_item_set_active(
-		GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_show_messages_window1")),
-		show);
-	ignore_callback = FALSE;
-	ui_widget_show_hide(ui_lookup_widget(main_widgets.window, "scrolledwindow1"), show);
-	/* set the input focus back to the editor */
-	keybindings_send_command(GEANY_KEY_GROUP_FOCUS, GEANY_KEYS_FOCUS_EDITOR);
+	gtk_widget_set_visible(GTK_WIDGET(ui_builder_get_object("scrolledwindow1")),
+		gtk_toggle_action_get_active(action));
+	ui_focus_current_document();
+}
+
+
+void msgwin_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_action")), visible);
+}
+
+
+gboolean msgwin_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_action")));
 }
 
 
@@ -364,8 +373,7 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc, const 
 	gsize len;
 	gchar *utf8_msg;
 
-	if (! ui_prefs.msgwindow_visible)
-		msgwin_show_hide(TRUE);
+	msgwin_set_visible(TRUE);
 
 	/* work around a strange problem when adding very long lines(greater than 4000 bytes)
 	 * cut the string to a maximum of 1024 bytes and discard the rest */
@@ -536,13 +544,6 @@ static void on_compiler_treeview_copy_all_activate(GtkMenuItem *menuitem, gpoint
 }
 
 
-static void
-on_hide_message_window(GtkMenuItem *menuitem, gpointer user_data)
-{
-	msgwin_show_hide(FALSE);
-}
-
-
 static GtkWidget *create_message_popup_menu(gint type)
 {
 	GtkWidget *message_popup_menu, *clear, *copy, *copy_all, *image;
@@ -589,15 +590,15 @@ static void on_scribble_populate(GtkTextView *textview, GtkMenu *arg1, gpointer 
 void msgwin_menu_add_common_items(GtkMenu *menu)
 {
 	GtkWidget *item;
+	GtkAction *action;
 
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
-	gtk_container_add(GTK_CONTAINER(menu), item);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 
-	item = gtk_menu_item_new_with_mnemonic(_("_Hide Message Window"));
-	gtk_widget_show(item);
-	gtk_container_add(GTK_CONTAINER(menu), item);
-	g_signal_connect(item, "activate", G_CALLBACK(on_hide_message_window), NULL);
+	action = GTK_ACTION(ui_builder_get_object("toggle_msgwin_action"));
+	item = gtk_action_create_menu_item(action);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 }
 
 
@@ -1187,7 +1188,7 @@ void msgwin_switch_tab(gint tabnum, gboolean show)
 	/* the msgwin must be visible before we switch to the VTE page so that
 	 * the font settings are applied on realization */
 	if (show)
-		msgwin_show_hide(TRUE);
+		msgwin_set_visible(TRUE);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), tabnum);
 	if (show && widget)
 		gtk_widget_grab_focus(widget);

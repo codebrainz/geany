@@ -105,7 +105,6 @@ typedef struct UIPrefs
 	gboolean	fullscreen;
 	gboolean	sidebar_visible;
 	gint		sidebar_page;
-	gboolean	msgwindow_visible;
 	gboolean	allow_always_save; /* if set, files can always be saved, even if unchanged */
 	gchar		*statusbar_template;
 	gboolean	new_document_after_close;

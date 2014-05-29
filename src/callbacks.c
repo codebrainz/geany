@@ -786,16 +786,6 @@ G_MODULE_EXPORT void on_fullscreen1_toggled(GtkCheckMenuItem *checkmenuitem, gpo
 }
 
 
-G_MODULE_EXPORT void on_show_messages_window1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
-{
-	if (ignore_callback)
-		return;
-
-	ui_prefs.msgwindow_visible = (ui_prefs.msgwindow_visible) ? FALSE : TRUE;
-	msgwin_show_hide(ui_prefs.msgwindow_visible);
-}
-
-
 G_MODULE_EXPORT void on_menu_color_schemes_activate(GtkImageMenuItem *imagemenuitem, gpointer user_data)
 {
 	highlighting_show_color_scheme_dialog();
@@ -1736,15 +1726,13 @@ G_MODULE_EXPORT void on_context_action1_activate(GtkMenuItem *menuitem, gpointer
 G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	static gint hide_all = -1;
-	GtkCheckMenuItem *msgw = GTK_CHECK_MENU_ITEM(
-		ui_lookup_widget(main_widgets.window, "menu_show_messages_window1"));
 	GtkCheckMenuItem *toolbari = GTK_CHECK_MENU_ITEM(
 		ui_lookup_widget(main_widgets.window, "menu_show_toolbar1"));
 
 	/* get the initial state (necessary if Geany was closed with hide_all = TRUE) */
 	if (G_UNLIKELY(hide_all == -1))
 	{
-		if (! gtk_check_menu_item_get_active(msgw) &&
+		if (! msgwin_get_visible() &&
 			! interface_prefs.show_notebook_tabs &&
 			! gtk_check_menu_item_get_active(toolbari))
 		{
@@ -1756,11 +1744,10 @@ G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem
 
 	hide_all = ! hide_all; /* toggle */
 
+	msgwin_set_visible(! hide_all);
+
 	if (hide_all)
 	{
-		if (gtk_check_menu_item_get_active(msgw))
-			gtk_check_menu_item_set_active(msgw, ! gtk_check_menu_item_get_active(msgw));
-
 		interface_prefs.show_notebook_tabs = FALSE;
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
 
@@ -1771,10 +1758,6 @@ G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem
 	}
 	else
 	{
-
-		if (! gtk_check_menu_item_get_active(msgw))
-			gtk_check_menu_item_set_active(msgw, ! gtk_check_menu_item_get_active(msgw));
-
 		interface_prefs.show_notebook_tabs = TRUE;
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
 

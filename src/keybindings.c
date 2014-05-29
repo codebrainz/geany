@@ -501,6 +501,7 @@ static void init_default_kb(void)
 		"menu_toggle_all_additional_widgets1");
 	add_kb(group, GEANY_KEYS_VIEW_FULLSCREEN, cb_func_menu_fullscreen,
 		GDK_F11, 0, "menu_fullscreen", _("Fullscreen"), "menu_fullscreen1");
+	/* FIXME: use the toggle_msgwin_action's accelerator instead */
 	add_kb(group, GEANY_KEYS_VIEW_MESSAGEWINDOW, cb_func_menu_messagewindow,
 		0, 0, "menu_messagewindow", _("Toggle Messages Window"),
 		"menu_show_messages_window1");
@@ -1518,12 +1519,10 @@ static void cb_func_menu_fullscreen(G_GNUC_UNUSED guint key_id)
 }
 
 
+/* FIXME: use the action's accelerator instead */
 static void cb_func_menu_messagewindow(G_GNUC_UNUSED guint key_id)
 {
-	GtkCheckMenuItem *c = GTK_CHECK_MENU_ITEM(
-		ui_lookup_widget(main_widgets.window, "menu_show_messages_window1"));
-
-	gtk_check_menu_item_set_active(c, ! gtk_check_menu_item_get_active(c));
+	msgwin_set_visible(! msgwin_get_visible());
 }
 
 
@@ -1638,7 +1637,7 @@ static void focus_sidebar(void)
 
 static void focus_msgwindow(void)
 {
-	if (ui_prefs.msgwindow_visible)
+	if (msgwin_get_visible())
 	{
 		gint page_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(msgwindow.notebook));
 		GtkWidget *page = gtk_notebook_get_nth_page(GTK_NOTEBOOK(msgwindow.notebook), page_num);

@@ -1654,7 +1654,7 @@ static gboolean tree_view_find(GtkTreeView *treeview, TVMatchCallback cb, gboole
 			return FALSE;	/* no more items */
 	}
 	/* scroll item in view */
-	if (ui_prefs.msgwindow_visible)
+	if (msgwin_get_visible())
 	{
 		GtkTreePath *path = gtk_tree_model_get_path(
 			gtk_tree_view_get_model(treeview), &iter);
@@ -2197,6 +2197,24 @@ static GtkWidget *ui_get_top_parent(GtkWidget *widget)
 }
 
 
+/* FIXME: Hack to work-around a Glade bug (apparently fixed in newer versions) where
+ * it doesn't/can't set the action group's accel group which causes spam on
+ * the console. Related to: https://bugzilla.gnome.org/show_bug.cgi?id=671786 */
+static void ui_set_action_accel_group(void)
+{
+	GtkAccelGroup *accel_group = GTK_ACCEL_GROUP(ui_builder_get_object("accelgroup1"));
+	GtkActionGroup *action_group = GTK_ACTION_GROUP(ui_builder_get_object("window_actiongroup"));
+#if GTK_CHECK_VERSION(3, 6, 0)
+	gtk_action_group_set_accel_group(action_group, accel_group);
+#else
+	GList *iter, *actions = gtk_action_group_list_actions(action_group);
+	for (iter = actions; iter != NULL; iter = g_list_next(iter))
+		gtk_action_set_accel_group(iter->data, accel_group);
+	g_list_free(actions);
+#endif
+}
+
+
 void ui_init_builder(void)
 {
 	gchar *interface_file;
@@ -2228,6 +2246,8 @@ void ui_init_builder(void)
 		return;
 	}
 	g_free(interface_file);
+
+	ui_set_action_accel_group();
 
 	gtk_builder_connect_signals(builder, NULL);
 

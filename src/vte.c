@@ -479,7 +479,7 @@ static gboolean vte_register_symbols(GModule *mod)
 
 void vte_apply_user_settings(void)
 {
-	if (! ui_prefs.msgwindow_visible)
+	if (! msgwin_get_visible())
 		return;
 
 	vf->vte_terminal_set_scrollback_lines(VTE_TERMINAL(vc->vte), vc->scrollback_lines);
@@ -863,7 +863,7 @@ void vte_send_selection_to_vte(void)
 	/* show the VTE */
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), MSG_VTE);
 	gtk_widget_grab_focus(vc->vte);
-	msgwin_show_hide(TRUE);
+	msgwin_set_visible(TRUE);
 
 	g_free(text);
 }

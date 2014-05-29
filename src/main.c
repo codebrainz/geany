@@ -171,13 +171,7 @@ static void apply_settings(void)
 
 	/* toolbar, message window and sidebar are by default visible, so don't change it if it is true */
 	toolbar_show_hide();
-	if (! ui_prefs.msgwindow_visible)
-	{
-		ignore_callback = TRUE;
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_show_messages_window1")), FALSE);
-		gtk_widget_hide(ui_lookup_widget(main_widgets.window, "scrolledwindow1"));
-		ignore_callback = FALSE;
-	}
+
 	if (! ui_prefs.sidebar_visible)
 	{
 		ignore_callback = TRUE;
@@ -901,7 +895,7 @@ static void load_settings(void)
 	vte_info.have_vte = (no_vte) ? FALSE : vte_info.load_vte;
 #endif
 	if (no_msgwin)
-		ui_prefs.msgwindow_visible = FALSE;
+		msgwin_set_visible(FALSE);
 
 #ifdef HAVE_PLUGINS
 	want_plugins = prefs.load_plugins && !no_plugins;
