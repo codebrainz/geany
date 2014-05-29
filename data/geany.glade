@@ -6242,6 +6242,12 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkToggleAction" id="toggle_fullscreen_action">
+        <property name="label" translatable="yes">Full_screen</property>
+        <signal name="toggled" handler="on_ui_fullscreen_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkToggleAction" id="toggle_msgwin_action">
         <property name="label" translatable="yes">Show Message _Window</property>
         <property name="active">True</property>
@@ -7341,11 +7347,12 @@
                         </child>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_fullscreen1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_fullscreen_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Full_screen</property>
                             <property name="use_underline">True</property>
-                            <signal name="toggled" handler="on_fullscreen1_toggled" swapped="no"/>
                           </object>
                         </child>
                         <child>

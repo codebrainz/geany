@@ -430,16 +430,38 @@ void ui_set_editor_font(const gchar *font_name)
 }
 
 
-void ui_set_fullscreen(void)
+G_MODULE_EXPORT
+void on_ui_fullscreen_toggled(GtkToggleAction *action, gpointer user_data)
 {
-	if (ui_prefs.fullscreen)
-	{
+	if (ui_get_fullscreen())
 		gtk_window_fullscreen(GTK_WINDOW(main_widgets.window));
-	}
 	else
 	{
 		gtk_window_unfullscreen(GTK_WINDOW(main_widgets.window));
+		/* FIXME:
+		 * Hack for when coming out of fullscreen mode to get the window manager
+		 * to re-place the window inside of the monitor's bounds instead of
+		 * leaving the decorations outside. */
+		if (gtk_widget_get_visible(main_widgets.window))
+		{
+			gtk_widget_set_visible(main_widgets.window, FALSE);
+			gtk_widget_set_visible(main_widgets.window, TRUE);
+		}
 	}
+}
+
+
+void ui_set_fullscreen(gboolean fullscreen)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_fullscreen_action")), fullscreen);
+}
+
+
+gboolean ui_get_fullscreen(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_fullscreen_action")));
 }
 
 

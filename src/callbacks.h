@@ -588,11 +588,6 @@ G_MODULE_EXPORT void
 on_send_selection_to_vte1_activate	 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
-G_MODULE_EXPORT gboolean
-on_window_state_event		 (GtkWidget		   *widget,
-										GdkEventWindowState *event,
-										gpointer			 user_data);
-
 G_MODULE_EXPORT void
 on_customize_toolbar1_activate		 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);

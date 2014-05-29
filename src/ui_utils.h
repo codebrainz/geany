@@ -267,7 +267,9 @@ void ui_set_window_title(GeanyDocument *doc);
 
 void ui_set_editor_font(const gchar *font_name);
 
-void ui_set_fullscreen(void);
+void ui_set_fullscreen(gboolean fullscreen);
+
+gboolean ui_get_fullscreen(void);
 
 
 void ui_update_popup_reundo_items(GeanyDocument *doc);
