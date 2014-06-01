@@ -768,6 +768,27 @@ void ui_save_buttons_toggle(gboolean enable)
 #define add_doc_toolitem(widget_name) \
 	g_ptr_array_add(widgets.document_buttons, toolbar_get_action_by_name(widget_name))
 
+
+static void add_doc_actions(const gchar *action_name1, ...)
+{
+	va_list ap;
+	const gchar *name;
+
+	va_start(ap, action_name1);
+
+	name = action_name1;
+	while (name != NULL)
+	{
+		GtkAction *action = GTK_ACTION(ui_builder_get_object(name));
+		if (GTK_IS_ACTION(action))
+			g_ptr_array_add(widgets.document_buttons, action);
+		name = va_arg(ap, const gchar*);
+	}
+
+	va_end(ap);
+}
+
+
 static void init_document_widgets(void)
 {
 	widgets.document_buttons = g_ptr_array_new();
@@ -776,11 +797,7 @@ static void init_document_widgets(void)
 	 * when using ui_document_buttons_update(). */
 	add_doc_widget("menu_close1");
 	add_doc_widget("close_other_documents1");
-	add_doc_widget("menu_change_font1");
 	add_doc_widget("menu_close_all1");
-	add_doc_widget("menu_save1");
-	add_doc_widget("menu_save_all1");
-	add_doc_widget("menu_save_as1");
 	add_doc_widget("menu_count_words1");
 	add_doc_widget("menu_build1");
 	add_doc_widget("add_comments1");
@@ -790,15 +807,6 @@ static void init_document_widgets(void)
 	add_doc_widget("menu_reload1");
 	add_doc_widget("menu_document1");
 	add_doc_widget("menu_choose_color1");
-	add_doc_widget("menu_color_schemes");
-	add_doc_widget("menu_markers_margin1");
-	add_doc_widget("menu_linenumber_margin1");
-	add_doc_widget("menu_show_white_space1");
-	add_doc_widget("menu_show_line_endings1");
-	add_doc_widget("menu_show_indentation_guides1");
-	add_doc_widget("menu_zoom_in1");
-	add_doc_widget("menu_zoom_out1");
-	add_doc_widget("normal_size1");
 	add_doc_widget("treeview6");
 	add_doc_widget("print1");
 	add_doc_widget("menu_reload_as1");
@@ -847,6 +855,22 @@ static void init_document_widgets(void)
 	add_doc_toolitem("GotoEntry");
 	add_doc_toolitem("Replace");
 	add_doc_toolitem("Print");
+
+	add_doc_actions(
+		"change_color_scheme_action",
+		"change_font_action",
+		"save_action",
+		"save_all_action",
+		"save_as_action",
+		"toggle_indentation_guides_action",
+		"toggle_line_endings_action",
+		"toggle_line_numbers_action",
+		"toggle_markers_margin_action",
+		"toggle_white_space_action",
+		"zoom_in_action",
+		"zoom_out_action",
+		"zoom_reset_action",
+		NULL);
 }
 
 
