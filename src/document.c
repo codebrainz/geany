@@ -2968,6 +2968,19 @@ GeanyDocument *document_clone(GeanyDocument *old_doc)
 }
 
 
+guint document_get_n_unsaved(void)
+{
+	guint i = 0, cnt = 0;
+	foreach_document(i)
+	{
+		GeanyDocument *doc = documents[i];
+		if (doc->changed)
+			cnt++;
+	}
+	return cnt;
+}
+
+
 /* @note If successful, this should always be followed up with a call to
  * document_close_all().
  * @return TRUE if all files were saved or had their changes discarded. */

@@ -57,7 +57,8 @@ static void on_toolbar_zoom_out_activate(GtkToolButton *tb, gpointer user_data);
 static void on_toolbutton_save_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_reload_clicked(GtkAction *action, gpointer user_data);
+static void on_toolbutton_reload_activate(GtkAction *action, gpointer user_data);
+static void on_toolbutton_quit_activate(GtkAction *action, gpointer user_data);
 
 
 /* Available toolbar actions
@@ -67,7 +68,7 @@ static const GtkActionEntry ui_entries[] = {
 	{ "Save", GTK_STOCK_SAVE, NULL, NULL, N_("Save the current file"), G_CALLBACK(on_toolbutton_save_activate) },
 	{ "SaveAs", GTK_STOCK_SAVE_AS, NULL, NULL, N_("Save as"), G_CALLBACK(on_toolbutton_save_as_activate) },
 	{ "SaveAll", GEANY_STOCK_SAVE_ALL, NULL, NULL, N_("Save all open files"), G_CALLBACK(on_toolbutton_save_all_activate) },
-	{ "Reload", GTK_STOCK_REVERT_TO_SAVED, NULL, NULL, N_("Reload the current file from disk"), G_CALLBACK(on_toolbutton_reload_clicked) },
+	{ "Reload", GTK_STOCK_REVERT_TO_SAVED, NULL, NULL, N_("Reload the current file from disk"), G_CALLBACK(on_toolbutton_reload_activate) },
 	{ "Close", GTK_STOCK_CLOSE, NULL, NULL, N_("Close the current file"), G_CALLBACK(on_toolbutton_close_clicked) },
 	{ "CloseAll", GEANY_STOCK_CLOSE_ALL, NULL, NULL, N_("Close all open files"), G_CALLBACK(on_toolbutton_close_all_clicked) },
 	{ "Cut", GTK_STOCK_CUT, NULL, NULL, N_("Cut the current selection"), G_CALLBACK(on_cut1_activate) },
@@ -88,7 +89,7 @@ static const GtkActionEntry ui_entries[] = {
 	{ "Search", GTK_STOCK_FIND, NULL, NULL, N_("Find the entered text in the current file"), G_CALLBACK(on_toolbutton_search_clicked) },
 	{ "Goto", GTK_STOCK_JUMP_TO, NULL, NULL, N_("Jump to the entered line number"), G_CALLBACK(on_toolbutton_goto_clicked) },
 	{ "Preferences", GTK_STOCK_PREFERENCES, NULL, NULL, N_("Show the preferences dialog"), G_CALLBACK(on_toolbutton_preferences_clicked) },
-	{ "Quit", GTK_STOCK_QUIT, NULL, NULL, N_("Quit Geany"), G_CALLBACK(on_toolbutton_quit_clicked) },
+	{ "Quit", GTK_STOCK_QUIT, NULL, NULL, N_("Quit Geany"), G_CALLBACK(on_toolbutton_quit_activate) },
 	{ "Print", GTK_STOCK_PRINT, NULL, NULL, N_("Print document"), G_CALLBACK(on_print1_activate) },
 	{ "Replace", GTK_STOCK_FIND_AND_REPLACE, NULL, NULL, N_("Replace text in the current document"), G_CALLBACK(on_replace1_activate) }
 };
@@ -377,9 +378,15 @@ static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_dat
 }
 
 
-static void on_toolbutton_reload_clicked(GtkAction *action, gpointer user_data)
+static void on_toolbutton_reload_activate(GtkAction *action, gpointer user_data)
 {
 	ui_reload_file();
+}
+
+
+static void on_toolbutton_quit_activate(GtkAction *action, gpointer user_data)
+{
+	ui_exit_application();
 }
 
 

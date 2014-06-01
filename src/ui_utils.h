@@ -376,6 +376,8 @@ void ui_reload_file(void);
 G_MODULE_EXPORT
 void ui_activate_reload_as(gpointer unused, gpointer enc_idx_as_ptr);
 
+void ui_exit_application(void);
+
 G_END_DECLS
 
 #endif /* GEANY_UI_UTILS_H */

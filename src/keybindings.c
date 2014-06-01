@@ -1366,7 +1366,7 @@ static gboolean cb_func_file_action(guint key_id)
 			on_print1_activate(NULL, NULL);
 			break;
 		case GEANY_KEYS_FILE_QUIT:
-			on_quit1_activate(NULL, NULL);
+			ui_exit_application();
 			break;
 	}
 	return TRUE;

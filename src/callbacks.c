@@ -82,21 +82,6 @@ static gboolean insert_callback_from_menu = FALSE;
 /*static gboolean switch_tv_notebook_page = FALSE; */
 
 
-static gboolean check_no_unsaved(void)
-{
-	guint i;
-
-	for (i = 0; i < documents_array->len; i++)
-	{
-		if (documents[i]->is_valid && documents[i]->changed)
-		{
-			return FALSE;
-		}
-	}
-	return TRUE;	/* no unsaved edits */
-}
-
-
 /* set editor_info.click_pos to the current cursor position if insert_callback_from_menu is TRUE
  * to prevent invalid cursor positions which can cause segfaults */
 static void verify_click_pos(GeanyDocument *doc)
@@ -106,49 +91,6 @@ static void verify_click_pos(GeanyDocument *doc)
 		editor_info.click_pos = sci_get_current_position(doc->editor->sci);
 		insert_callback_from_menu = FALSE;
 	}
-}
-
-
-/* should only be called from on_exit_clicked */
-static void quit_app(void)
-{
-	configuration_save();
-
-	if (app->project != NULL)
-		project_close(FALSE);	/* save project session files */
-
-	document_close_all();
-
-	main_status.quitting = TRUE;
-
-	main_quit();
-}
-
-
-/* wrapper function to abort exit process if cancel button is pressed */
-G_MODULE_EXPORT gboolean on_exit_clicked(GtkWidget *widget, gpointer gdata)
-{
-	main_status.quitting = TRUE;
-
-	if (! check_no_unsaved())
-	{
-		if (document_account_for_unsaved())
-		{
-			quit_app();
-			return FALSE;
-		}
-	}
-	else
-	if (! prefs.confirm_exit ||
-		dialogs_show_question_full(NULL, GTK_STOCK_QUIT, GTK_STOCK_CANCEL, NULL,
-			_("Do you really want to quit?")))
-	{
-		quit_app();
-		return FALSE;
-	}
-
-	main_status.quitting = FALSE;
-	return TRUE;
 }
 
 
@@ -169,12 +111,6 @@ G_MODULE_EXPORT void on_close1_activate(GtkMenuItem *menuitem, gpointer user_dat
 
 	if (doc != NULL)
 		document_close(doc);
-}
-
-
-G_MODULE_EXPORT void on_quit1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	on_exit_clicked(NULL, NULL);
 }
 
 
@@ -326,13 +262,6 @@ G_MODULE_EXPORT void on_preferences1_activate(GtkMenuItem *menuitem, gpointer us
 G_MODULE_EXPORT void on_info1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	about_dialog_show();
-}
-
-
-/* quit toolbar button */
-G_MODULE_EXPORT void on_toolbutton_quit_clicked(GtkAction *action, gpointer user_data)
-{
-	on_exit_clicked(NULL, NULL);
 }
 
 

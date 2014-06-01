@@ -3277,3 +3277,60 @@ void ui_reload_file(void)
 {
 	gtk_action_activate(GTK_ACTION(ui_builder_get_object("reload_action")));
 }
+
+/* should only be called from on_window1_delete_event */
+static void quit_app(void)
+{
+	configuration_save();
+
+	if (app->project != NULL)
+		project_close(FALSE);	/* save project session files */
+
+	document_close_all();
+
+	main_status.quitting = TRUE;
+
+	main_quit();
+}
+
+
+G_MODULE_EXPORT
+gboolean on_window1_delete_event(GtkWindow *window, gpointer user_data)
+{
+	main_status.quitting = TRUE;
+
+	if (document_get_n_unsaved() > 0)
+	{
+		if (document_account_for_unsaved())
+		{
+			quit_app();
+			return FALSE;
+		}
+	}
+	else if (! prefs.confirm_exit ||
+		dialogs_show_question_full(NULL, GTK_STOCK_QUIT, GTK_STOCK_CANCEL, NULL,
+			_("Do you really want to quit?")))
+	{
+		quit_app();
+		return FALSE;
+	}
+
+	main_status.quitting = FALSE;
+	return TRUE;
+}
+
+
+G_MODULE_EXPORT
+void on_exit_action_activate(GtkAction *action, gpointer user_data)
+{
+	GdkEvent *event = gdk_event_new(GDK_DELETE);
+	gboolean handled = FALSE;
+	g_signal_emit_by_name(main_widgets.window, "delete-event", event, &handled);
+	gdk_event_free(event);
+}
+
+
+void ui_exit_application(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("exit_action")));
+}

@@ -28,13 +28,6 @@ G_BEGIN_DECLS
 
 extern gboolean	ignore_callback;
 
-G_MODULE_EXPORT gboolean
-on_exit_clicked						(GtkWidget *widget, gpointer gdata);
-
-G_MODULE_EXPORT void
-on_quit1_activate					  (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
 G_MODULE_EXPORT void
 on_info1_activate					  (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
@@ -190,10 +183,6 @@ on_replace1_activate				   (GtkMenuItem	 *menuitem,
 
 G_MODULE_EXPORT void
 on_find_in_files1_activate			 (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_toolbutton_quit_clicked			 (GtkAction	   *action,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void

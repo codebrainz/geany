@@ -224,6 +224,8 @@ void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget);
 
 gboolean document_close(GeanyDocument *doc);
 
+guint document_get_n_unsaved(void);
+
 gboolean document_account_for_unsaved(void);
 
 gboolean document_close_all(void);
