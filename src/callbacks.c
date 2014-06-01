@@ -99,21 +99,6 @@ static void verify_click_pos(GeanyDocument *doc)
  */
 
 
-G_MODULE_EXPORT void on_close_all1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	document_close_all();
-}
-
-
-G_MODULE_EXPORT void on_close1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GeanyDocument *doc = document_get_current();
-
-	if (doc != NULL)
-		document_close(doc);
-}
-
-
 G_MODULE_EXPORT void on_file1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	gtk_widget_set_sensitive(ui_widgets.recent_files_menuitem,
@@ -320,19 +305,6 @@ G_MODULE_EXPORT void on_toolbutton_search_clicked(GtkAction *action, gpointer us
 	}
 	else
 		on_find1_activate(NULL, NULL);
-}
-
-
-/* close tab */
-G_MODULE_EXPORT void on_toolbutton_close_clicked(GtkAction *action, gpointer user_data)
-{
-	on_close1_activate(NULL, NULL);
-}
-
-
-G_MODULE_EXPORT void on_toolbutton_close_all_clicked(GtkAction *action, gpointer user_data)
-{
-	on_close_all1_activate(NULL, NULL);
 }
 
 
@@ -1499,29 +1471,6 @@ G_MODULE_EXPORT void on_search1_activate(GtkMenuItem *menuitem, gpointer user_da
 
 	gtk_widget_set_sensitive(next_message, have_messages);
 	gtk_widget_set_sensitive(previous_message, have_messages);
-}
-
-
-/* simple implementation (vs. close all which doesn't close documents if cancelled),
- * if user_data is set, it is the GeanyDocument to keep */
-G_MODULE_EXPORT void on_close_other_documents1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	guint i;
-	GeanyDocument *cur_doc = user_data;
-
-	if (cur_doc == NULL)
-		cur_doc = document_get_current();
-
-	for (i = 0; i < documents_array->len; i++)
-	{
-		GeanyDocument *doc = documents[i];
-
-		if (doc == cur_doc || ! doc->is_valid)
-			continue;
-
-		if (! document_close(doc))
-			break;
-	}
 }
 
 

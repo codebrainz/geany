@@ -1354,10 +1354,10 @@ static gboolean cb_func_file_action(guint key_id)
 			ui_save_all_files();
 			break;
 		case GEANY_KEYS_FILE_CLOSE:
-			on_close1_activate(NULL, NULL);
+			ui_close_file();
 			break;
 		case GEANY_KEYS_FILE_CLOSEALL:
-			on_close_all1_activate(NULL, NULL);
+			ui_close_all_files();
 			break;
 		case GEANY_KEYS_FILE_RELOAD:
 			ui_reload_file();

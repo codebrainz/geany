@@ -447,6 +447,7 @@ static void on_open_in_new_window_activate(GtkMenuItem *menuitem, gpointer user_
 
 static void show_tab_bar_popup_menu(GdkEventButton *event, GeanyDocument *doc)
 {
+	GtkAction *action;
 	GtkWidget *menu_item;
 	static GtkWidget *menu = NULL;
 
@@ -476,22 +477,22 @@ static void show_tab_bar_popup_menu(GdkEventButton *event, GeanyDocument *doc)
 	gtk_widget_show(menu_item);
 	gtk_container_add(GTK_CONTAINER(menu), menu_item);
 
-	menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLOSE, NULL);
+	action = GTK_ACTION(ui_builder_get_object("close_action"));
+	menu_item = gtk_action_create_menu_item(action);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
 	gtk_widget_show(menu_item);
-	gtk_container_add(GTK_CONTAINER(menu), menu_item);
-	g_signal_connect(menu_item, "activate", G_CALLBACK(notebook_tab_close_clicked_cb), doc);
-	gtk_widget_set_sensitive(GTK_WIDGET(menu_item), (doc != NULL));
 
+	/* FIXME: use the action, but need to pass doc ptr as user data */
 	menu_item = ui_image_menu_item_new(GTK_STOCK_CLOSE, _("Close Ot_her Documents"));
-	gtk_widget_show(menu_item);
-	gtk_container_add(GTK_CONTAINER(menu), menu_item);
-	g_signal_connect(menu_item, "activate", G_CALLBACK(on_close_other_documents1_activate), doc);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+	g_signal_connect(menu_item, "activate", G_CALLBACK(ui_activate_close_others), doc);
 	gtk_widget_set_sensitive(GTK_WIDGET(menu_item), (doc != NULL));
-
-	menu_item = ui_image_menu_item_new(GTK_STOCK_CLOSE, _("C_lose All"));
 	gtk_widget_show(menu_item);
-	gtk_container_add(GTK_CONTAINER(menu), menu_item);
-	g_signal_connect(menu_item, "activate", G_CALLBACK(on_close_all1_activate), NULL);
+
+	action = GTK_ACTION(ui_builder_get_object("close_all_action"));
+	menu_item = gtk_action_create_menu_item(action);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+	gtk_widget_show(menu_item);
 
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
 }

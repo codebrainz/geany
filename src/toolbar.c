@@ -59,6 +59,8 @@ static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data
 static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_reload_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_quit_activate(GtkAction *action, gpointer user_data);
+static void on_toolbutton_close_activate(GtkAction *action, gpointer user_data);
+static void on_toolbutton_close_all_activate(GtkAction *action, gpointer user_data);
 
 
 /* Available toolbar actions
@@ -69,8 +71,8 @@ static const GtkActionEntry ui_entries[] = {
 	{ "SaveAs", GTK_STOCK_SAVE_AS, NULL, NULL, N_("Save as"), G_CALLBACK(on_toolbutton_save_as_activate) },
 	{ "SaveAll", GEANY_STOCK_SAVE_ALL, NULL, NULL, N_("Save all open files"), G_CALLBACK(on_toolbutton_save_all_activate) },
 	{ "Reload", GTK_STOCK_REVERT_TO_SAVED, NULL, NULL, N_("Reload the current file from disk"), G_CALLBACK(on_toolbutton_reload_activate) },
-	{ "Close", GTK_STOCK_CLOSE, NULL, NULL, N_("Close the current file"), G_CALLBACK(on_toolbutton_close_clicked) },
-	{ "CloseAll", GEANY_STOCK_CLOSE_ALL, NULL, NULL, N_("Close all open files"), G_CALLBACK(on_toolbutton_close_all_clicked) },
+	{ "Close", GTK_STOCK_CLOSE, NULL, NULL, N_("Close the current file"), G_CALLBACK(on_toolbutton_close_activate) },
+	{ "CloseAll", GEANY_STOCK_CLOSE_ALL, NULL, NULL, N_("Close all open files"), G_CALLBACK(on_toolbutton_close_all_activate) },
 	{ "Cut", GTK_STOCK_CUT, NULL, NULL, N_("Cut the current selection"), G_CALLBACK(on_cut1_activate) },
 	{ "Copy", GTK_STOCK_COPY, NULL, NULL, N_("Copy the current selection"), G_CALLBACK(on_copy1_activate) },
 	{ "Paste", GTK_STOCK_PASTE, NULL, NULL, N_("Paste the contents of the clipboard"), G_CALLBACK(on_paste1_activate) },
@@ -381,6 +383,19 @@ static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_dat
 static void on_toolbutton_reload_activate(GtkAction *action, gpointer user_data)
 {
 	ui_reload_file();
+}
+
+
+
+static void on_toolbutton_close_activate(GtkAction *action, gpointer user_data)
+{
+	ui_close_file();
+}
+
+
+static void on_toolbutton_close_all_activate(GtkAction *action, gpointer user_data)
+{
+	ui_close_all_files();
 }
 
 

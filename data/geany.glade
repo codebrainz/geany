@@ -6213,6 +6213,27 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkAction" id="close_others_action">
+        <property name="label" translatable="yes">Close Ot_her Documents</property>
+        <property name="stock_id">gtk-close</property>
+        <signal name="activate" handler="on_close_others_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="close_all_action">
+        <property name="label" translatable="yes">C_lose All</property>
+        <property name="stock_id">geany-close-all</property>
+        <signal name="activate" handler="on_close_all_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="close_action">
+        <property name="label" translatable="yes">_Close</property>
+        <property name="stock_id">gtk-close</property>
+        <signal name="activate" handler="on_close_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="exit_action">
         <property name="label" translatable="yes">_Quit</property>
         <property name="stock_id">gtk-quit</property>
@@ -6660,33 +6681,36 @@
                         <child>
                           <object class="GtkImageMenuItem" id="menu_close1">
                             <property name="label">gtk-close</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">close_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_close1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="close_other_documents1">
                             <property name="label" translatable="yes">Close Ot_her Documents</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">close_others_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="image">image4060</property>
                             <property name="use_stock">False</property>
-                            <signal name="activate" handler="on_close_other_documents1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_close_all1">
                             <property name="label" translatable="yes">C_lose All</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">close_all_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="image">image4061</property>
                             <property name="use_stock">False</property>
-                            <signal name="activate" handler="on_close_all1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>

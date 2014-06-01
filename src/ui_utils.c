@@ -795,9 +795,6 @@ static void init_document_widgets(void)
 
 	/* Cache the document-sensitive widgets so we don't have to keep looking them up
 	 * when using ui_document_buttons_update(). */
-	add_doc_widget("menu_close1");
-	add_doc_widget("close_other_documents1");
-	add_doc_widget("menu_close_all1");
 	add_doc_widget("menu_count_words1");
 	add_doc_widget("menu_build1");
 	add_doc_widget("add_comments1");
@@ -858,6 +855,9 @@ static void init_document_widgets(void)
 	add_doc_actions(
 		"change_color_scheme_action",
 		"change_font_action",
+		"close_action",
+		"close_all_action",
+		"close_others_action",
 		"reload_action",
 		"save_action",
 		"save_all_action",
@@ -3277,6 +3277,68 @@ void ui_reload_file(void)
 {
 	gtk_action_activate(GTK_ACTION(ui_builder_get_object("reload_action")));
 }
+
+
+G_MODULE_EXPORT
+void on_close_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(DOC_VALID(doc));
+	document_close(doc);
+}
+
+
+void ui_close_file(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("close_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_close_all_action_activate(GtkAction *action, gpointer user_data)
+{
+	document_close_all();
+}
+
+
+void ui_close_all_files(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("close_all_action")));
+}
+
+
+G_MODULE_EXPORT
+void ui_activate_close_others(gpointer unused, gpointer doc_ptr)
+{
+	guint i = 0;
+	GeanyDocument *no_close_doc = (doc_ptr != NULL) ? doc_ptr : document_get_current();
+
+	if (! DOC_VALID(no_close_doc))
+		return;
+
+	foreach_document(i)
+	{
+		GeanyDocument *doc = documents[i];
+		if (no_close_doc == doc)
+			continue;
+		if (! document_close(doc))
+			break;
+	}
+}
+
+
+G_MODULE_EXPORT
+void on_close_others_action_activate(GtkAction *action, gpointer user_data)
+{
+	ui_activate_close_others(NULL, NULL);
+}
+
+
+void ui_close_other_files(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("close_others_action")));
+}
+
 
 /* should only be called from on_window1_delete_event */
 static void quit_app(void)

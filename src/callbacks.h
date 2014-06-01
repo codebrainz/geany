@@ -33,22 +33,6 @@ on_info1_activate					  (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_toolbutton_close_clicked			(GtkAction	   *action,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_toolbutton_close_all_clicked		(GtkAction	   *action,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_close1_activate					 (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_close_all1_activate				 (GtkMenuItem	 *menuitem,
-										gpointer		  user_data);
-
-G_MODULE_EXPORT void
 on_crlf_activate					   (GtkCheckMenuItem *menuitem,
 										gpointer		  user_data);
 
@@ -467,10 +451,6 @@ on_previous_message1_activate		  (GtkMenuItem	 *menuitem,
 
 G_MODULE_EXPORT void
 on_search1_activate					(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_close_other_documents1_activate	 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
