@@ -100,8 +100,6 @@ static gboolean sidebar_key_press_cb(GtkWidget *widget, GdkEventKey *event,
 static void on_list_document_activate(GtkCheckMenuItem *item, gpointer user_data);
 static void on_list_symbol_activate(GtkCheckMenuItem *item, gpointer user_data);
 static void documents_menu_update(GtkTreeSelection *selection);
-static void sidebar_tabs_show_hide(GtkNotebook *notebook, GtkWidget *child,
-								   guint page_num, gpointer data);
 
 
 /* the prepare_* functions are document-related, but I think they fit better here than in document.c */
@@ -559,67 +557,28 @@ void sidebar_remove_document(GeanyDocument *doc)
 }
 
 
-static void on_hide_sidebar(void)
-{
-	ui_prefs.sidebar_visible = FALSE;
-	ui_sidebar_show_hide();
-}
-
-
-static gboolean on_sidebar_display_symbol_list_show(GtkWidget *item)
-{
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),
-		interface_prefs.sidebar_symbol_visible);
-	return FALSE;
-}
-
-
-static gboolean on_sidebar_display_open_files_show(GtkWidget *item)
-{
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),
-		interface_prefs.sidebar_openfiles_visible);
-	return FALSE;
-}
-
-
 void sidebar_add_common_menu_items(GtkMenu *menu)
 {
 	GtkWidget *item;
+	GtkAction *action;
 
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(menu), item);
 
-	item = gtk_check_menu_item_new_with_mnemonic(_("Show S_ymbol List"));
-	gtk_container_add(GTK_CONTAINER(menu), item);
-#if GTK_CHECK_VERSION(3, 0, 0)
-	g_signal_connect(item, "draw", G_CALLBACK(on_sidebar_display_symbol_list_show), NULL);
-#else
-	g_signal_connect(item, "expose-event",
-			G_CALLBACK(on_sidebar_display_symbol_list_show), NULL);
-#endif
+	action = GTK_ACTION(ui_builder_get_object("toggle_sidebar_symbols_action"));
+	item = gtk_action_create_menu_item(action);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);
-	g_signal_connect(item, "activate",
-			G_CALLBACK(on_list_symbol_activate), NULL);
 
-	item = gtk_check_menu_item_new_with_mnemonic(_("Show _Document List"));
-	gtk_container_add(GTK_CONTAINER(menu), item);
-#if GTK_CHECK_VERSION(3, 0, 0)
-	g_signal_connect(item, "draw", G_CALLBACK(on_sidebar_display_open_files_show), NULL);
-#else
-	g_signal_connect(item, "expose-event",
-			G_CALLBACK(on_sidebar_display_open_files_show), NULL);
-#endif
+	action = GTK_ACTION(ui_builder_get_object("toggle_sidebar_documents_action"));
+	item = gtk_action_create_menu_item(action);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);
-	g_signal_connect(item, "activate",
-			G_CALLBACK(on_list_document_activate), NULL);
 
-	item = gtk_image_menu_item_new_with_mnemonic(_("H_ide Sidebar"));
-	gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(item),
-		gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
-	gtk_widget_show(item);
-	gtk_container_add(GTK_CONTAINER(menu), item);
-	g_signal_connect(item, "activate", G_CALLBACK(on_hide_sidebar), NULL);
+	action = GTK_ACTION(ui_builder_get_object("toggle_sidebar_action"));
+	item = gtk_action_create_menu_item(action);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 }
 
 
@@ -627,22 +586,6 @@ static void on_openfiles_show_paths_activate(GtkCheckMenuItem *item, gpointer us
 {
 	documents_show_paths = gtk_check_menu_item_get_active(item);
 	sidebar_openfiles_update_all();
-}
-
-
-static void on_list_document_activate(GtkCheckMenuItem *item, gpointer user_data)
-{
-	interface_prefs.sidebar_openfiles_visible = gtk_check_menu_item_get_active(item);
-	ui_sidebar_show_hide();
-	sidebar_tabs_show_hide(GTK_NOTEBOOK(main_widgets.sidebar_notebook), NULL, 0, NULL);
-}
-
-
-static void on_list_symbol_activate(GtkCheckMenuItem *item, gpointer user_data)
-{
-	interface_prefs.sidebar_symbol_visible = gtk_check_menu_item_get_active(item);
-	ui_sidebar_show_hide();
-	sidebar_tabs_show_hide(GTK_NOTEBOOK(main_widgets.sidebar_notebook), NULL, 0, NULL);
 }
 
 
@@ -1067,14 +1010,12 @@ static void on_load_settings(void)
 	prepare_openfiles();
 	/* note: ui_prefs.sidebar_page is reapplied after plugins are loaded */
 	stash_group_display(stash_group, NULL);
-	sidebar_tabs_show_hide(GTK_NOTEBOOK(main_widgets.sidebar_notebook), NULL, 0, NULL);
 }
 
 
 static void on_save_settings(void)
 {
 	stash_group_update(stash_group, NULL);
-	sidebar_tabs_show_hide(GTK_NOTEBOOK(main_widgets.sidebar_notebook), NULL, 0, NULL);
 }
 
 
@@ -1092,16 +1033,6 @@ void sidebar_init(void)
 	/* delay building documents treeview until sidebar font has been read */
 	g_signal_connect(geany_object, "load-settings", on_load_settings, NULL);
 	g_signal_connect(geany_object, "save-settings", on_save_settings, NULL);
-
-	g_signal_connect(main_widgets.sidebar_notebook, "page-added",
-		G_CALLBACK(sidebar_tabs_show_hide), NULL);
-	g_signal_connect(main_widgets.sidebar_notebook, "page-removed",
-		G_CALLBACK(sidebar_tabs_show_hide), NULL);
-	/* tabs may have changed when sidebar is reshown */
-	g_signal_connect(main_widgets.sidebar_notebook, "show",
-		G_CALLBACK(sidebar_tabs_show_hide), NULL);
-
-	sidebar_tabs_show_hide(GTK_NOTEBOOK(main_widgets.sidebar_notebook), NULL, 0, NULL);
 }
 
 #define WIDGET(w) w && GTK_IS_WIDGET(w)
@@ -1122,10 +1053,9 @@ void sidebar_finalize(void)
 
 void sidebar_focus_openfiles_tab(void)
 {
-	if (ui_prefs.sidebar_visible && interface_prefs.sidebar_openfiles_visible)
+	if (sidebar_get_visible() && sidebar_get_documents_visible())
 	{
 		GtkNotebook *notebook = GTK_NOTEBOOK(main_widgets.sidebar_notebook);
-
 		gtk_notebook_set_current_page(notebook, TREEVIEW_OPENFILES);
 		gtk_widget_grab_focus(tv.tree_openfiles);
 	}
@@ -1134,26 +1064,146 @@ void sidebar_focus_openfiles_tab(void)
 
 void sidebar_focus_symbols_tab(void)
 {
-	if (ui_prefs.sidebar_visible && interface_prefs.sidebar_symbol_visible)
+	if (sidebar_get_visible() && sidebar_get_symbols_visible())
 	{
 		GtkNotebook *notebook = GTK_NOTEBOOK(main_widgets.sidebar_notebook);
-		GtkWidget *symbol_list_scrollwin = gtk_notebook_get_nth_page(notebook, TREEVIEW_SYMBOL);
-
 		gtk_notebook_set_current_page(notebook, TREEVIEW_SYMBOL);
-		gtk_widget_grab_focus(gtk_bin_get_child(GTK_BIN(symbol_list_scrollwin)));
+		gtk_widget_grab_focus(GTK_WIDGET(ui_builder_get_object("treeview2")));
 	}
 }
 
 
-static void sidebar_tabs_show_hide(GtkNotebook *notebook, GtkWidget *child,
-								   guint page_num, gpointer data)
+/* Hide the sidebar notebook tabs if there's only one tab in the notebook */
+static void sidebar_show_hide_tabs(void)
 {
-	gint tabs = gtk_notebook_get_n_pages(notebook);
+	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook3"));
+	gint tabs = gtk_notebook_get_n_pages(nb);
 
-	if (interface_prefs.sidebar_symbol_visible == FALSE)
+	if (! sidebar_get_symbols_visible())
 		tabs--;
-	if (interface_prefs.sidebar_openfiles_visible == FALSE)
+	if (! sidebar_get_documents_visible())
 		tabs--;
 
-	gtk_notebook_set_show_tabs(notebook, (tabs > 1));
+	gtk_notebook_set_show_tabs(nb, (tabs > 1));
+}
+
+
+/* Show or hide the sidebar notebook and tabs as per the current settings */
+static void sidebar_update_visibility(void)
+{
+	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook3"));
+	GtkWidget *sym_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow2"));
+	GtkWidget *doc_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow7"));
+	GtkToggleAction *sb_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_action"));
+	GtkToggleAction *sb_sym_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_symbols_action"));
+	GtkToggleAction *sb_doc_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_documents_action"));
+	gboolean sb_visible = gtk_toggle_action_get_active(sb_action);
+	gboolean sb_sym_visible = gtk_toggle_action_get_active(sb_sym_action);
+	gboolean sb_doc_visible = gtk_toggle_action_get_active(sb_doc_action);
+	gint cur_page = gtk_notebook_get_current_page(nb);
+
+	/* If none of the builtin tabs are visible and neither are there any plugin
+	 * tabs but the sidebar is made visible, re-hide it to avoid showing empty */
+	if (sb_visible
+		&& ! sidebar_get_symbols_visible() && ! sidebar_get_documents_visible()
+		&& (gtk_notebook_get_n_pages(nb) <= 2))
+	{
+		sb_visible = FALSE;
+		gtk_action_block_activate(GTK_ACTION(sb_action));
+		gtk_toggle_action_set_active(sb_action, sb_visible);
+		gtk_action_unblock_activate(GTK_ACTION(sb_action));
+	}
+	/* If more than the builtin tabs are in the sidebar notebook, re-show it */
+	else if (! sb_visible && (gtk_notebook_get_n_pages(nb) > 2))
+	{
+		sb_visible = TRUE;
+		gtk_action_block_activate(GTK_ACTION(sb_action));
+		gtk_toggle_action_set_active(sb_action, sb_visible);
+		gtk_action_unblock_activate(GTK_ACTION(sb_action));
+	}
+
+	gtk_widget_set_visible(sym_win, sb_sym_visible);
+	gtk_widget_set_visible(doc_win, sb_doc_visible);
+	gtk_widget_set_visible(GTK_WIDGET(nb), sb_visible);
+
+	cur_page = MAX(cur_page, gtk_notebook_get_n_pages(nb) - 1);
+	cur_page = MIN(cur_page, 0);
+	gtk_notebook_set_current_page(nb, gtk_notebook_get_current_page(nb));
+
+	sidebar_show_hide_tabs();
+}
+
+
+G_MODULE_EXPORT
+void on_sidebar_notebook_page_add_remove(GtkNotebook *nb, GtkWidget *child,
+	guint page_num, gpointer user_data)
+{
+	sidebar_update_visibility();
+}
+
+
+G_MODULE_EXPORT
+void on_show_sidebar_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	sidebar_update_visibility();
+}
+
+
+void sidebar_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_sidebar_action")), visible);
+}
+
+
+gboolean sidebar_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_sidebar_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_show_sidebar_symbols_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	sidebar_update_visibility();
+	if (gtk_toggle_action_get_active(action))
+		sidebar_set_visible(TRUE);
+}
+
+
+void sidebar_set_symbols_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_sidebar_symbols_action")), visible);
+}
+
+
+gboolean sidebar_get_symbols_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_sidebar_symbols_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_show_sidebar_documents_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	sidebar_update_visibility();
+	if (gtk_toggle_action_get_active(action))
+		sidebar_set_visible(TRUE);
+}
+
+
+void sidebar_set_documents_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_sidebar_documents_action")), visible);
+}
+
+
+gboolean sidebar_get_documents_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_sidebar_documents_action")));
 }

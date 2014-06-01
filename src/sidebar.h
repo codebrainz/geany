@@ -71,6 +71,18 @@ void sidebar_focus_openfiles_tab(void);
 
 void sidebar_focus_symbols_tab(void);
 
+void sidebar_set_visible(gboolean visible);
+
+gboolean sidebar_get_visible(void);
+
+void sidebar_set_symbols_visible(gboolean visible);
+
+gboolean sidebar_get_symbols_visible(void);
+
+void sidebar_set_documents_visible(gboolean visible);
+
+gboolean sidebar_get_documents_visible(void);
+
 G_END_DECLS
 
 #endif /* GEANY_SIDEBAR_H */

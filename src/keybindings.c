@@ -507,7 +507,7 @@ static void init_default_kb(void)
 		0, 0, "menu_messagewindow", _("Toggle Messages Window"),
 		"menu_show_messages_window1");
 	add_kb(group, GEANY_KEYS_VIEW_SIDEBAR, NULL,
-		0, 0, "toggle_sidebar", _("Toggle Sidebar"), "menu_show_sidebar1");
+		0, 0, "toggle_sidebar", _("Toggle Sidebar"), "view_show_sidebar_menu_item");
 	add_kb(group, GEANY_KEYS_VIEW_ZOOMIN, NULL,
 		GDK_plus, GDK_CONTROL_MASK, "menu_zoomin", _("Zoom In"), "menu_zoom_in1");
 	add_kb(group, GEANY_KEYS_VIEW_ZOOMOUT, NULL,
@@ -1493,8 +1493,11 @@ static gboolean cb_func_view_action(guint key_id)
 			on_menu_toggle_all_additional_widgets1_activate(NULL, NULL);
 			break;
 		case GEANY_KEYS_VIEW_SIDEBAR:
-			on_menu_show_sidebar1_toggled(NULL, NULL);
+		{
+			GtkToggleAction *action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_action"));
+			gtk_toggle_action_set_active(action, ! gtk_toggle_action_get_active(action));
 			break;
+		}
 		case GEANY_KEYS_VIEW_ZOOMIN:
 			on_zoom_in1_activate(NULL, NULL);
 			break;
@@ -1623,7 +1626,7 @@ static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 
 static void focus_sidebar(void)
 {
-	if (ui_prefs.sidebar_visible)
+	if (sidebar_get_visible())
 	{
 		gint page_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(main_widgets.sidebar_notebook));
 		GtkWidget *page = gtk_notebook_get_nth_page(GTK_NOTEBOOK(main_widgets.sidebar_notebook), page_num);

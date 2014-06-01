@@ -443,14 +443,14 @@ static void prefs_init_dialog(void)
 
 	/* Interface settings */
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_sidebar_visible");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), ui_prefs.sidebar_visible);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), sidebar_get_visible());
 	on_sidebar_visible_toggled(GTK_TOGGLE_BUTTON(widget), NULL);
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_symbol");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), interface_prefs.sidebar_symbol_visible);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), sidebar_get_symbols_visible());
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_openfiles");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), interface_prefs.sidebar_openfiles_visible);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), sidebar_get_documents_visible());
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "tagbar_font");
 	gtk_font_button_set_font_name(GTK_FONT_BUTTON(widget), interface_prefs.tagbar_font);
@@ -927,13 +927,13 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 
 		/* Interface settings */
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_sidebar_visible");
-		ui_prefs.sidebar_visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		sidebar_set_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_symbol");
-		interface_prefs.sidebar_symbol_visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		sidebar_set_symbols_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_openfiles");
-		interface_prefs.sidebar_openfiles_visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		sidebar_set_documents_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_long_line");
 		editor_prefs.long_line_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
@@ -1274,7 +1274,6 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 		toolbar_apply_settings();
 		toolbar_update_ui();
 		toolbar_show_hide();
-		ui_sidebar_show_hide();
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
 
 		gtk_notebook_set_tab_pos(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.tab_pos_editor);

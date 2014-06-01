@@ -6242,9 +6242,10 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
-      <object class="GtkToggleAction" id="toggle_fullscreen_action">
-        <property name="label" translatable="yes">Full_screen</property>
-        <signal name="toggled" handler="on_ui_fullscreen_toggled" swapped="no"/>
+      <object class="GtkToggleAction" id="toggle_sidebar_action">
+        <property name="label" translatable="yes">Show Side_bar</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_show_sidebar_toggled" swapped="no"/>
       </object>
     </child>
     <child>
@@ -6252,6 +6253,26 @@
         <property name="label" translatable="yes">Show Message _Window</property>
         <property name="active">True</property>
         <signal name="toggled" handler="on_toggle_msgwin_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_fullscreen_action">
+        <property name="label" translatable="yes">Full_screen</property>
+        <signal name="toggled" handler="on_ui_fullscreen_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_sidebar_documents_action">
+        <property name="label" translatable="yes">Show _Document List</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_show_sidebar_documents_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_sidebar_symbols_action">
+        <property name="label" translatable="yes">Show S_ymbol List</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_show_sidebar_symbols_toggled" swapped="no"/>
       </object>
     </child>
   </object>
@@ -7386,13 +7407,53 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkCheckMenuItem" id="menu_show_sidebar1">
+                          <object class="GtkMenuItem" id="view_sidebar_menu_item">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Show Side_bar</property>
+                            <property name="label" translatable="yes">Side_bar</property>
                             <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                            <signal name="toggled" handler="on_menu_show_sidebar1_toggled" swapped="no"/>
+                            <child type="submenu">
+                              <object class="GtkMenu" id="menu1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="view_show_sidebar_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_sidebar_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">_Show Sidebar</property>
+                                    <property name="use_underline">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="view_show_sidebar_symbols_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_sidebar_symbols_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show S_ymbols List</property>
+                                    <property name="use_underline">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="view_show_sidebar_documents_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_sidebar_documents_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show _Documents List</property>
+                                    <property name="use_underline">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
@@ -8142,9 +8203,11 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="scrollable">True</property>
+                    <signal name="page-removed" handler="on_sidebar_notebook_page_add_remove" swapped="no"/>
                     <signal name="key-press-event" handler="on_escape_key_press_event" swapped="no"/>
                     <signal name="switch-page" handler="on_tv_notebook_switch_page" swapped="no"/>
                     <signal name="switch-page" handler="on_tv_notebook_switch_page_after" after="yes" swapped="no"/>
+                    <signal name="page-added" handler="on_sidebar_notebook_page_add_remove" swapped="no"/>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow2">
                         <property name="visible">True</property>

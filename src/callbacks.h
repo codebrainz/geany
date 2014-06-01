@@ -393,10 +393,6 @@ on_menu_select_all1_activate		   (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_menu_show_sidebar1_toggled		  (GtkCheckMenuItem *checkmenuitem,
-										gpointer		  user_data);
-
-G_MODULE_EXPORT void
 on_menu_write_unicode_bom1_toggled	 (GtkCheckMenuItem *checkmenuitem,
 										gpointer		 user_data);
 
