@@ -156,11 +156,6 @@ G_MODULE_EXPORT gboolean on_exit_clicked(GtkWidget *widget, gpointer gdata)
  * GUI callbacks
  */
 
-G_MODULE_EXPORT void on_new1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	document_new_file(NULL, NULL, NULL);
-}
-
 
 G_MODULE_EXPORT void on_save1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -434,13 +429,6 @@ G_MODULE_EXPORT void on_reload_as_activate(GtkMenuItem *menuitem, gpointer user_
 			ui_update_statusbar(doc, -1);
 	}
 	g_free(base_name);
-}
-
-
-/* new file */
-G_MODULE_EXPORT void on_toolbutton_new_clicked(GtkAction *action, gpointer user_data)
-{
-	document_new_file(NULL, NULL, NULL);
 }
 
 

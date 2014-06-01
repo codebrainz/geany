@@ -302,6 +302,8 @@ void document_grab_focus(GeanyDocument *doc);
 
 GeanyDocument *document_clone(GeanyDocument *old_doc);
 
+void document_new(void);
+
 G_END_DECLS
 
 #endif /* GEANY_DOCUMENT_H */

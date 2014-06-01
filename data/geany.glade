@@ -6213,6 +6213,13 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkAction" id="new_action">
+        <property name="label" translatable="yes">_New</property>
+        <property name="stock_id">gtk-new</property>
+        <signal name="activate" handler="on_new_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="toggle_additional_widgets_action">
         <property name="label" translatable="yes">Toggle All _Additional Widgets</property>
         <signal name="activate" handler="on_toggle_additional_widgets_action_activated" swapped="no"/>
@@ -6431,11 +6438,12 @@
                         <child>
                           <object class="GtkImageMenuItem" id="menu_new1">
                             <property name="label">gtk-new</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">new_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_new1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>

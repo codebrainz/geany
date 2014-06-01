@@ -514,7 +514,7 @@ static gboolean notebook_tab_bar_click_cb(GtkWidget *widget, GdkEventButton *eve
 
 		if (is_position_on_tab_bar(notebook, event))
 		{
-			document_new_file(NULL, NULL, NULL);
+			document_new();
 			return TRUE;
 		}
 	}
