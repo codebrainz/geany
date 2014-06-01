@@ -538,6 +538,10 @@ static void save_ui_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, PACKAGE, "sidebar_visible", sidebar_get_visible());
 	g_key_file_set_boolean(config, PACKAGE, "statusbar_visible", interface_prefs.statusbar_visible);
 	g_key_file_set_boolean(config, PACKAGE, "msgwindow_visible", msgwin_get_visible());
+	g_key_file_set_boolean(config, PACKAGE, "msgwin_status_visible", msgwin_get_status_visible());
+	g_key_file_set_boolean(config, PACKAGE, "msgwin_compiler_visible", msgwin_get_compiler_visible());
+	g_key_file_set_boolean(config, PACKAGE, "msgwin_messages_visible", msgwin_get_messages_visible());
+	g_key_file_set_boolean(config, PACKAGE, "msgwin_scribble_visible", msgwin_get_scribble_visible());
 	g_key_file_set_boolean(config, PACKAGE, "fullscreen", ui_get_fullscreen());
 
 	/* get the text from the scribble textview */
@@ -959,6 +963,10 @@ static void load_ui_prefs(GKeyFile *config)
 
 	sidebar_set_visible(utils_get_setting_boolean(config, PACKAGE, "sidebar_visible", TRUE));
 	msgwin_set_visible(utils_get_setting_boolean(config, PACKAGE, "msgwindow_visible", TRUE));
+	msgwin_set_status_visible(utils_get_setting_boolean(config, PACKAGE, "msgwin_status_visible", TRUE));
+	msgwin_set_compiler_visible(utils_get_setting_boolean(config, PACKAGE, "msgwin_compiler_visible", TRUE));
+	msgwin_set_messages_visible(utils_get_setting_boolean(config, PACKAGE, "msgwin_messages_visible", TRUE));
+	msgwin_set_scribble_visible(utils_get_setting_boolean(config, PACKAGE, "msgwin_scribble_visible", TRUE));
 	ui_set_fullscreen(utils_get_setting_boolean(config, PACKAGE, "fullscreen", FALSE));
 	ui_prefs.custom_date_format = utils_get_setting_string(config, PACKAGE, "custom_date_format", "");
 	ui_prefs.custom_commands = g_key_file_get_string_list(config, PACKAGE, "custom_commands", NULL, NULL);
@@ -1240,8 +1248,6 @@ void configuration_apply_settings(void)
 		gtk_paned_set_position(GTK_PANED(ui_lookup_widget(main_widgets.window, "hpaned1")), hpan_position);
 		gtk_paned_set_position(GTK_PANED(ui_lookup_widget(main_widgets.window, "vpaned1")), vpan_position);
 	}
-
-	msgwin_show_hide_tabs();
 }
 
 

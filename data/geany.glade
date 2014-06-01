@@ -6275,6 +6275,36 @@
         <signal name="toggled" handler="on_show_sidebar_symbols_toggled" swapped="no"/>
       </object>
     </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_status_action">
+        <property name="label" translatable="yes">Show Status Tab</property>
+        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_compiler_action">
+        <property name="label" translatable="yes">Show Compiler Tab</property>
+        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_messages_action">
+        <property name="label" translatable="yes">Show Messages Tab</property>
+        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_scribble_action">
+        <property name="label" translatable="yes">Show Scribble Tab</property>
+        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_terminal_action">
+        <property name="label" translatable="yes">Show Terminal Tab</property>
+        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
@@ -7386,17 +7416,6 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkCheckMenuItem" id="menu_show_messages_window1">
-                            <property name="use_action_appearance">False</property>
-                            <property name="related_action">toggle_msgwin_action</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Show Message _Window</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                          </object>
-                        </child>
-                        <child>
                           <object class="GtkCheckMenuItem" id="menu_show_toolbar1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -7450,6 +7469,91 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Show _Documents List</property>
                                     <property name="use_underline">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="msgwin_menu_item">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Message Window</property>
+                            <property name="use_underline">True</property>
+                            <child type="submenu">
+                              <object class="GtkMenu" id="msgwin_menu">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="msgwin_visible_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_msgwin_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show Message _Window</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSeparatorMenuItem" id="msgwin_separator_menu_item1">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="msgwin_status_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_msgwin_status_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show Status Tab</property>
+                                    <property name="active">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="msgwin_compiler_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_msgwin_compiler_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show Compiler Tab</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="msgwin_messages_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_msgwin_messages_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show Messages Tab</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="msgwin_scribble_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_msgwin_scribble_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show Scribble Tab</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckMenuItem" id="msgwin_terminal_menu_item">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="related_action">toggle_msgwin_terminal_action</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Show Terminal Tab</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
                                   </object>
                                 </child>
                               </object>

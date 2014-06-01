@@ -76,15 +76,6 @@ static gboolean on_msgwin_button_press_event(GtkWidget *widget, GdkEventButton *
 static void on_scribble_populate(GtkTextView *textview, GtkMenu *arg1, gpointer user_data);
 
 
-void msgwin_show_hide_tabs(void)
-{
-	ui_widget_show_hide(gtk_widget_get_parent(msgwindow.tree_status), interface_prefs.msgwin_status_visible);
-	ui_widget_show_hide(gtk_widget_get_parent(msgwindow.tree_compiler), interface_prefs.msgwin_compiler_visible);
-	ui_widget_show_hide(gtk_widget_get_parent(msgwindow.tree_msg), interface_prefs.msgwin_messages_visible);
-	ui_widget_show_hide(gtk_widget_get_parent(msgwindow.scribble), interface_prefs.msgwin_scribble_visible);
-}
-
-
 /** Sets the Messages path for opening any parsed filenames without absolute path
  * from message lines.
  * @param messages_dir The directory. **/
@@ -113,6 +104,12 @@ void msgwin_init(void)
 
 	ui_widget_modify_font_from_string(msgwindow.scribble, interface_prefs.msgwin_font);
 	g_signal_connect(msgwindow.scribble, "populate-popup", G_CALLBACK(on_scribble_populate), NULL);
+
+	if (! vte_info.have_vte)
+	{
+		gtk_action_set_visible(GTK_ACTION(
+			ui_builder_get_object("toggle_msgwin_terminal_action")), FALSE);
+	}
 }
 
 
@@ -317,8 +314,28 @@ void msgwin_compiler_add_string(gint msg_color, const gchar *msg)
 G_MODULE_EXPORT
 void on_toggle_msgwin_action_toggled(GtkToggleAction *action, gpointer user_data)
 {
-	gtk_widget_set_visible(GTK_WIDGET(ui_builder_get_object("scrolledwindow1")),
-		gtk_toggle_action_get_active(action));
+	gint n_builtin_tabs = 4;
+	gboolean show = gtk_toggle_action_get_active(action);
+	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook_info"));
+
+#ifdef HAVE_VTE
+	if (vte_info.have_vte)
+		n_builtin_tabs++;
+#endif
+
+	/* If none of the builtin tabs and no plugin tabs are visible, don't show the msgwin */
+	if (! msgwin_get_status_visible() && ! msgwin_get_compiler_visible() &&
+		! msgwin_get_messages_visible() && ! msgwin_get_scribble_visible() &&
+		! msgwin_get_terminal_visible() && (gtk_notebook_get_n_pages(nb) <= n_builtin_tabs))
+	{
+		show = FALSE;
+		gtk_action_block_activate(GTK_ACTION(action));
+		gtk_toggle_action_set_active(action, show);
+		gtk_action_unblock_activate(GTK_ACTION(action));
+	}
+
+	gtk_widget_set_visible(GTK_WIDGET(ui_builder_get_object("scrolledwindow1")), show);
+
 	ui_focus_current_document();
 }
 
@@ -334,6 +351,139 @@ gboolean msgwin_get_visible(void)
 {
 	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
 		ui_builder_get_object("toggle_msgwin_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_msgwin_tab_action_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	gint n_builtin_tabs = 4;
+	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook1"));
+	GtkWidget *mw_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow1"));
+	GtkWidget *mw_status_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow4"));
+	GtkWidget *mw_compiler_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow3"));
+	GtkWidget *mw_messages_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow5"));
+	GtkWidget *mw_scribble_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow6"));
+	GtkToggleAction *mw_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_msgwin_action"));
+
+	gtk_widget_set_visible(mw_status_win, msgwin_get_status_visible());
+	gtk_widget_set_visible(mw_compiler_win, msgwin_get_compiler_visible());
+	gtk_widget_set_visible(mw_messages_win, msgwin_get_messages_visible());
+	gtk_widget_set_visible(mw_scribble_win, msgwin_get_scribble_visible());
+
+#ifdef HAVE_VTE
+	if (vte_info.have_vte)
+	{
+		gtk_widget_set_visible(ui_lookup_widget(main_widgets.window, "vte-frame"),
+			msgwin_get_terminal_visible());
+		n_builtin_tabs++;
+	}
+#endif
+
+	/* If there's no builtin or plugin tabs, hide the msgwin */
+	if (msgwin_get_visible() && ! msgwin_get_status_visible() && ! msgwin_get_compiler_visible()
+		&& ! msgwin_get_messages_visible() && ! msgwin_get_scribble_visible()
+		&& ! msgwin_get_terminal_visible() && (gtk_notebook_get_n_pages(nb) <= n_builtin_tabs))
+	{
+		gtk_action_block_activate(GTK_ACTION(mw_action));
+		gtk_toggle_action_set_active(mw_action, FALSE);
+		gtk_action_unblock_activate(GTK_ACTION(mw_action));
+		gtk_widget_hide(mw_win);
+	}
+	/* If there are any builtin or plugin tabs, make sure msgwin is shown */
+	else if (! msgwin_get_visible() && (msgwin_get_status_visible() || msgwin_get_compiler_visible()
+		|| msgwin_get_messages_visible() || msgwin_get_scribble_visible()
+		|| msgwin_get_terminal_visible() || (gtk_notebook_get_n_pages(nb) > n_builtin_tabs)))
+	{
+		gtk_action_block_activate(GTK_ACTION(mw_action));
+		gtk_toggle_action_set_active(mw_action, TRUE);
+		gtk_action_unblock_activate(GTK_ACTION(mw_action));
+		gtk_widget_show(mw_win);
+	}
+}
+
+
+void msgwin_set_status_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_status_action")), visible);
+}
+
+
+gboolean msgwin_get_status_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_status_action")));
+}
+
+
+void msgwin_set_compiler_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_compiler_action")), visible);
+	interface_prefs.msgwin_compiler_visible = visible;
+}
+
+
+gboolean msgwin_get_compiler_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_compiler_action")));
+}
+
+
+void msgwin_set_messages_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_messages_action")), visible);
+	interface_prefs.msgwin_messages_visible = visible;
+}
+
+
+gboolean msgwin_get_messages_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_messages_action")));
+}
+
+
+void msgwin_set_scribble_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_scribble_action")), visible);
+	interface_prefs.msgwin_scribble_visible = visible;
+}
+
+
+gboolean msgwin_get_scribble_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_msgwin_scribble_action")));
+}
+
+
+void msgwin_set_terminal_visible(gboolean visible)
+{
+#ifdef HAVE_VTE
+	if (vte_info.have_vte)
+	{
+		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+			ui_builder_get_object("toggle_msgwin_terminal_action")), visible);
+	}
+#endif
+}
+
+
+gboolean msgwin_get_terminal_visible(void)
+{
+#ifdef HAVE_VTE
+	if (vte_info.have_vte)
+	{
+		return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+			ui_builder_get_object("toggle_msgwin_terminal_action")));
+	}
+#endif
+	return FALSE;
 }
 
 
@@ -589,16 +739,42 @@ static void on_scribble_populate(GtkTextView *textview, GtkMenu *arg1, gpointer 
 /* Menu items that should be on all message window popup menus */
 void msgwin_menu_add_common_items(GtkMenu *menu)
 {
-	GtkWidget *item;
+	GtkWidget *item, *submenu;
 	GtkAction *action;
+	const gchar **name_ptr;
+	static const gchar *msg_actions[] = {
+		"toggle_msgwin_status_action",
+		"toggle_msgwin_compiler_action",
+		"toggle_msgwin_messages_action",
+		"toggle_msgwin_scribble_action",
+		"toggle_msgwin_terminal_action",
+		NULL
+	};
 
 	item = gtk_separator_menu_item_new();
-	gtk_widget_show(item);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	gtk_widget_show(item);
+
+	item = gtk_menu_item_new_with_label(_("Show Tabs"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	gtk_widget_show(item);
+
+	submenu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), GTK_WIDGET(submenu));
+	gtk_widget_show(GTK_WIDGET(submenu));
+
+	for (name_ptr = msg_actions; *name_ptr; name_ptr++)
+	{
+		action = GTK_ACTION(ui_builder_get_object(*name_ptr));
+		item = gtk_action_create_menu_item(action);
+		gtk_menu_shell_append(GTK_MENU_SHELL(submenu), item);
+		gtk_widget_show(item);
+	}
 
 	action = GTK_ACTION(ui_builder_get_object("toggle_msgwin_action"));
 	item = gtk_action_create_menu_item(action);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	gtk_widget_show(item);
 }
 
 

@@ -80,6 +80,26 @@ void msgwin_set_visible(gboolean visible);
 
 gboolean msgwin_get_visible(void);
 
+void msgwin_set_status_visible(gboolean visible);
+
+gboolean msgwin_get_status_visible(void);
+
+void msgwin_set_compiler_visible(gboolean visible);
+
+gboolean msgwin_get_compiler_visible(void);
+
+void msgwin_set_messages_visible(gboolean visible);
+
+gboolean msgwin_get_messages_visible(void);
+
+void msgwin_set_scribble_visible(gboolean visible);
+
+gboolean msgwin_get_scribble_visible(void);
+
+void msgwin_set_terminal_visible(gboolean visible);
+
+gboolean msgwin_get_terminal_visible(void);
+
 void msgwin_switch_tab(gint tabnum, gboolean show);
 
 void msgwin_clear_tab(gint tabnum);
@@ -94,8 +114,6 @@ void msgwin_compiler_add(gint msg_color, const gchar *format, ...) G_GNUC_PRINTF
 void msgwin_compiler_add_string(gint msg_color, const gchar *msg);
 
 void msgwin_status_add(const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-
-void msgwin_show_hide_tabs(void);
 
 void msgwin_set_messages_dir(const gchar *messages_dir);
 

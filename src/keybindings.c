@@ -505,7 +505,7 @@ static void init_default_kb(void)
 	/* FIXME: use the toggle_msgwin_action's accelerator instead */
 	add_kb(group, GEANY_KEYS_VIEW_MESSAGEWINDOW, cb_func_menu_messagewindow,
 		0, 0, "menu_messagewindow", _("Toggle Messages Window"),
-		"menu_show_messages_window1");
+		"msgwin_visible_menu_item");
 	add_kb(group, GEANY_KEYS_VIEW_SIDEBAR, NULL,
 		0, 0, "toggle_sidebar", _("Toggle Sidebar"), "view_show_sidebar_menu_item");
 	add_kb(group, GEANY_KEYS_VIEW_ZOOMIN, NULL,

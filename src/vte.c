@@ -298,6 +298,7 @@ static void create_vte(void)
 
 	gtk_widget_show_all(frame);
 	gtk_notebook_insert_page(GTK_NOTEBOOK(msgwindow.notebook), frame, gtk_label_new(_("Terminal")), MSG_VTE);
+	ui_hookup_widget(main_widgets.window, frame, "vte-frame");
 
 	g_signal_connect_after(vte, "realize", G_CALLBACK(on_vte_realize), NULL);
 }
