@@ -106,43 +106,6 @@
     <property name="stock">gtk-preferences</property>
     <property name="icon-size">1</property>
   </object>
-  <object class="GtkImage" id="image3193">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-cancel</property>
-    <property name="icon-size">1</property>
-  </object>
-  <object class="GtkMenu" id="toolbar_popup_menu1">
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="customize_toolbar1">
-        <property name="label" translatable="yes">_Toolbar Preferences</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
-        <property name="image">image3192</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_customize_toolbar1_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separator53">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="hide_toolbar1">
-        <property name="label" translatable="yes">_Hide Toolbar</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
-        <property name="image">image3193</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_hide_toolbar1_activate" swapped="no"/>
-      </object>
-    </child>
-  </object>
   <object class="GtkImage" id="image3761">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -6242,6 +6205,13 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkToggleAction" id="toggle_toolbar_action">
+        <property name="label" translatable="yes">Show _Toolbar</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_toolbar_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkToggleAction" id="toggle_sidebar_action">
         <property name="label" translatable="yes">Show Side_bar</property>
         <property name="active">True</property>
@@ -6303,6 +6273,36 @@
       <object class="GtkToggleAction" id="toggle_msgwin_terminal_action">
         <property name="label" translatable="yes">Show Terminal Tab</property>
         <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenu" id="toolbar_popup_menu1">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="customize_toolbar1">
+        <property name="label" translatable="yes">_Toolbar Preferences</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">image3192</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_customize_toolbar1_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separator53">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkCheckMenuItem" id="toolbar_popup_show_menu_item">
+        <property name="use_action_appearance">False</property>
+        <property name="related_action">toggle_toolbar_action</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">_Show Toolbar</property>
+        <property name="use_underline">True</property>
       </object>
     </child>
   </object>
@@ -7417,12 +7417,13 @@
                         </child>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_show_toolbar1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_toolbar_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Show _Toolbar</property>
                             <property name="use_underline">True</property>
                             <property name="active">True</property>
-                            <signal name="toggled" handler="on_show_toolbar1_toggled" swapped="no"/>
                           </object>
                         </child>
                         <child>
@@ -7493,7 +7494,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Show Message _Window</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
                                   </object>
                                 </child>
                                 <child>
@@ -7509,7 +7509,6 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Show Status Tab</property>
-                                    <property name="active">True</property>
                                   </object>
                                 </child>
                                 <child>
@@ -7520,7 +7519,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Show Compiler Tab</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
                                   </object>
                                 </child>
                                 <child>
@@ -7531,7 +7529,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Show Messages Tab</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
                                   </object>
                                 </child>
                                 <child>
@@ -7542,7 +7539,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Show Scribble Tab</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
                                   </object>
                                 </child>
                                 <child>
@@ -7553,7 +7549,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Show Terminal Tab</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
                                   </object>
                                 </child>
                               </object>

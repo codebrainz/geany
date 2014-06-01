@@ -522,14 +522,6 @@ G_MODULE_EXPORT void on_toolbutton_search_clicked(GtkAction *action, gpointer us
 }
 
 
-/* hides toolbar from toolbar popup menu */
-G_MODULE_EXPORT void on_hide_toolbar1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GtkWidget *tool_item = ui_lookup_widget(GTK_WIDGET(main_widgets.window), "menu_show_toolbar1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tool_item), FALSE);
-}
-
-
 /* zoom in from menu bar and popup menu */
 G_MODULE_EXPORT void on_zoom_in1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -764,15 +756,6 @@ G_MODULE_EXPORT void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer us
 		g_free(text);
 
 	}
-}
-
-
-G_MODULE_EXPORT void on_show_toolbar1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
-{
-	if (ignore_callback) return;
-
-	toolbar_prefs.visible = (toolbar_prefs.visible) ? FALSE : TRUE;;
-	ui_widget_show_hide(GTK_WIDGET(main_widgets.toolbar), toolbar_prefs.visible);
 }
 
 
@@ -1689,15 +1672,13 @@ G_MODULE_EXPORT void on_context_action1_activate(GtkMenuItem *menuitem, gpointer
 G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	static gint hide_all = -1;
-	GtkCheckMenuItem *toolbari = GTK_CHECK_MENU_ITEM(
-		ui_lookup_widget(main_widgets.window, "menu_show_toolbar1"));
 
 	/* get the initial state (necessary if Geany was closed with hide_all = TRUE) */
 	if (G_UNLIKELY(hide_all == -1))
 	{
 		if (! msgwin_get_visible() &&
 			! interface_prefs.show_notebook_tabs &&
-			! gtk_check_menu_item_get_active(toolbari))
+			! toolbar_get_visible())
 		{
 			hide_all = TRUE;
 		}
@@ -1708,6 +1689,7 @@ G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem
 	hide_all = ! hide_all; /* toggle */
 
 	msgwin_set_visible(! hide_all);
+	toolbar_set_visible(! hide_all);
 
 	if (hide_all)
 	{
@@ -1715,9 +1697,6 @@ G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
 
 		ui_statusbar_showhide(FALSE);
-
-		if (gtk_check_menu_item_get_active(toolbari))
-			gtk_check_menu_item_set_active(toolbari, ! gtk_check_menu_item_get_active(toolbari));
 	}
 	else
 	{
@@ -1725,9 +1704,6 @@ G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
 
 		ui_statusbar_showhide(TRUE);
-
-		if (! gtk_check_menu_item_get_active(toolbari))
-			gtk_check_menu_item_set_active(toolbari, ! gtk_check_menu_item_get_active(toolbari));
 	}
 }
 

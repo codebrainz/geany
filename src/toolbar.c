@@ -487,7 +487,7 @@ void toolbar_update_ui(void)
 	/* we need to adjust the packing flags for the menubar to expand it if it is alone in the
 	 * hbox and not expand it if the toolbar is appended */
 	gtk_box_set_child_packing(GTK_BOX(hbox_menubar), menubar,
-		! (toolbar_prefs.visible && toolbar_prefs.append_to_menu), TRUE, 0, GTK_PACK_START);
+		! (toolbar_get_visible() && toolbar_prefs.append_to_menu), TRUE, 0, GTK_PACK_START);
 }
 
 
@@ -538,13 +538,24 @@ void toolbar_finalize(void)
 }
 
 
-void toolbar_show_hide(void)
+G_MODULE_EXPORT
+void on_toggle_toolbar_action_toggled(GtkToggleAction *action, gpointer user_data)
 {
-	ignore_callback = TRUE;
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
-		ui_lookup_widget(main_widgets.window, "menu_show_toolbar1")), toolbar_prefs.visible);
-	ui_widget_show_hide(main_widgets.toolbar, toolbar_prefs.visible);
-	ignore_callback = FALSE;
+	gtk_widget_set_visible(main_widgets.toolbar, gtk_toggle_action_get_active(action));
+}
+
+
+void toolbar_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_toolbar_action")), visible);
+}
+
+
+gboolean toolbar_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_toolbar_action")));
 }
 
 

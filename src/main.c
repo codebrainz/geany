@@ -169,9 +169,6 @@ static void apply_settings(void)
 {
 	ui_update_fold_items();
 
-	/* toolbar, message window and sidebar are by default visible, so don't change it if it is true */
-	toolbar_show_hide();
-
 	toolbar_apply_settings();
 	toolbar_update_ui();
 

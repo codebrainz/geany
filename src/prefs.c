@@ -502,7 +502,7 @@ static void prefs_init_dialog(void)
 
 	/* Toolbar settings */
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_toolbar_show");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), toolbar_prefs.visible);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), toolbar_get_visible());
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_toolbar_in_menu");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), toolbar_prefs.append_to_menu);
 
@@ -969,7 +969,7 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 
 		/* Toolbar settings */
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_toolbar_show");
-		toolbar_prefs.visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		toolbar_set_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_toolbar_in_menu");
 		toolbar_prefs.append_to_menu = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 
@@ -1273,7 +1273,6 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 		sidebar_openfiles_update_all(); /* to update if full path setting has changed */
 		toolbar_apply_settings();
 		toolbar_update_ui();
-		toolbar_show_hide();
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
 
 		gtk_notebook_set_tab_pos(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.tab_pos_editor);

@@ -29,7 +29,6 @@ G_BEGIN_DECLS
 /** Toolbar settings. */
 typedef struct GeanyToolbarPrefs
 {
-	gboolean		visible;
 	GtkIconSize		icon_size;
 	GtkToolbarStyle	icon_style;	/**< Icon style. */
 	gboolean		use_gtk_default_style;
@@ -53,7 +52,9 @@ void toolbar_update_ui(void);
 
 void toolbar_apply_settings(void);
 
-void toolbar_show_hide(void);
+void toolbar_set_visible(gboolean visible);
+
+gboolean toolbar_get_visible(void);
 
 void toolbar_item_ref(GtkToolItem *item);
 

@@ -1670,7 +1670,7 @@ static gboolean cb_func_switch_action(guint key_id)
 			msgwin_switch_tab(MSG_SCRATCH, TRUE);
 			break;
 		case GEANY_KEYS_FOCUS_SEARCHBAR:
-			if (toolbar_prefs.visible)
+			if (toolbar_get_visible())
 			{
 				GtkWidget *search_entry = toolbar_get_widget_child_by_name("SearchEntry");
 				if (search_entry != NULL)
@@ -1897,7 +1897,7 @@ static gboolean cb_func_goto_action(guint key_id)
 			return TRUE;
 		case GEANY_KEYS_GOTO_LINE:
 		{
-			if (toolbar_prefs.visible)
+			if (toolbar_get_visible())
 			{
 				GtkWidget *wid = toolbar_get_widget_child_by_name("GotoEntry");
 

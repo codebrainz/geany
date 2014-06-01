@@ -105,10 +105,6 @@ toolbar_popup_menu					 (GtkWidget *widget,
 										gpointer user_data);
 
 G_MODULE_EXPORT void
-on_hide_toolbar1_activate			  (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
 on_undo1_activate					  (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
@@ -156,10 +152,6 @@ on_toggle_case1_activate			   (GtkMenuItem	 *menuitem,
 
 G_MODULE_EXPORT void
 on_fullscreen1_activate				(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_show_toolbar1_toggled			   (GtkCheckMenuItem *checkmenuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
