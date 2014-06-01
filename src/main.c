@@ -174,12 +174,6 @@ static void apply_settings(void)
 
 	ui_update_view_editor_menu_items();
 
-	/* hide statusbar if desired */
-	if (! interface_prefs.statusbar_visible)
-	{
-		gtk_widget_hide(ui_widgets.statusbar);
-	}
-
 	/* set the tab placements of the notebooks */
 	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.tab_pos_editor);
 	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(msgwindow.notebook), interface_prefs.tab_pos_msgwin);

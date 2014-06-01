@@ -318,7 +318,9 @@ gboolean ui_tree_view_find_previous(GtkTreeView *treeview, TVMatchCallback cb);
 
 gboolean ui_tree_model_iter_any_next(GtkTreeModel *model, GtkTreeIter *iter, gboolean down);
 
-void ui_statusbar_showhide(gboolean state);
+void ui_statusbar_set_visible(gboolean visible);
+
+gboolean ui_statusbar_get_visible(void);
 
 void ui_add_document_sensitive(GtkWidget *widget);
 

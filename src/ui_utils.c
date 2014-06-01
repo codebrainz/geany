@@ -137,7 +137,7 @@ static void set_statusbar(const gchar *text, gboolean allow_override)
 	GTimeVal timeval;
 	const gint GEANY_STATUS_TIMEOUT = 1;
 
-	if (! interface_prefs.statusbar_visible)
+	if (! ui_statusbar_get_visible())
 		return; /* just do nothing if statusbar is not visible */
 
 	if (id == 0)
@@ -319,7 +319,7 @@ void ui_update_statusbar(GeanyDocument *doc, gint pos)
 {
 	g_return_if_fail(doc == NULL || doc->is_valid);
 
-	if (! interface_prefs.statusbar_visible)
+	if (! ui_statusbar_get_visible())
 		return; /* just do nothing if statusbar is not visible */
 
 	if (doc == NULL)
@@ -1831,16 +1831,28 @@ static void ui_path_box_open_clicked(GtkButton *button, gpointer user_data)
 }
 
 
-void ui_statusbar_showhide(gboolean state)
+G_MODULE_EXPORT
+void on_toggle_statusbar_action_toggled(GtkToggleAction *action, gpointer user_data)
 {
-	/* handle statusbar visibility */
-	if (state)
-	{
-		gtk_widget_show(ui_widgets.statusbar);
+	gboolean show = gtk_toggle_action_get_active(action);
+	gtk_widget_set_visible(ui_widgets.statusbar, show);
+	if (show)
 		ui_update_statusbar(NULL, -1);
-	}
-	else
-		gtk_widget_hide(ui_widgets.statusbar);
+}
+
+
+void ui_statusbar_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_statusbar_action")), visible);
+	interface_prefs.statusbar_visible = visible;
+}
+
+
+gboolean ui_statusbar_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_statusbar_action")));
 }
 
 
@@ -2540,7 +2552,7 @@ void ui_progress_bar_start(const gchar *text)
 {
 	g_return_if_fail(progress_bar_timer_id == 0);
 
-	if (! interface_prefs.statusbar_visible)
+	if (! ui_statusbar_get_visible())
 		return;
 
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(main_widgets.progressbar), text);

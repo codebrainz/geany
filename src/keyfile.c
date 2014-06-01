@@ -536,7 +536,7 @@ static void save_dialog_prefs(GKeyFile *config)
 static void save_ui_prefs(GKeyFile *config)
 {
 	g_key_file_set_boolean(config, PACKAGE, "sidebar_visible", sidebar_get_visible());
-	g_key_file_set_boolean(config, PACKAGE, "statusbar_visible", interface_prefs.statusbar_visible);
+	g_key_file_set_boolean(config, PACKAGE, "statusbar_visible", ui_statusbar_get_visible());
 	g_key_file_set_boolean(config, PACKAGE, "msgwindow_visible", msgwin_get_visible());
 	g_key_file_set_boolean(config, PACKAGE, "msgwin_status_visible", msgwin_get_status_visible());
 	g_key_file_set_boolean(config, PACKAGE, "msgwin_compiler_visible", msgwin_get_compiler_visible());
@@ -753,7 +753,7 @@ static void load_dialog_prefs(GKeyFile *config)
 	interface_prefs.tab_pos_msgwin = utils_get_setting_integer(config, PACKAGE, "tab_pos_msgwin",GTK_POS_LEFT);
 	sidebar_set_symbols_visible(utils_get_setting_boolean(config, PACKAGE, "sidebar_symbol_visible", TRUE));
 	sidebar_set_documents_visible(utils_get_setting_boolean(config, PACKAGE, "sidebar_openfiles_visible", TRUE));
-	interface_prefs.statusbar_visible = utils_get_setting_boolean(config, PACKAGE, "statusbar_visible", TRUE);
+	ui_statusbar_set_visible(utils_get_setting_boolean(config, PACKAGE, "statusbar_visible", TRUE));
 	file_prefs.tab_order_ltr = utils_get_setting_boolean(config, PACKAGE, "tab_order_ltr", TRUE);
 	file_prefs.tab_order_beside = utils_get_setting_boolean(config, PACKAGE, "tab_order_beside", FALSE);
 	interface_prefs.show_notebook_tabs = utils_get_setting_boolean(config, PACKAGE, "show_notebook_tabs", TRUE);
