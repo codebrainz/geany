@@ -19,11 +19,11 @@ at http://www.geany.org/manual/current/index.html#customizing-the-toolbar.
 	<toolbar name='GeanyToolbar'>
 		<toolitem action='New' />
 		<toolitem action='Open' />
-		<toolitem action='Save' />
-		<toolitem action='SaveAll' />
+		<toolitem action='save_action' />
+		<toolitem action='save_all_action' />
 		<separator/>
-		<toolitem action='Reload' />
-		<toolitem action='Close' />
+		<toolitem action='reload_action' />
+		<toolitem action='close_action' />
 		<separator/>
 		<toolitem action='NavBack' />
 		<toolitem action='NavFor' />
@@ -40,6 +40,6 @@ at http://www.geany.org/manual/current/index.html#customizing-the-toolbar.
 		<toolitem action='GotoEntry' />
 		<toolitem action='Goto' />
 		<separator/>
-		<toolitem action='Quit' />
+		<toolitem action='exit_action' />
 	</toolbar>
 </ui>

@@ -51,29 +51,11 @@ static GtkUIManager *uim;
 static GtkActionGroup *group;
 static GSList *plugin_items = NULL;
 
-/* FIXME: use existing zoom actions in toolbar instead of proxying with these handlers */
-static void on_toolbar_zoom_in_activate(GtkToolButton *tb, gpointer user_data);
-static void on_toolbar_zoom_out_activate(GtkToolButton *tb, gpointer user_data);
-static void on_toolbutton_save_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_reload_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_quit_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_close_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_close_all_activate(GtkAction *action, gpointer user_data);
-static void on_toolbutton_print_activate(GtkAction *action, gpointer user_data);
-
 
 /* Available toolbar actions
  * Fields: name, stock_id, label, accelerator, tooltip, callback */
 static const GtkActionEntry ui_entries[] = {
 	/* custom actions defined in toolbar_init(): "New", "Open", "SearchEntry", "GotoEntry", "Build" */
-	{ "Save", GTK_STOCK_SAVE, NULL, NULL, N_("Save the current file"), G_CALLBACK(on_toolbutton_save_activate) },
-	{ "SaveAs", GTK_STOCK_SAVE_AS, NULL, NULL, N_("Save as"), G_CALLBACK(on_toolbutton_save_as_activate) },
-	{ "SaveAll", GEANY_STOCK_SAVE_ALL, NULL, NULL, N_("Save all open files"), G_CALLBACK(on_toolbutton_save_all_activate) },
-	{ "Reload", GTK_STOCK_REVERT_TO_SAVED, NULL, NULL, N_("Reload the current file from disk"), G_CALLBACK(on_toolbutton_reload_activate) },
-	{ "Close", GTK_STOCK_CLOSE, NULL, NULL, N_("Close the current file"), G_CALLBACK(on_toolbutton_close_activate) },
-	{ "CloseAll", GEANY_STOCK_CLOSE_ALL, NULL, NULL, N_("Close all open files"), G_CALLBACK(on_toolbutton_close_all_activate) },
 	{ "Cut", GTK_STOCK_CUT, NULL, NULL, N_("Cut the current selection"), G_CALLBACK(on_cut1_activate) },
 	{ "Copy", GTK_STOCK_COPY, NULL, NULL, N_("Copy the current selection"), G_CALLBACK(on_copy1_activate) },
 	{ "Paste", GTK_STOCK_PASTE, NULL, NULL, N_("Paste the contents of the clipboard"), G_CALLBACK(on_paste1_activate) },
@@ -85,15 +67,11 @@ static const GtkActionEntry ui_entries[] = {
 	{ "Compile", GTK_STOCK_CONVERT, N_("Compile"), NULL, N_("Compile the current file"), G_CALLBACK(on_toolbutton_compile_clicked) },
 	{ "Run", GTK_STOCK_EXECUTE, NULL, NULL, N_("Run or view the current file"), G_CALLBACK(on_toolbutton_run_clicked) },
 	{ "Color", GTK_STOCK_SELECT_COLOR, N_("Color Chooser"), NULL, N_("Open a color chooser dialog, to interactively pick colors from a palette"), G_CALLBACK(on_show_color_chooser1_activate) },
-	{ "ZoomIn", GTK_STOCK_ZOOM_IN, NULL, NULL, N_("Zoom in the text"), G_CALLBACK(on_toolbar_zoom_in_activate) },
-	{ "ZoomOut", GTK_STOCK_ZOOM_OUT, NULL, NULL, N_("Zoom out the text"), G_CALLBACK(on_toolbar_zoom_out_activate) },
 	{ "UnIndent", GTK_STOCK_UNINDENT, NULL, NULL, N_("Decrease indentation"), G_CALLBACK(on_menu_decrease_indent1_activate) },
 	{ "Indent", GTK_STOCK_INDENT, NULL, NULL, N_("Increase indentation"), G_CALLBACK(on_menu_increase_indent1_activate) },
 	{ "Search", GTK_STOCK_FIND, NULL, NULL, N_("Find the entered text in the current file"), G_CALLBACK(on_toolbutton_search_clicked) },
 	{ "Goto", GTK_STOCK_JUMP_TO, NULL, NULL, N_("Jump to the entered line number"), G_CALLBACK(on_toolbutton_goto_clicked) },
 	{ "Preferences", GTK_STOCK_PREFERENCES, NULL, NULL, N_("Show the preferences dialog"), G_CALLBACK(on_toolbutton_preferences_clicked) },
-	{ "Quit", GTK_STOCK_QUIT, NULL, NULL, N_("Quit Geany"), G_CALLBACK(on_toolbutton_quit_activate) },
-	{ "Print", GTK_STOCK_PRINT, NULL, NULL, N_("Print document"), G_CALLBACK(on_toolbutton_print_activate) },
 	{ "Replace", GTK_STOCK_FIND_AND_REPLACE, NULL, NULL, N_("Replace text in the current document"), G_CALLBACK(on_replace1_activate) }
 };
 static const guint ui_entries_n = G_N_ELEMENTS(ui_entries);
@@ -105,11 +83,11 @@ static const gchar *toolbar_markup =
 	"<toolbar name='GeanyToolbar'>"
 	"<toolitem action='New'/>"
 	"<toolitem action='Open'/>"
-	"<toolitem action='Save'/>"
-	"<toolitem action='SaveAll'/>"
+	"<toolitem action='save_action'/>"
+	"<toolitem action='save_all_action'/>"
 	"<separator/>"
-	"<toolitem action='Reload'/>"
-	"<toolitem action='Close'/>"
+	"<toolitem action='reload_action'/>"
+	"<toolitem action='close_action'/>"
 	"<separator/>"
 	"<toolitem action='NavBack'/>"
 	"<toolitem action='NavFor'/>"
@@ -126,7 +104,7 @@ static const gchar *toolbar_markup =
 	"<toolitem action='GotoEntry'/>"
 	"<toolitem action='Goto'/>"
 	"<separator/>"
-	"<toolitem action='Quit'/>"
+	"<toolitem action='quit_action'/>"
 	"</toolbar>"
 "</ui>";
 
@@ -351,64 +329,15 @@ static void toolbar_notify_style_cb(GObject *object, GParamSpec *arg1, gpointer 
 }
 
 
-static void on_toolbutton_new_clicked(GtkAction *action, gpointer user_data)
+static void on_toolbutton_new_activate(GtkAction *action, gpointer user_data)
 {
 	ui_new_file();
 }
 
 
-static void on_toolbutton_open_clicked(GtkAction *action, gpointer user_data)
+static void on_toolbutton_open_activate(GtkAction *action, gpointer user_data)
 {
 	ui_open_file();
-}
-
-
-static void on_toolbutton_save_activate(GtkAction *action, gpointer user_data)
-{
-	ui_save_file();
-}
-
-
-static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data)
-{
-	ui_save_file_as();
-}
-
-
-static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data)
-{
-	ui_save_all_files();
-}
-
-
-static void on_toolbutton_reload_activate(GtkAction *action, gpointer user_data)
-{
-	ui_reload_file();
-}
-
-
-
-static void on_toolbutton_close_activate(GtkAction *action, gpointer user_data)
-{
-	ui_close_file();
-}
-
-
-static void on_toolbutton_close_all_activate(GtkAction *action, gpointer user_data)
-{
-	ui_close_all_files();
-}
-
-
-static void on_toolbutton_print_activate(GtkAction *action, gpointer user_data)
-{
-	ui_print_file();
-}
-
-
-static void on_toolbutton_quit_activate(GtkAction *action, gpointer user_data)
-{
-	ui_exit_application();
 }
 
 
@@ -423,7 +352,7 @@ GtkWidget *toolbar_init(void)
 	GtkSettings *gtk_settings;
 
 	uim = gtk_ui_manager_new();
-	group = gtk_action_group_new("GeanyToolbar");
+	group = GTK_ACTION_GROUP(ui_builder_get_object("window_actiongroup"));
 
 	gtk_action_group_set_translation_domain(group, GETTEXT_PACKAGE);
 	gtk_action_group_add_actions(group, ui_entries, ui_entries_n, NULL);
@@ -434,7 +363,7 @@ GtkWidget *toolbar_init(void)
 		_("Create a new file"),
 		_("Create a new file from a template"),
 		GTK_STOCK_NEW);
-	g_signal_connect(action_new, "button-clicked", G_CALLBACK(on_toolbutton_new_clicked), NULL);
+	g_signal_connect(action_new, "button-clicked", G_CALLBACK(on_toolbutton_new_activate), NULL);
 	gtk_action_group_add_action(group, action_new);
 
 	action_open = geany_menu_button_action_new(
@@ -442,7 +371,7 @@ GtkWidget *toolbar_init(void)
 		_("Open an existing file"),
 		_("Open a recent file"),
 		GTK_STOCK_OPEN);
-	g_signal_connect(action_open, "button-clicked", G_CALLBACK(on_toolbutton_open_clicked), NULL);
+	g_signal_connect(action_open, "button-clicked", G_CALLBACK(on_toolbutton_open_activate), NULL);
 	gtk_action_group_add_action(group, action_open);
 
 	action_build = geany_menu_button_action_new(
@@ -606,7 +535,6 @@ void toolbar_finalize(void)
 
 	/* unref'ing the GtkUIManager object will destroy all its widgets unless they were ref'ed */
 	g_object_unref(uim);
-	g_object_unref(group);
 
 	g_slist_free(plugin_items);
 }
