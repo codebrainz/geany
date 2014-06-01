@@ -377,7 +377,7 @@ void ui_close_file(void);
 
 void ui_close_all_files(void);
 
-void ui_close_other_files(void);
+void ui_print_file(void);
 
 G_MODULE_EXPORT
 void ui_activate_close_others(gpointer unused, gpointer doc_ptr);

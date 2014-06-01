@@ -41,6 +41,7 @@
 #include "main.h"
 #include "msgwindow.h"
 #include "prefs.h"
+#include "printing.h"
 #include "project.h"
 #include "sciwrappers.h"
 #include "sidebar.h"
@@ -800,11 +801,9 @@ static void init_document_widgets(void)
 	add_doc_widget("add_comments1");
 	add_doc_widget("menu_paste1");
 	add_doc_widget("menu_undo2");
-	add_doc_widget("preferences2");
 	add_doc_widget("menu_document1");
 	add_doc_widget("menu_choose_color1");
 	add_doc_widget("treeview6");
-	add_doc_widget("print1");
 	add_doc_widget("menu_reload_as1");
 	add_doc_widget("menu_select_all1");
 	add_doc_widget("insert_date1");
@@ -812,7 +811,6 @@ static void init_document_widgets(void)
 	add_doc_widget("menu_format1");
 	add_doc_widget("commands2");
 	add_doc_widget("menu_open_selected_file1");
-	add_doc_widget("page_setup1");
 	add_doc_widget("find1");
 	add_doc_widget("find_next1");
 	add_doc_widget("find_previous1");
@@ -858,6 +856,8 @@ static void init_document_widgets(void)
 		"close_action",
 		"close_all_action",
 		"close_others_action",
+		"print_action",
+		"properties_action",
 		"reload_action",
 		"save_action",
 		"save_all_action",
@@ -3334,9 +3334,34 @@ void on_close_others_action_activate(GtkAction *action, gpointer user_data)
 }
 
 
-void ui_close_other_files(void)
+G_MODULE_EXPORT
+void on_properties_action_activate(GtkAction *action, gpointer user_data)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("close_others_action")));
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(DOC_VALID(doc));
+	dialogs_show_file_properties(doc);
+}
+
+
+G_MODULE_EXPORT
+void on_page_setup_action_activate(GtkAction *action, gpointer user_data)
+{
+	printing_page_setup_gtk();
+}
+
+
+G_MODULE_EXPORT
+void on_print_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(DOC_VALID(doc));
+	printing_print_doc(doc);
+}
+
+
+void ui_print_file(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("print_action")));
 }
 
 

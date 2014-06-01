@@ -6213,6 +6213,26 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkAction" id="print_action">
+        <property name="label" translatable="yes">_Print...</property>
+        <property name="stock_id">gtk-print</property>
+        <signal name="activate" handler="on_print_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="page_setup_action">
+        <property name="label" translatable="yes">Page Set_up</property>
+        <signal name="activate" handler="on_page_setup_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="properties_action">
+        <property name="label" translatable="yes">_Properties</property>
+        <property name="stock_id">gtk-properties</property>
+        <signal name="activate" handler="on_properties_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="close_others_action">
         <property name="label" translatable="yes">Close Ot_her Documents</property>
         <property name="stock_id">gtk-close</property>
@@ -6639,11 +6659,12 @@
                         <child>
                           <object class="GtkImageMenuItem" id="preferences2">
                             <property name="label">gtk-properties</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">properties_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_file_properties_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
@@ -6654,22 +6675,24 @@
                         </child>
                         <child>
                           <object class="GtkMenuItem" id="page_setup1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">page_setup_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Page Set_up</property>
                             <property name="use_underline">True</property>
-                            <signal name="activate" handler="on_page_setup1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="print1">
                             <property name="label" translatable="yes">_Print...</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">print_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="image">image5</property>
                             <property name="use_stock">False</property>
-                            <signal name="activate" handler="on_print1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>

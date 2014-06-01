@@ -61,6 +61,7 @@ static void on_toolbutton_reload_activate(GtkAction *action, gpointer user_data)
 static void on_toolbutton_quit_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_close_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_close_all_activate(GtkAction *action, gpointer user_data);
+static void on_toolbutton_print_activate(GtkAction *action, gpointer user_data);
 
 
 /* Available toolbar actions
@@ -92,7 +93,7 @@ static const GtkActionEntry ui_entries[] = {
 	{ "Goto", GTK_STOCK_JUMP_TO, NULL, NULL, N_("Jump to the entered line number"), G_CALLBACK(on_toolbutton_goto_clicked) },
 	{ "Preferences", GTK_STOCK_PREFERENCES, NULL, NULL, N_("Show the preferences dialog"), G_CALLBACK(on_toolbutton_preferences_clicked) },
 	{ "Quit", GTK_STOCK_QUIT, NULL, NULL, N_("Quit Geany"), G_CALLBACK(on_toolbutton_quit_activate) },
-	{ "Print", GTK_STOCK_PRINT, NULL, NULL, N_("Print document"), G_CALLBACK(on_print1_activate) },
+	{ "Print", GTK_STOCK_PRINT, NULL, NULL, N_("Print document"), G_CALLBACK(on_toolbutton_print_activate) },
 	{ "Replace", GTK_STOCK_FIND_AND_REPLACE, NULL, NULL, N_("Replace text in the current document"), G_CALLBACK(on_replace1_activate) }
 };
 static const guint ui_entries_n = G_N_ELEMENTS(ui_entries);
@@ -396,6 +397,12 @@ static void on_toolbutton_close_activate(GtkAction *action, gpointer user_data)
 static void on_toolbutton_close_all_activate(GtkAction *action, gpointer user_data)
 {
 	ui_close_all_files();
+}
+
+
+static void on_toolbutton_print_activate(GtkAction *action, gpointer user_data)
+{
+	ui_print_file();
 }
 
 

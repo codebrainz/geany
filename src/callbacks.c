@@ -1000,15 +1000,6 @@ G_MODULE_EXPORT void on_insert_include_activate(GtkMenuItem *menuitem, gpointer 
 }
 
 
-G_MODULE_EXPORT void on_file_properties_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GeanyDocument *doc = document_get_current();
-	g_return_if_fail(doc != NULL);
-
-	dialogs_show_file_properties(doc);
-}
-
-
 G_MODULE_EXPORT void on_menu_fold_all1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
@@ -1039,15 +1030,6 @@ G_MODULE_EXPORT void on_menu_remove_indicators1_activate(GtkMenuItem *menuitem, 
 	g_return_if_fail(doc != NULL);
 
 	editor_indicator_clear(doc->editor, GEANY_INDICATOR_ERROR);
-}
-
-
-G_MODULE_EXPORT void on_print1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	GeanyDocument *doc = document_get_current();
-	g_return_if_fail(doc != NULL);
-
-	printing_print_doc(doc);
 }
 
 
@@ -1412,12 +1394,6 @@ G_MODULE_EXPORT void on_strip_trailing_spaces1_activate(GtkMenuItem *menuitem, g
 	g_return_if_fail(doc != NULL);
 
 	editor_strip_trailing_spaces(doc->editor);
-}
-
-
-G_MODULE_EXPORT void on_page_setup1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	printing_page_setup_gtk();
 }
 
 

@@ -255,10 +255,6 @@ on_help_shortcuts1_activate			(GtkMenuItem	 *menuitem,
 
 
 G_MODULE_EXPORT void
-on_file_properties_activate			(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
 on_use_auto_indentation1_toggled	   (GtkCheckMenuItem *checkmenuitem,
 										gpointer		 user_data);
 
@@ -291,10 +287,6 @@ on_notebook1_switch_page_after		 (GtkNotebook	 *notebook,
 
 G_MODULE_EXPORT void
 on_menu_remove_indicators1_activate	(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_print1_activate					 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
@@ -425,10 +417,6 @@ on_spaces1_activate					(GtkCheckMenuItem *menuitem,
 
 G_MODULE_EXPORT void
 on_strip_trailing_spaces1_activate	 (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_page_setup1_activate				(GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT gboolean
