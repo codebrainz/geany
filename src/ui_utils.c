@@ -2915,3 +2915,48 @@ gboolean ui_encodings_combo_box_set_active_encoding(GtkComboBox *combo, gint enc
 	}
 	return FALSE;
 }
+
+
+G_MODULE_EXPORT
+void on_zoom_in_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(DOC_VALID(doc));
+	sci_zoom_in(doc->editor->sci);
+}
+
+
+void ui_zoom_in(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("zoom_in_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_zoom_out_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(DOC_VALID(doc));
+	sci_zoom_out(doc->editor->sci);
+}
+
+
+void ui_zoom_out(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("zoom_out_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_zoom_reset_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(DOC_VALID(doc));
+	sci_zoom_off(doc->editor->sci);
+}
+
+
+void ui_zoom_off(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("zoom_reset_action")));
+}

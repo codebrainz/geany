@@ -1499,13 +1499,13 @@ static gboolean cb_func_view_action(guint key_id)
 			break;
 		}
 		case GEANY_KEYS_VIEW_ZOOMIN:
-			on_zoom_in1_activate(NULL, NULL);
+			ui_zoom_in();
 			break;
 		case GEANY_KEYS_VIEW_ZOOMOUT:
-			on_zoom_out1_activate(NULL, NULL);
+			ui_zoom_out();
 			break;
 		case GEANY_KEYS_VIEW_ZOOMRESET:
-			on_normal_size1_activate(NULL, NULL);
+			ui_zoom_off();
 			break;
 		default:
 			break;

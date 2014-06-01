@@ -51,6 +51,11 @@ static GtkUIManager *uim;
 static GtkActionGroup *group;
 static GSList *plugin_items = NULL;
 
+/* FIXME: use existing zoom actions in toolbar instead of proxying with these handlers */
+static void on_toolbar_zoom_in_activate(GtkToolButton *tb, gpointer user_data);
+static void on_toolbar_zoom_out_activate(GtkToolButton *tb, gpointer user_data);
+
+
 /* Available toolbar actions
  * Fields: name, stock_id, label, accelerator, tooltip, callback */
 static const GtkActionEntry ui_entries[] = {
@@ -72,8 +77,8 @@ static const GtkActionEntry ui_entries[] = {
 	{ "Compile", GTK_STOCK_CONVERT, N_("Compile"), NULL, N_("Compile the current file"), G_CALLBACK(on_toolbutton_compile_clicked) },
 	{ "Run", GTK_STOCK_EXECUTE, NULL, NULL, N_("Run or view the current file"), G_CALLBACK(on_toolbutton_run_clicked) },
 	{ "Color", GTK_STOCK_SELECT_COLOR, N_("Color Chooser"), NULL, N_("Open a color chooser dialog, to interactively pick colors from a palette"), G_CALLBACK(on_show_color_chooser1_activate) },
-	{ "ZoomIn", GTK_STOCK_ZOOM_IN, NULL, NULL, N_("Zoom in the text"), G_CALLBACK(on_zoom_in1_activate) },
-	{ "ZoomOut", GTK_STOCK_ZOOM_OUT, NULL, NULL, N_("Zoom out the text"), G_CALLBACK(on_zoom_out1_activate) },
+	{ "ZoomIn", GTK_STOCK_ZOOM_IN, NULL, NULL, N_("Zoom in the text"), G_CALLBACK(on_toolbar_zoom_in_activate) },
+	{ "ZoomOut", GTK_STOCK_ZOOM_OUT, NULL, NULL, N_("Zoom out the text"), G_CALLBACK(on_toolbar_zoom_out_activate) },
 	{ "UnIndent", GTK_STOCK_UNINDENT, NULL, NULL, N_("Decrease indentation"), G_CALLBACK(on_menu_decrease_indent1_activate) },
 	{ "Indent", GTK_STOCK_INDENT, NULL, NULL, N_("Increase indentation"), G_CALLBACK(on_menu_increase_indent1_activate) },
 	{ "Search", GTK_STOCK_FIND, NULL, NULL, N_("Find the entered text in the current file"), G_CALLBACK(on_toolbutton_search_clicked) },
@@ -1133,4 +1138,16 @@ void toolbar_configure(GtkWindow *parent)
 	g_list_free(all_items);
 	tb_editor_free_path(tbw);
 	g_free(tbw);
+}
+
+
+static void on_toolbar_zoom_in_activate(GtkToolButton *tb, gpointer user_data)
+{
+	ui_zoom_in();
+}
+
+
+static void on_toolbar_zoom_out_activate(GtkToolButton *tb, gpointer user_data)
+{
+	ui_zoom_out();
 }
