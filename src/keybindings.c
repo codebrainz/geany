@@ -1345,13 +1345,13 @@ static gboolean cb_func_file_action(guint key_id)
 			break;
 		}
 		case GEANY_KEYS_FILE_SAVE:
-			on_save1_activate(NULL, NULL);
+			ui_save_file();
 			break;
 		case GEANY_KEYS_FILE_SAVEAS:
-			on_save_as1_activate(NULL, NULL);
+			ui_save_file_as();
 			break;
 		case GEANY_KEYS_FILE_SAVEALL:
-			on_save_all1_activate(NULL, NULL);
+			ui_save_all_files();
 			break;
 		case GEANY_KEYS_FILE_CLOSE:
 			on_close1_activate(NULL, NULL);

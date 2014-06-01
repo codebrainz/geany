@@ -365,6 +365,12 @@ void ui_new_file(void);
 
 void ui_open_file(void);
 
+void ui_save_file(void);
+
+void ui_save_file_as(void);
+
+void ui_save_all_files(void);
+
 G_END_DECLS
 
 #endif /* GEANY_UI_UTILS_H */

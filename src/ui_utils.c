@@ -3139,3 +3139,66 @@ void ui_open_file(void)
 {
 	gtk_action_activate(GTK_ACTION(ui_builder_get_object("open_action")));
 }
+
+
+G_MODULE_EXPORT
+void on_save_action_activate(GtkAction *action, gpointer user_data)
+{
+	gint cur_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(main_widgets.notebook));
+	GeanyDocument *doc = document_get_current();
+
+	if (doc != NULL && cur_page >= 0)
+		document_save_file(doc, ui_prefs.allow_always_save);
+}
+
+
+void ui_save_file(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("save_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_save_as_action_activate(GtkAction *action, gpointer user_data)
+{
+	dialogs_show_save_as();
+}
+
+
+void ui_save_file_as(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("save_as_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_save_all_action_activate(GtkAction *action, gpointer user_data)
+{
+	guint i, max = (guint) gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook));
+	GeanyDocument *doc, *cur_doc = document_get_current();
+	guint count = 0;
+
+	/* iterate over documents in tabs order */
+	for (i = 0; i < max; i++)
+	{
+		doc = document_get_from_page(i);
+		if (! doc->changed)
+			continue;
+
+		if (document_save_file(doc, FALSE))
+			count++;
+	}
+	if (!count)
+		return;
+
+	ui_set_statusbar(FALSE, ngettext("%d file saved.", "%d files saved.", count), count);
+	/* saving may have changed window title, sidebar for another doc, so update */
+	sidebar_update_tag_list(cur_doc, TRUE);
+	ui_set_window_title(cur_doc);
+}
+
+
+void ui_save_all_files(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("save_all_action")));
+}

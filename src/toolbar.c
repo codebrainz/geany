@@ -54,15 +54,18 @@ static GSList *plugin_items = NULL;
 /* FIXME: use existing zoom actions in toolbar instead of proxying with these handlers */
 static void on_toolbar_zoom_in_activate(GtkToolButton *tb, gpointer user_data);
 static void on_toolbar_zoom_out_activate(GtkToolButton *tb, gpointer user_data);
+static void on_toolbutton_save_activate(GtkAction *action, gpointer user_data);
+static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data);
+static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data);
 
 
 /* Available toolbar actions
  * Fields: name, stock_id, label, accelerator, tooltip, callback */
 static const GtkActionEntry ui_entries[] = {
 	/* custom actions defined in toolbar_init(): "New", "Open", "SearchEntry", "GotoEntry", "Build" */
-	{ "Save", GTK_STOCK_SAVE, NULL, NULL, N_("Save the current file"), G_CALLBACK(on_toolbutton_save_clicked) },
-	{ "SaveAs", GTK_STOCK_SAVE_AS, NULL, NULL, N_("Save as"), G_CALLBACK(on_save_as1_activate) },
-	{ "SaveAll", GEANY_STOCK_SAVE_ALL, NULL, NULL, N_("Save all open files"), G_CALLBACK(on_save_all1_activate) },
+	{ "Save", GTK_STOCK_SAVE, NULL, NULL, N_("Save the current file"), G_CALLBACK(on_toolbutton_save_activate) },
+	{ "SaveAs", GTK_STOCK_SAVE_AS, NULL, NULL, N_("Save as"), G_CALLBACK(on_toolbutton_save_as_activate) },
+	{ "SaveAll", GEANY_STOCK_SAVE_ALL, NULL, NULL, N_("Save all open files"), G_CALLBACK(on_toolbutton_save_all_activate) },
 	{ "Reload", GTK_STOCK_REVERT_TO_SAVED, NULL, NULL, N_("Reload the current file from disk"), G_CALLBACK(on_toolbutton_reload_clicked) },
 	{ "Close", GTK_STOCK_CLOSE, NULL, NULL, N_("Close the current file"), G_CALLBACK(on_toolbutton_close_clicked) },
 	{ "CloseAll", GEANY_STOCK_CLOSE_ALL, NULL, NULL, N_("Close all open files"), G_CALLBACK(on_toolbutton_close_all_clicked) },
@@ -352,6 +355,24 @@ static void on_toolbutton_new_clicked(GtkAction *action, gpointer user_data)
 static void on_toolbutton_open_clicked(GtkAction *action, gpointer user_data)
 {
 	ui_open_file();
+}
+
+
+static void on_toolbutton_save_activate(GtkAction *action, gpointer user_data)
+{
+	ui_save_file();
+}
+
+
+static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data)
+{
+	ui_save_file_as();
+}
+
+
+static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data)
+{
+	ui_save_all_files();
 }
 
 

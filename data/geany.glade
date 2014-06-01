@@ -6213,6 +6213,27 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkAction" id="save_all_action">
+        <property name="label" translatable="yes">Save All</property>
+        <property name="stock_id">geany-save-all</property>
+        <signal name="activate" handler="on_save_all_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="save_as_action">
+        <property name="label" translatable="yes">Save _As...</property>
+        <property name="stock_id">gtk-save-as</property>
+        <signal name="activate" handler="on_save_as_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="save_action">
+        <property name="label" translatable="yes">_Save</property>
+        <property name="stock_id">gtk-save</property>
+        <signal name="activate" handler="on_save_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="open_action">
         <property name="label" translatable="yes">_Open</property>
         <property name="stock_id">gtk-open</property>
@@ -6507,33 +6528,36 @@
                         <child>
                           <object class="GtkImageMenuItem" id="menu_save1">
                             <property name="label">gtk-save</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">save_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_save1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_save_as1">
                             <property name="label" translatable="yes">Save _As...</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">save_as_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="image">image4</property>
                             <property name="use_stock">False</property>
-                            <signal name="activate" handler="on_save_as1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_save_all1">
                             <property name="label" translatable="yes">Sa_ve All</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">save_all_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="image">image4057</property>
                             <property name="use_stock">False</property>
-                            <signal name="activate" handler="on_save_all1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
