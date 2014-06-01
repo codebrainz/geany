@@ -373,13 +373,6 @@ G_MODULE_EXPORT void on_info1_activate(GtkMenuItem *menuitem, gpointer user_data
 }
 
 
-/* open file */
-G_MODULE_EXPORT void on_open1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	dialogs_show_open_file();
-}
-
-
 /* quit toolbar button */
 G_MODULE_EXPORT void on_toolbutton_quit_clicked(GtkAction *action, gpointer user_data)
 {
@@ -429,13 +422,6 @@ G_MODULE_EXPORT void on_reload_as_activate(GtkMenuItem *menuitem, gpointer user_
 			ui_update_statusbar(doc, -1);
 	}
 	g_free(base_name);
-}
-
-
-/* open file */
-G_MODULE_EXPORT void on_toolbutton_open_clicked(GtkAction *action, gpointer user_data)
-{
-	dialogs_show_open_file();
 }
 
 

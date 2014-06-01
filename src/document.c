@@ -3441,3 +3441,16 @@ void document_new(void)
 {
 	gtk_action_activate(GTK_ACTION(ui_builder_get_object("new_action")));
 }
+
+
+G_MODULE_EXPORT
+void on_open_action_activate(GtkAction *action, gpointer user_data)
+{
+	dialogs_show_open_file();
+}
+
+
+void document_open(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("open_action")));
+}

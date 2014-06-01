@@ -349,6 +349,12 @@ static void on_toolbutton_new_clicked(GtkAction *action, gpointer user_data)
 }
 
 
+static void on_toolbutton_open_clicked(GtkAction *action, gpointer user_data)
+{
+	document_open();
+}
+
+
 GtkWidget *toolbar_init(void)
 {
 	GtkWidget *toolbar;

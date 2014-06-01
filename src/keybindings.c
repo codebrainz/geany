@@ -1331,7 +1331,7 @@ static gboolean cb_func_file_action(guint key_id)
 			document_new();
 			break;
 		case GEANY_KEYS_FILE_OPEN:
-			on_open1_activate(NULL, NULL);
+			document_open();
 			break;
 		case GEANY_KEYS_FILE_OPENSELECTED:
 			on_menu_open_selected_file1_activate(NULL, NULL);
