@@ -56,10 +56,6 @@ on_open1_activate					  (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_change_font1_activate			   (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
 on_toolbutton_close_clicked			(GtkAction	   *action,
 										gpointer		 user_data);
 
@@ -165,10 +161,6 @@ on_invisible1_activate				 (GtkMenuItem	 *menuitem,
 G_MODULE_EXPORT void
 on_find_usage1_activate				(GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_menu_color_schemes_activate		   (GtkImageMenuItem *imagemenuitem,
-										gpointer user_data);
 
 G_MODULE_EXPORT void
 on_construct_completion1_activate	  (GtkMenuItem	 *menuitem,

@@ -58,8 +58,6 @@ gboolean highlighting_is_string_style(gint lexer, gint style);
 gboolean highlighting_is_comment_style(gint lexer, gint style);
 gboolean highlighting_is_code_style(gint lexer, gint style);
 
-void highlighting_show_color_scheme_dialog(void);
-
 G_END_DECLS
 
 #endif /* GEANY_HIGHLIGHTING_H */

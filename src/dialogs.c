@@ -856,8 +856,8 @@ on_font_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 #endif
 
 
-/* This shows the font selection dialog to choose a font. */
-void dialogs_show_open_font(void)
+G_MODULE_EXPORT
+void on_change_font_action_activate(GtkAction *action, gpointer user_data)
 {
 #ifdef G_OS_WIN32
 	win32_show_font_dialog();

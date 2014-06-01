@@ -437,12 +437,6 @@ G_MODULE_EXPORT void on_reload_as_activate(GtkMenuItem *menuitem, gpointer user_
 }
 
 
-G_MODULE_EXPORT void on_change_font1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	dialogs_show_open_font();
-}
-
-
 /* new file */
 G_MODULE_EXPORT void on_toolbutton_new_clicked(GtkAction *action, gpointer user_data)
 {
@@ -717,12 +711,6 @@ G_MODULE_EXPORT void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer us
 		g_free(text);
 
 	}
-}
-
-
-G_MODULE_EXPORT void on_menu_color_schemes_activate(GtkImageMenuItem *imagemenuitem, gpointer user_data)
-{
-	highlighting_show_color_scheme_dialog();
 }
 
 

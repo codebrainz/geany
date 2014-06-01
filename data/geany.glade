@@ -82,6 +82,14 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkListStore" id="color_schemes_model">
+    <columns>
+      <!-- column-name markup -->
+      <column type="gchararray"/>
+      <!-- column-name filename -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkListStore" id="eol_list">
     <columns>
       <!-- column-name text -->
@@ -6205,6 +6213,20 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkAction" id="change_color_scheme_action">
+        <property name="label" translatable="yes">_Change Color Scheme...</property>
+        <property name="stock_id">gtk-select-color</property>
+        <signal name="activate" handler="on_change_color_scheme_action_activated" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="change_font_action">
+        <property name="label" translatable="yes">Change _Font...</property>
+        <property name="stock_id">gtk-select-font</property>
+        <signal name="activate" handler="on_change_font_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkToggleAction" id="toggle_indentation_guides_action">
         <property name="label" translatable="yes">Show Indentation _Guides</property>
         <signal name="toggled" handler="on_toggle_indentation_guides_toggled" swapped="no"/>
@@ -7378,23 +7400,25 @@
                         <child>
                           <object class="GtkImageMenuItem" id="menu_change_font1">
                             <property name="label" translatable="yes">Change _Font...</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">change_font_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="image">image4076</property>
                             <property name="use_stock">False</property>
-                            <signal name="activate" handler="on_change_font1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_color_schemes">
                             <property name="label" translatable="yes">Change _Color Scheme...</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">change_color_scheme_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="image">image2</property>
                             <property name="use_stock">False</property>
-                            <signal name="activate" handler="on_menu_color_schemes_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
@@ -8635,6 +8659,87 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkDialog" id="color_schemes_dialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Change Color Scheme</property>
+    <property name="default_width">600</property>
+    <property name="default_height">350</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="transient_for">window1</property>
+    <signal name="response" handler="on_color_scheme_dialog_response" swapped="no"/>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="color_schemes_dialog_vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="color_schemes_dialog_action_area">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="color_schemes_close_button">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="color_schemes_scrolled_window">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <property name="shadow_type">etched-in</property>
+            <child>
+              <object class="GtkTreeView" id="color_schemes_tree_view">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">color_schemes_model</property>
+                <property name="headers_visible">False</property>
+                <property name="rules_hint">True</property>
+                <child>
+                  <object class="GtkTreeViewColumn" id="color_scheme_tree_column">
+                    <property name="title" translatable="yes">column</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="color_scheme_tree_text_renderer"/>
+                      <attributes>
+                        <attribute name="markup">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-7">color_schemes_close_button</action-widget>
+    </action-widgets>
   </object>
   <object class="GtkDialog" id="project_dialog">
     <property name="can_focus">False</property>

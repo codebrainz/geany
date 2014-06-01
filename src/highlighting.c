@@ -1183,15 +1183,13 @@ const GeanyLexerStyle *highlighting_get_style(gint ft_id, gint style_id)
 	return get_style((guint) ft_id, (guint) style_id);
 }
 
-
-static GtkWidget *scheme_tree = NULL;
-
 enum
 {
 	SCHEME_MARKUP,
 	SCHEME_FILE,
 	SCHEME_COLUMNS
 };
+
 
 static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 {
@@ -1266,9 +1264,8 @@ static void add_color_scheme_item(GtkListStore *store,
 
 	if (utils_str_equal(fn, editor_prefs.color_scheme))
 	{
-		GtkTreeSelection *treesel =
-			gtk_tree_view_get_selection(GTK_TREE_VIEW(scheme_tree));
-
+		GtkTreeSelection *treesel = gtk_tree_view_get_selection(
+			GTK_TREE_VIEW(ui_builder_get_object("color_schemes_tree_view")));
 		gtk_tree_selection_select_iter(treesel, &iter);
 	}
 }
@@ -1319,67 +1316,46 @@ static gboolean add_color_scheme_items(GtkListStore *store)
 }
 
 
-static void on_color_scheme_dialog_response(GtkWidget *dialog,
+G_MODULE_EXPORT
+void on_color_scheme_dialog_response(GtkWidget *dialog,
 	gint response, gpointer *dialog_ptr)
 {
-	*dialog_ptr = NULL;
-	gtk_widget_destroy(dialog);
+	if (response == GTK_RESPONSE_CLOSE)
+		gtk_widget_hide(dialog);
 }
 
 
-void highlighting_show_color_scheme_dialog(void)
+G_MODULE_EXPORT
+void on_change_color_scheme_action_activated(GtkAction *action, gpointer user_data)
 {
-	static GtkWidget *dialog = NULL;
-	GtkListStore *store = gtk_list_store_new(SCHEME_COLUMNS,
-		G_TYPE_STRING, G_TYPE_STRING);
-	GtkCellRenderer *text_renderer;
-	GtkTreeViewColumn *column;
-	GtkTreeSelection *treesel;
-	GtkWidget *vbox, *swin, *tree;
+	GtkWidget *dialog = NULL;
 	GeanyDocument *doc;
+	static gboolean dialog_setup = FALSE;
 
 	doc = document_get_current();
 	if (doc && doc->file_type->priv->warn_color_scheme)
+	{
 		dialogs_show_msgbox_with_secondary(GTK_MESSAGE_WARNING,
 			_("The current filetype overrides the default style."),
 			_("This may cause color schemes to display incorrectly."));
+	}
 
-	scheme_tree = tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(store);
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(tree), TRUE);
-	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), FALSE);
+	dialog = GTK_WIDGET(ui_builder_get_object("color_schemes_dialog"));
 
-	text_renderer = gtk_cell_renderer_text_new();
-	g_object_set(text_renderer, "wrap-mode", PANGO_WRAP_WORD, NULL);
-	column = gtk_tree_view_column_new_with_attributes(
-		NULL, text_renderer, "markup", SCHEME_MARKUP, NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+	/* Setup some stuff we can't do from Glade */
+	if (! dialog_setup)
+	{
+		GtkTreeSelection *treesel = gtk_tree_view_get_selection(
+			GTK_TREE_VIEW(ui_builder_get_object("color_schemes_tree_view")));
+		GtkListStore *store = GTK_LIST_STORE(ui_builder_get_object("color_schemes_model"));
+		g_signal_connect(treesel, "changed", G_CALLBACK(on_color_scheme_changed), NULL);
+		add_color_scheme_items(store);
+		g_signal_connect(dialog, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+		dialog_setup = TRUE;
+	}
 
-	add_color_scheme_items(store);
-
-	treesel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	g_signal_connect(treesel, "changed", G_CALLBACK(on_color_scheme_changed), NULL);
-
-	/* old dialog may still be showing */
-	if (dialog)
-		gtk_widget_destroy(dialog);
-	dialog = gtk_dialog_new_with_buttons(_("Color Schemes"),
-		GTK_WINDOW(main_widgets.window), GTK_DIALOG_DESTROY_WITH_PARENT,
-		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
-	vbox = ui_dialog_vbox_new(GTK_DIALOG(dialog));
-	gtk_box_set_spacing(GTK_BOX(vbox), 6);
-	gtk_widget_set_name(dialog, "GeanyDialog");
-	gtk_window_set_default_size(GTK_WINDOW(dialog),
-		GEANY_DEFAULT_DIALOG_HEIGHT * 7/4, GEANY_DEFAULT_DIALOG_HEIGHT);
-
-	swin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(swin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(swin),
-		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add(GTK_CONTAINER(swin), tree);
-	gtk_box_pack_start(GTK_BOX(vbox), swin, TRUE, TRUE, 0);
-	g_signal_connect(dialog, "response", G_CALLBACK(on_color_scheme_dialog_response), &dialog);
-	gtk_widget_show_all(dialog);
+	if (! gtk_widget_get_visible(dialog))
+		gtk_window_present(GTK_WINDOW(dialog));
 }
 
 

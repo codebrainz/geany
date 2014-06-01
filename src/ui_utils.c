@@ -2936,6 +2936,10 @@ static void ui_editor_features_update(GeanyUIEditorFeatures feature)
 {
 	guint i;
 
+	/* If the documents array isn't setup yet, don't do anything */
+	if (! documents_array)
+		return;
+
 	foreach_document (i)
 	{
 		GeanyDocument *doc = documents[i];

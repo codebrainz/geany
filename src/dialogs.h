@@ -43,8 +43,6 @@ gboolean dialogs_show_save_as(void);
 
 gboolean dialogs_show_unsaved_file(GeanyDocument *doc);
 
-void dialogs_show_open_font(void);
-
 void dialogs_show_word_count(void);
 
 void dialogs_show_color(gchar *colour);
