@@ -1490,7 +1490,7 @@ static gboolean cb_func_view_action(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_VIEW_TOGGLEALL:
-			on_menu_toggle_all_additional_widgets1_activate(NULL, NULL);
+			ui_toggle_additional_widgets();
 			break;
 		case GEANY_KEYS_VIEW_SIDEBAR:
 		{

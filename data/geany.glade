@@ -6213,6 +6213,12 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkAction" id="toggle_additional_widgets_action">
+        <property name="label" translatable="yes">Toggle All _Additional Widgets</property>
+        <signal name="activate" handler="on_toggle_additional_widgets_action_activated" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="change_color_scheme_action">
         <property name="label" translatable="yes">_Change Color Scheme...</property>
         <property name="stock_id">gtk-select-color</property>
@@ -7497,11 +7503,12 @@
                         </child>
                         <child>
                           <object class="GtkMenuItem" id="menu_toggle_all_additional_widgets1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_additional_widgets_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Toggle All _Additional Widgets</property>
                             <property name="use_underline">True</property>
-                            <signal name="activate" handler="on_menu_toggle_all_additional_widgets1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>

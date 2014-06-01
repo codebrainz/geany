@@ -459,10 +459,6 @@ on_context_action1_activate			(GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_menu_toggle_all_additional_widgets1_activate
-										(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-G_MODULE_EXPORT void
 on_back_activate					   (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 

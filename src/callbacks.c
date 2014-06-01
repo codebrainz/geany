@@ -1568,42 +1568,6 @@ G_MODULE_EXPORT void on_context_action1_activate(GtkMenuItem *menuitem, gpointer
 }
 
 
-G_MODULE_EXPORT void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem *menuitem, gpointer user_data)
-{
-	static gint hide_all = -1;
-
-	/* get the initial state (necessary if Geany was closed with hide_all = TRUE) */
-	if (G_UNLIKELY(hide_all == -1))
-	{
-		if (! msgwin_get_visible() &&
-			! interface_prefs.show_notebook_tabs &&
-			! toolbar_get_visible())
-		{
-			hide_all = TRUE;
-		}
-		else
-			hide_all = FALSE;
-	}
-
-	hide_all = ! hide_all; /* toggle */
-
-	msgwin_set_visible(! hide_all);
-	toolbar_set_visible(! hide_all);
-	ui_statusbar_set_visible(! hide_all);
-
-	if (hide_all)
-	{
-		interface_prefs.show_notebook_tabs = FALSE;
-		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
-	}
-	else
-	{
-		interface_prefs.show_notebook_tabs = TRUE;
-		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook), interface_prefs.show_notebook_tabs);
-	}
-}
-
-
 G_MODULE_EXPORT void on_forward_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	navqueue_go_forward();

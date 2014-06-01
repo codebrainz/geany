@@ -359,6 +359,8 @@ gboolean ui_indentation_guides_get_visible(void);
 
 void ui_indentation_guides_set_visible(gboolean visible);
 
+void ui_toggle_additional_widgets(void);
+
 G_END_DECLS
 
 #endif /* GEANY_UI_UTILS_H */
