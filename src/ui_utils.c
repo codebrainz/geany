@@ -804,7 +804,6 @@ static void init_document_widgets(void)
 	add_doc_widget("menu_paste1");
 	add_doc_widget("menu_undo2");
 	add_doc_widget("preferences2");
-	add_doc_widget("menu_reload1");
 	add_doc_widget("menu_document1");
 	add_doc_widget("menu_choose_color1");
 	add_doc_widget("treeview6");
@@ -859,6 +858,7 @@ static void init_document_widgets(void)
 	add_doc_actions(
 		"change_color_scheme_action",
 		"change_font_action",
+		"reload_action",
 		"save_action",
 		"save_all_action",
 		"save_as_action",
@@ -3225,4 +3225,55 @@ void on_save_all_action_activate(GtkAction *action, gpointer user_data)
 void ui_save_all_files(void)
 {
 	gtk_action_activate(GTK_ACTION(ui_builder_get_object("save_all_action")));
+}
+
+
+G_MODULE_EXPORT
+void ui_activate_reload_as(gpointer unused, gpointer enc_idx_as_ptr)
+{
+	GeanyDocument *doc = document_get_current();
+	gchar *base_name;
+	gint i = GPOINTER_TO_INT(enc_idx_as_ptr);
+	const gchar *charset = NULL;
+
+	g_return_if_fail(doc != NULL);
+
+	/* No need to reload "untitled" (non-file-backed) documents */
+	if (doc->file_name == NULL)
+		return;
+
+	if (i >= 0)
+	{
+		if (i >= GEANY_ENCODINGS_MAX || encodings[i].charset == NULL)
+			return;
+		charset = encodings[i].charset;
+	}
+	else
+		charset = doc->encoding;
+
+	base_name = g_path_get_basename(doc->file_name);
+	/* don't prompt if file hasn't been edited at all */
+	if ((!doc->changed && !document_can_undo(doc) && !document_can_redo(doc)) ||
+		dialogs_show_question_full(NULL, _("_Reload"), GTK_STOCK_CANCEL,
+		_("Any unsaved changes will be lost."),
+		_("Are you sure you want to reload '%s'?"), base_name))
+	{
+		document_reload_file(doc, charset);
+		if (charset != NULL)
+			ui_update_statusbar(doc, -1);
+	}
+	g_free(base_name);
+}
+
+
+G_MODULE_EXPORT
+void on_reload_action_activate(GtkAction *action, gpointer user_data)
+{
+	ui_activate_reload_as(NULL, GINT_TO_POINTER(-1));
+}
+
+
+void ui_reload_file(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("reload_action")));
 }

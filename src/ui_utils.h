@@ -371,6 +371,11 @@ void ui_save_file_as(void);
 
 void ui_save_all_files(void);
 
+void ui_reload_file(void);
+
+G_MODULE_EXPORT
+void ui_activate_reload_as(gpointer unused, gpointer enc_idx_as_ptr);
+
 G_END_DECLS
 
 #endif /* GEANY_UI_UTILS_H */

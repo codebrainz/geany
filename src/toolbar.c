@@ -57,6 +57,7 @@ static void on_toolbar_zoom_out_activate(GtkToolButton *tb, gpointer user_data);
 static void on_toolbutton_save_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data);
 static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data);
+static void on_toolbutton_reload_clicked(GtkAction *action, gpointer user_data);
 
 
 /* Available toolbar actions
@@ -373,6 +374,12 @@ static void on_toolbutton_save_as_activate(GtkAction *action, gpointer user_data
 static void on_toolbutton_save_all_activate(GtkAction *action, gpointer user_data)
 {
 	ui_save_all_files();
+}
+
+
+static void on_toolbutton_reload_clicked(GtkAction *action, gpointer user_data)
+{
+	ui_reload_file();
 }
 
 

@@ -762,7 +762,7 @@ static void document_action(GeanyDocument *doc, gint action)
 		}
 		case OPENFILES_ACTION_RELOAD:
 		{
-			on_toolbutton_reload_clicked(NULL, NULL);
+			ui_reload_file();
 			break;
 		}
 	}

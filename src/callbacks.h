@@ -201,10 +201,6 @@ on_toolbutton_preferences_clicked	  (GtkAction	   *action,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_toolbutton_reload_clicked		   (GtkAction	   *action,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
 on_go_to_line_activate				 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
@@ -322,10 +318,6 @@ on_notebook1_switch_page_after		 (GtkNotebook	 *notebook,
 
 G_MODULE_EXPORT void
 on_menu_remove_indicators1_activate	(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_reload_as_activate				  (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
