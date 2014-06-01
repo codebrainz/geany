@@ -361,6 +361,10 @@ void ui_indentation_guides_set_visible(gboolean visible);
 
 void ui_toggle_additional_widgets(void);
 
+void ui_new_file(void);
+
+void ui_open_file(void);
+
 G_END_DECLS
 
 #endif /* GEANY_UI_UTILS_H */

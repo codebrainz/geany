@@ -3428,29 +3428,3 @@ void document_grab_focus(GeanyDocument *doc)
 
 	gtk_widget_grab_focus(GTK_WIDGET(doc->editor->sci));
 }
-
-
-G_MODULE_EXPORT
-void on_new_action_activate(GtkAction *action, gpointer user_data)
-{
-	document_new_file(NULL, NULL, NULL);
-}
-
-
-void document_new(void)
-{
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("new_action")));
-}
-
-
-G_MODULE_EXPORT
-void on_open_action_activate(GtkAction *action, gpointer user_data)
-{
-	dialogs_show_open_file();
-}
-
-
-void document_open(void)
-{
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("open_action")));
-}

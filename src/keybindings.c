@@ -1328,10 +1328,10 @@ static gboolean cb_func_file_action(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_FILE_NEW:
-			document_new();
+			ui_new_file();
 			break;
 		case GEANY_KEYS_FILE_OPEN:
-			document_open();
+			ui_open_file();
 			break;
 		case GEANY_KEYS_FILE_OPENSELECTED:
 			on_menu_open_selected_file1_activate(NULL, NULL);

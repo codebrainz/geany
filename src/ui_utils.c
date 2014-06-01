@@ -3113,3 +3113,29 @@ void ui_toggle_additional_widgets(void)
 {
 	gtk_action_activate(GTK_ACTION(ui_builder_get_object("toggle_additional_widgets_action")));
 }
+
+
+G_MODULE_EXPORT
+void on_new_action_activate(GtkAction *action, gpointer user_data)
+{
+	document_new_file(NULL, NULL, NULL);
+}
+
+
+void ui_new_file(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("new_action")));
+}
+
+
+G_MODULE_EXPORT
+void on_open_action_activate(GtkAction *action, gpointer user_data)
+{
+	dialogs_show_open_file();
+}
+
+
+void ui_open_file(void)
+{
+	gtk_action_activate(GTK_ACTION(ui_builder_get_object("open_action")));
+}

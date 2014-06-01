@@ -345,13 +345,13 @@ static void toolbar_notify_style_cb(GObject *object, GParamSpec *arg1, gpointer 
 
 static void on_toolbutton_new_clicked(GtkAction *action, gpointer user_data)
 {
-	document_new();
+	ui_new_file();
 }
 
 
 static void on_toolbutton_open_clicked(GtkAction *action, gpointer user_data)
 {
-	document_open();
+	ui_open_file();
 }
 
 
