@@ -156,17 +156,6 @@ typedef struct GeanyAutoSeparator
 GeanyAutoSeparator;
 
 
-typedef enum
-{
-	GEANY_EDITOR_SHOW_MARKERS_MARGIN,
-	GEANY_EDITOR_SHOW_LINE_NUMBERS,
-	GEANY_EDITOR_SHOW_WHITE_SPACE,
-	GEANY_EDITOR_SHOW_INDENTATION_GUIDES,
-	GEANY_EDITOR_SHOW_LINE_ENDINGS
-}
-GeanyUIEditorFeatures;
-
-
 #define GEANY_STOCK_SAVE_ALL "geany-save-all"
 #define GEANY_STOCK_CLOSE_ALL "geany-close-all"
 #define GEANY_STOCK_BUILD "geany-build"
@@ -324,10 +313,6 @@ gboolean ui_statusbar_get_visible(void);
 
 void ui_add_document_sensitive(GtkWidget *widget);
 
-void ui_toggle_editor_features(GeanyUIEditorFeatures feature);
-
-void ui_update_view_editor_menu_items(void);
-
 void ui_progress_bar_start(const gchar *text);
 
 void ui_progress_bar_stop(void);
@@ -353,6 +338,26 @@ void ui_zoom_in(void);
 void ui_zoom_out(void);
 
 void ui_zoom_off(void);
+
+gboolean ui_markers_margin_get_visible(void);
+
+void ui_markers_margin_set_visible(gboolean visible);
+
+gboolean ui_line_numbers_margin_get_visible(void);
+
+void ui_line_numbers_margin_set_visible(gboolean visible);
+
+gboolean ui_white_space_get_visible(void);
+
+void ui_white_space_set_visible(gboolean visible);
+
+gboolean ui_line_endings_get_visible(void);
+
+void ui_line_endings_set_visible(gboolean visible);
+
+gboolean ui_indentation_guides_get_visible(void);
+
+void ui_indentation_guides_set_visible(gboolean visible);
 
 G_END_DECLS
 

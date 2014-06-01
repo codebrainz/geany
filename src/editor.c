@@ -1047,7 +1047,8 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object, GeanyEditor *edi
 			break;
 
  		case SCN_MODIFIED:
-			if (editor_prefs.show_linenumber_margin && (nt->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) && nt->linesAdded)
+			if (ui_line_numbers_margin_get_visible()
+				&& (nt->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) && nt->linesAdded)
 			{
 				/* automatically adjust Scintilla's line numbers margin width */
 				auto_update_margin_width(editor);
@@ -1127,7 +1128,7 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object, GeanyEditor *edi
 
 		case SCN_ZOOM:
 			/* recalculate line margin width */
-			sci_set_line_numbers(sci, editor_prefs.show_linenumber_margin, 0);
+			sci_set_line_numbers(sci, ui_line_numbers_margin_get_visible(), 0);
 			break;
 	}
 	/* we always return FALSE here to let plugins handle the event too */
@@ -4773,7 +4774,7 @@ static ScintillaObject *create_new_sci(GeanyEditor *editor)
 
 	setup_sci_keys(sci);
 
-	sci_set_symbol_margin(sci, editor_prefs.show_markers_margin);
+	sci_set_symbol_margin(sci, ui_markers_margin_get_visible());
 	sci_set_lines_wrapped(sci, editor_prefs.line_wrapping);
 	sci_set_caret_policy_x(sci, CARET_JUMPS | CARET_EVEN, 0);
 	/*sci_set_caret_policy_y(sci, CARET_JUMPS | CARET_EVEN, 0);*/
@@ -4921,7 +4922,7 @@ void editor_set_indentation_guides(GeanyEditor *editor)
 
 	g_return_if_fail(editor != NULL);
 
-	if (! editor_prefs.show_indent_guide)
+	if (! ui_indentation_guides_get_visible())
 	{
 		sci_set_indentation_guides(editor->sci, SC_IV_NONE);
 		return;
@@ -5011,10 +5012,10 @@ void editor_apply_update_prefs(GeanyEditor *editor)
 
 	editor_set_indentation_guides(editor);
 
-	sci_set_visible_white_spaces(sci, editor_prefs.show_white_space);
-	sci_set_visible_eols(sci, editor_prefs.show_line_endings);
-	sci_set_symbol_margin(sci, editor_prefs.show_markers_margin);
-	sci_set_line_numbers(sci, editor_prefs.show_linenumber_margin, 0);
+	sci_set_visible_white_spaces(sci, ui_white_space_get_visible());
+	sci_set_visible_eols(sci, ui_line_endings_get_visible());
+	sci_set_symbol_margin(sci, ui_markers_margin_get_visible());
+	sci_set_line_numbers(sci, ui_line_numbers_margin_get_visible(), 0);
 
 	sci_set_folding_margin_visible(sci, editor_prefs.folding);
 

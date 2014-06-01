@@ -726,56 +726,6 @@ G_MODULE_EXPORT void on_menu_color_schemes_activate(GtkImageMenuItem *imagemenui
 }
 
 
-G_MODULE_EXPORT void on_markers_margin1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
-{
-	if (ignore_callback)
-		return;
-
-	editor_prefs.show_markers_margin = ! editor_prefs.show_markers_margin;
-	ui_toggle_editor_features(GEANY_EDITOR_SHOW_MARKERS_MARGIN);
-}
-
-
-G_MODULE_EXPORT void on_show_line_numbers1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
-{
-	if (ignore_callback)
-		return;
-
-	editor_prefs.show_linenumber_margin = ! editor_prefs.show_linenumber_margin;
-	ui_toggle_editor_features(GEANY_EDITOR_SHOW_LINE_NUMBERS);
-}
-
-
-G_MODULE_EXPORT void on_menu_show_white_space1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
-{
-	if (ignore_callback)
-		return;
-
-	editor_prefs.show_white_space = ! editor_prefs.show_white_space;
-	ui_toggle_editor_features(GEANY_EDITOR_SHOW_WHITE_SPACE);
-}
-
-
-G_MODULE_EXPORT void on_menu_show_line_endings1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
-{
-	if (ignore_callback)
-		return;
-
-	editor_prefs.show_line_endings = ! editor_prefs.show_line_endings;
-	ui_toggle_editor_features(GEANY_EDITOR_SHOW_LINE_ENDINGS);
-}
-
-
-G_MODULE_EXPORT void on_menu_show_indentation_guides1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
-{
-	if (ignore_callback)
-		return;
-
-	editor_prefs.show_indent_guide = ! editor_prefs.show_indent_guide;
-	ui_toggle_editor_features(GEANY_EDITOR_SHOW_INDENTATION_GUIDES);
-}
-
-
 G_MODULE_EXPORT void on_line_wrapping1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data)
 {
 	if (! ignore_callback)

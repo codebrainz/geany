@@ -584,19 +584,19 @@ static void prefs_init_dialog(void)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), file_prefs.replace_tabs);
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_indent");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), editor_prefs.show_indent_guide);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), ui_indentation_guides_get_visible());
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_white_space");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), editor_prefs.show_white_space);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), ui_white_space_get_visible());
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_line_end");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), editor_prefs.show_line_endings);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), ui_line_endings_get_visible());
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_line_numbers");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), editor_prefs.show_linenumber_margin);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), ui_line_numbers_margin_get_visible());
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_markers_margin");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), editor_prefs.show_markers_margin);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), ui_markers_margin_get_visible());
 
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_scroll_stop_at_last_line");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), editor_prefs.scroll_stop_at_last_line);
@@ -1061,19 +1061,19 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 		editor_prefs.unfold_all_children = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_indent");
-		editor_prefs.show_indent_guide = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		ui_indentation_guides_set_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_white_space");
-		editor_prefs.show_white_space = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		ui_white_space_set_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_line_end");
-		editor_prefs.show_line_endings = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		ui_line_endings_set_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_line_numbers");
-		editor_prefs.show_linenumber_margin = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		ui_line_numbers_margin_set_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_markers_margin");
-		editor_prefs.show_markers_margin = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		ui_markers_margin_set_visible(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_scroll_stop_at_last_line");
 		editor_prefs.scroll_stop_at_last_line = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
@@ -1289,7 +1289,6 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 			}
 		}
 		ui_document_show_hide(NULL);
-		ui_update_view_editor_menu_items();
 
 		/* various preferences */
 		ui_save_buttons_toggle((doc != NULL) ? doc->changed : FALSE);

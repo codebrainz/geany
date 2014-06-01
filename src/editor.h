@@ -116,17 +116,13 @@ GeanyIndentPrefs;
 typedef struct GeanyEditorPrefs
 {
 	GeanyIndentPrefs *indentation;	/* Default indentation prefs. Use editor_get_indent_prefs(). */
-	gboolean	show_white_space;
-	gboolean	show_indent_guide;
-	gboolean	show_line_endings;
 	/* 0 - line, 1 - background, 2 - disabled.
 	 * This setting may be overridden when a project is opened. Use @c editor_get_prefs(). */
 	gint		long_line_type;
 	/* This setting may be overridden when a project is opened. Use @c editor_get_prefs(). */
 	gint		long_line_column;
 	gchar		*long_line_color;
-	gboolean	show_markers_margin;		/* view menu */
-	gboolean	show_linenumber_margin;		/* view menu */
+	gboolean	show_linenumber_margin; /**< Whether the editor's line number margin is shown. */
 	gboolean	show_scrollbars;			/* hidden pref */
 	gboolean	scroll_stop_at_last_line;
 	gboolean	line_wrapping;

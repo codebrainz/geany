@@ -68,6 +68,18 @@
 	"filetype: %f      " \
 	"scope: %S")
 
+
+typedef enum
+{
+	GEANY_EDITOR_SHOW_MARKERS_MARGIN,
+	GEANY_EDITOR_SHOW_LINE_NUMBERS,
+	GEANY_EDITOR_SHOW_WHITE_SPACE,
+	GEANY_EDITOR_SHOW_INDENTATION_GUIDES,
+	GEANY_EDITOR_SHOW_LINE_ENDINGS
+}
+GeanyUIEditorFeatures;
+
+
 GeanyInterfacePrefs	interface_prefs;
 GeanyMainWidgets	main_widgets;
 
@@ -1258,48 +1270,6 @@ static void update_recent_menu(GeanyRecentFiles *grf)
 		gtk_menu_reorder_child(GTK_MENU(grf->toolbar), tmp, 0);
 		g_signal_connect(tmp, "activate", G_CALLBACK(grf->activate_cb), NULL);
 	}
-}
-
-
-void ui_toggle_editor_features(GeanyUIEditorFeatures feature)
-{
-	guint i;
-
-	foreach_document (i)
-	{
-		GeanyDocument *doc = documents[i];
-
-		switch (feature)
-		{
-			case GEANY_EDITOR_SHOW_MARKERS_MARGIN:
-				sci_set_symbol_margin(doc->editor->sci, editor_prefs.show_markers_margin);
-				break;
-			case GEANY_EDITOR_SHOW_LINE_NUMBERS:
-				sci_set_line_numbers(doc->editor->sci, editor_prefs.show_linenumber_margin, 0);
-				break;
-			case GEANY_EDITOR_SHOW_WHITE_SPACE:
-				sci_set_visible_white_spaces(doc->editor->sci, editor_prefs.show_white_space);
-				break;
-			case GEANY_EDITOR_SHOW_LINE_ENDINGS:
-				sci_set_visible_eols(doc->editor->sci, editor_prefs.show_line_endings);
-				break;
-			case GEANY_EDITOR_SHOW_INDENTATION_GUIDES:
-				editor_set_indentation_guides(doc->editor);
-				break;
-		}
-	}
-}
-
-
-void ui_update_view_editor_menu_items(void)
-{
-	ignore_callback = TRUE;
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_markers_margin1")), editor_prefs.show_markers_margin);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_linenumber_margin1")), editor_prefs.show_linenumber_margin);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_show_white_space1")), editor_prefs.show_white_space);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_show_line_endings1")), editor_prefs.show_line_endings);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_show_indentation_guides1")), editor_prefs.show_indent_guide);
-	ignore_callback = FALSE;
 }
 
 
@@ -2959,4 +2929,140 @@ void on_zoom_reset_action_activate(GtkAction *action, gpointer user_data)
 void ui_zoom_off(void)
 {
 	gtk_action_activate(GTK_ACTION(ui_builder_get_object("zoom_reset_action")));
+}
+
+
+static void ui_editor_features_update(GeanyUIEditorFeatures feature)
+{
+	guint i;
+
+	foreach_document (i)
+	{
+		GeanyDocument *doc = documents[i];
+
+		switch (feature)
+		{
+			case GEANY_EDITOR_SHOW_MARKERS_MARGIN:
+				sci_set_symbol_margin(doc->editor->sci, ui_markers_margin_get_visible());
+				break;
+			case GEANY_EDITOR_SHOW_LINE_NUMBERS:
+				sci_set_line_numbers(doc->editor->sci, ui_line_numbers_margin_get_visible(), 0);
+				break;
+			case GEANY_EDITOR_SHOW_WHITE_SPACE:
+				sci_set_visible_white_spaces(doc->editor->sci, ui_white_space_get_visible());
+				break;
+			case GEANY_EDITOR_SHOW_LINE_ENDINGS:
+				sci_set_visible_eols(doc->editor->sci, ui_line_endings_get_visible());
+				break;
+			case GEANY_EDITOR_SHOW_INDENTATION_GUIDES:
+				editor_set_indentation_guides(doc->editor);
+				break;
+		}
+	}
+}
+
+
+G_MODULE_EXPORT
+void on_toggle_markers_margin_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	ui_editor_features_update(GEANY_EDITOR_SHOW_MARKERS_MARGIN);
+}
+
+
+gboolean ui_markers_margin_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_markers_margin_action")));
+}
+
+
+void ui_markers_margin_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_markers_margin_action")), visible);
+}
+
+
+G_MODULE_EXPORT
+void on_toggle_line_numbers_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	ui_editor_features_update(GEANY_EDITOR_SHOW_LINE_NUMBERS);
+}
+
+
+gboolean ui_line_numbers_margin_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_line_numbers_action")));
+}
+
+
+void ui_line_numbers_margin_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_line_numbers_action")), visible);
+	editor_prefs.show_linenumber_margin = visible;
+}
+
+
+G_MODULE_EXPORT
+void on_toggle_white_space_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	ui_editor_features_update(GEANY_EDITOR_SHOW_WHITE_SPACE);
+}
+
+
+gboolean ui_white_space_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_white_space_action")));
+}
+
+
+void ui_white_space_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_white_space_action")), visible);
+}
+
+
+G_MODULE_EXPORT
+void on_toggle_line_endings_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	ui_editor_features_update(GEANY_EDITOR_SHOW_LINE_ENDINGS);
+}
+
+
+gboolean ui_line_endings_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_line_endings_action")));
+}
+
+
+void ui_line_endings_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_line_endings_action")), visible);
+}
+
+
+G_MODULE_EXPORT
+void on_toggle_indentation_guides_toggled(GtkToggleAction *action, gpointer user_data)
+{
+	ui_editor_features_update(GEANY_EDITOR_SHOW_INDENTATION_GUIDES);
+}
+
+
+gboolean ui_indentation_guides_get_visible(void)
+{
+	return gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_indentation_guides_action")));
+}
+
+
+void ui_indentation_guides_set_visible(gboolean visible)
+{
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(
+		ui_builder_get_object("toggle_indentation_guides_action")), visible);
 }

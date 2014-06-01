@@ -6205,6 +6205,38 @@
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkActionGroup" id="window_actiongroup">
     <child>
+      <object class="GtkToggleAction" id="toggle_indentation_guides_action">
+        <property name="label" translatable="yes">Show Indentation _Guides</property>
+        <signal name="toggled" handler="on_toggle_indentation_guides_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_line_endings_action">
+        <property name="label" translatable="yes">Show Line _Endings</property>
+        <signal name="toggled" handler="on_toggle_line_endings_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_white_space_action">
+        <property name="label" translatable="yes">Show White S_pace</property>
+        <signal name="toggled" handler="on_toggle_white_space_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_line_numbers_action">
+        <property name="label" translatable="yes">Show _Line Numbers</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_line_numbers_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_markers_margin_action">
+        <property name="label" translatable="yes">Show _Markers Margin</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_markers_margin_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="zoom_reset_action">
         <property name="label" translatable="yes">_Normal Size</property>
         <property name="stock_id">gtk-zoom-100</property>
@@ -7373,49 +7405,54 @@
                         </child>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_markers_margin1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_markers_margin_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Show _Markers Margin</property>
                             <property name="use_underline">True</property>
                             <property name="active">True</property>
-                            <signal name="toggled" handler="on_markers_margin1_toggled" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_linenumber_margin1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_line_numbers_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Show _Line Numbers</property>
                             <property name="use_underline">True</property>
                             <property name="active">True</property>
-                            <signal name="toggled" handler="on_show_line_numbers1_toggled" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_show_white_space1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_white_space_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Show White S_pace</property>
                             <property name="use_underline">True</property>
-                            <signal name="toggled" handler="on_menu_show_white_space1_toggled" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_show_line_endings1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_line_endings_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Show Line _Endings</property>
                             <property name="use_underline">True</property>
-                            <signal name="toggled" handler="on_menu_show_line_endings1_toggled" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_show_indentation_guides1">
+                            <property name="use_action_appearance">False</property>
+                            <property name="related_action">toggle_indentation_guides_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Show Indentation _Guides</property>
                             <property name="use_underline">True</property>
-                            <signal name="toggled" handler="on_menu_show_indentation_guides1_toggled" swapped="no"/>
                           </object>
                         </child>
                         <child>

@@ -159,10 +159,6 @@ on_fullscreen1_toggled				 (GtkCheckMenuItem *checkmenuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
-on_markers_margin1_toggled			 (GtkCheckMenuItem *checkmenuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
 on_invisible1_activate				 (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
@@ -331,10 +327,6 @@ on_help_shortcuts1_activate			(GtkMenuItem	 *menuitem,
 
 G_MODULE_EXPORT void
 on_file_properties_activate			(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_show_line_numbers1_toggled		  (GtkCheckMenuItem *checkmenuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void
@@ -557,19 +549,6 @@ on_tabs_and_spaces1_activate		   (GtkCheckMenuItem *menuitem,
 										gpointer		  user_data);
 G_MODULE_EXPORT void
 on_debug_messages1_activate			(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_menu_show_white_space1_toggled	  (GtkCheckMenuItem *checkmenuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_menu_show_line_endings1_toggled	 (GtkCheckMenuItem *checkmenuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_menu_show_indentation_guides1_toggled
-										(GtkCheckMenuItem *checkmenuitem,
 										gpointer		 user_data);
 
 G_MODULE_EXPORT void

@@ -418,11 +418,11 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, PACKAGE, "use_native_windows_dialogs", interface_prefs.use_native_windows_dialogs);
 
 	/* display */
-	g_key_file_set_boolean(config, PACKAGE, "show_indent_guide", editor_prefs.show_indent_guide);
-	g_key_file_set_boolean(config, PACKAGE, "show_white_space", editor_prefs.show_white_space);
-	g_key_file_set_boolean(config, PACKAGE, "show_line_endings", editor_prefs.show_line_endings);
-	g_key_file_set_boolean(config, PACKAGE, "show_markers_margin", editor_prefs.show_markers_margin);
-	g_key_file_set_boolean(config, PACKAGE, "show_linenumber_margin", editor_prefs.show_linenumber_margin);
+	g_key_file_set_boolean(config, PACKAGE, "show_indent_guide", ui_indentation_guides_get_visible());
+	g_key_file_set_boolean(config, PACKAGE, "show_white_space", ui_white_space_get_visible());
+	g_key_file_set_boolean(config, PACKAGE, "show_line_endings", ui_line_endings_get_visible());
+	g_key_file_set_boolean(config, PACKAGE, "show_markers_margin", ui_markers_margin_get_visible());
+	g_key_file_set_boolean(config, PACKAGE, "show_linenumber_margin", ui_line_numbers_margin_get_visible());
 	g_key_file_set_boolean(config, PACKAGE, "long_line_enabled", editor_prefs.long_line_enabled);
 	g_key_file_set_integer(config, PACKAGE, "long_line_type", editor_prefs.long_line_type);
 	g_key_file_set_integer(config, PACKAGE, "long_line_column", editor_prefs.long_line_column);
@@ -777,17 +777,17 @@ static void load_dialog_prefs(GKeyFile *config)
 	editor_prefs.symbolcompletion_max_height = utils_get_setting_integer(config, PACKAGE, "symbolcompletion_max_height", GEANY_MAX_SYMBOLLIST_HEIGHT);
 	editor_prefs.line_wrapping = utils_get_setting_boolean(config, PACKAGE, "line_wrapping", FALSE); /* default is off for better performance */
 	editor_prefs.use_indicators = utils_get_setting_boolean(config, PACKAGE, "use_indicators", TRUE);
-	editor_prefs.show_indent_guide = utils_get_setting_boolean(config, PACKAGE, "show_indent_guide", FALSE);
-	editor_prefs.show_white_space = utils_get_setting_boolean(config, PACKAGE, "show_white_space", FALSE);
-	editor_prefs.show_line_endings = utils_get_setting_boolean(config, PACKAGE, "show_line_endings", FALSE);
+	ui_indentation_guides_set_visible(utils_get_setting_boolean(config, PACKAGE, "show_indent_guide", FALSE));
+	ui_white_space_set_visible(utils_get_setting_boolean(config, PACKAGE, "show_white_space", FALSE));
+	ui_line_endings_set_visible(utils_get_setting_boolean(config, PACKAGE, "show_line_endings", FALSE));
 	editor_prefs.scroll_stop_at_last_line = utils_get_setting_boolean(config, PACKAGE, "scroll_stop_at_last_line", TRUE);
 	editor_prefs.auto_close_xml_tags = utils_get_setting_boolean(config, PACKAGE, "auto_close_xml_tags", TRUE);
 	editor_prefs.complete_snippets = utils_get_setting_boolean(config, PACKAGE, "complete_snippets", TRUE);
 	editor_prefs.auto_complete_symbols = utils_get_setting_boolean(config, PACKAGE, "auto_complete_symbols", TRUE);
 	editor_prefs.folding = utils_get_setting_boolean(config, PACKAGE, "use_folding", TRUE);
 	editor_prefs.unfold_all_children = utils_get_setting_boolean(config, PACKAGE, "unfold_all_children", FALSE);
-	editor_prefs.show_markers_margin = utils_get_setting_boolean(config, PACKAGE, "show_markers_margin", TRUE);
-	editor_prefs.show_linenumber_margin = utils_get_setting_boolean(config, PACKAGE, "show_linenumber_margin", TRUE);
+	ui_markers_margin_set_visible(utils_get_setting_boolean(config, PACKAGE, "show_markers_margin", TRUE));
+	ui_line_numbers_margin_set_visible(utils_get_setting_boolean(config, PACKAGE, "show_linenumber_margin", TRUE));
 	editor_prefs.disable_dnd = utils_get_setting_boolean(config, PACKAGE, "pref_editor_disable_dnd", FALSE);
 	editor_prefs.smart_home_key = utils_get_setting_boolean(config, PACKAGE, "pref_editor_smart_home_key", TRUE);
 	editor_prefs.newline_strip = utils_get_setting_boolean(config, PACKAGE, "pref_editor_newline_strip", FALSE);
