@@ -2158,6 +2158,12 @@ static void ui_set_action_group_accel_group(const gchar *act_group_name)
 }
 
 
+static void ui_silent_log_func(const gchar *log_domain, GLogLevelFlags log_level,
+	const gchar *message, gpointer user_data)
+{
+}
+
+
 void ui_init_builder(void)
 {
 	gchar *interface_file;
@@ -2165,6 +2171,8 @@ void ui_init_builder(void)
 	GError *error;
 	GSList *iter, *all_objects;
 	GtkWidget *widget, *toplevel;
+	gboolean add_result;
+	GLogFunc log_handler;
 
 	/* prevent function from being called twice */
 	if (GTK_IS_BUILDER(builder))
@@ -2176,7 +2184,20 @@ void ui_init_builder(void)
 
 	error = NULL;
 	interface_file = g_build_filename(app->datadir, "geany.glade", NULL);
-	if (! gtk_builder_add_from_file(builder, interface_file, &error))
+
+	/* Hack to disable terminal spam while adding the interface file to builder
+	 * since it spews all kinds of action/accel-related stuff we cannot silence.
+	 * This is required to use "use action appearance" to avoid duplication
+	 * between the Glade actions and menu/toolbar items. See also
+	 * ui_set_action_group_accel_group() for a similar/related workaround. */
+	log_handler = g_log_set_default_handler(ui_silent_log_func, NULL);
+
+	add_result = gtk_builder_add_from_file(builder, interface_file, &error);
+
+	/* Hack to put back the original log handler function */
+	g_log_set_default_handler(log_handler, NULL);
+
+	if (! add_result)
 	{
 		/* Show the user this message so they know WTF happened */
 		dialogs_show_msgbox_with_secondary(GTK_MESSAGE_ERROR,
