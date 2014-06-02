@@ -48,31 +48,33 @@
 
 GeanyToolbarPrefs toolbar_prefs;
 static GtkUIManager *uim;
-static GtkActionGroup *group;
 static GSList *plugin_items = NULL;
 
-
-/* Available toolbar actions
- * Fields: name, stock_id, label, accelerator, tooltip, callback */
-static const GtkActionEntry ui_entries[] = {
-	/* custom actions defined in toolbar_init(): "New", "Open", "SearchEntry", "GotoEntry", "Build" */
+static const GtkActionEntry doc_entries[] = {
 	{ "Cut", GTK_STOCK_CUT, NULL, NULL, N_("Cut the current selection"), G_CALLBACK(on_cut1_activate) },
 	{ "Copy", GTK_STOCK_COPY, NULL, NULL, N_("Copy the current selection"), G_CALLBACK(on_copy1_activate) },
 	{ "Paste", GTK_STOCK_PASTE, NULL, NULL, N_("Paste the contents of the clipboard"), G_CALLBACK(on_paste1_activate) },
 	{ "Delete", GTK_STOCK_DELETE, NULL, NULL, N_("Delete the current selection"), G_CALLBACK(on_delete1_activate) },
-	{ "Undo", GTK_STOCK_UNDO, NULL, NULL, N_("Undo the last modification"), G_CALLBACK(on_undo1_activate) },
-	{ "Redo", GTK_STOCK_REDO, NULL, NULL, N_("Redo the last modification"), G_CALLBACK(on_redo1_activate) },
-	{ "NavBack", GTK_STOCK_GO_BACK, NULL, NULL, N_("Navigate back a location"), G_CALLBACK(on_back_activate) },
-	{ "NavFor", GTK_STOCK_GO_FORWARD, NULL, NULL, N_("Navigate forward a location"), G_CALLBACK(on_forward_activate) },
+	{ "Replace", GTK_STOCK_FIND_AND_REPLACE, NULL, NULL, N_("Replace text in the current document"), G_CALLBACK(on_replace1_activate) },
 	{ "Compile", GTK_STOCK_CONVERT, N_("Compile"), NULL, N_("Compile the current file"), G_CALLBACK(on_toolbutton_compile_clicked) },
 	{ "Run", GTK_STOCK_EXECUTE, NULL, NULL, N_("Run or view the current file"), G_CALLBACK(on_toolbutton_run_clicked) },
 	{ "Color", GTK_STOCK_SELECT_COLOR, N_("Color Chooser"), NULL, N_("Open a color chooser dialog, to interactively pick colors from a palette"), G_CALLBACK(on_show_color_chooser1_activate) },
 	{ "UnIndent", GTK_STOCK_UNINDENT, NULL, NULL, N_("Decrease indentation"), G_CALLBACK(on_menu_decrease_indent1_activate) },
 	{ "Indent", GTK_STOCK_INDENT, NULL, NULL, N_("Increase indentation"), G_CALLBACK(on_menu_increase_indent1_activate) },
 	{ "Search", GTK_STOCK_FIND, NULL, NULL, N_("Find the entered text in the current file"), G_CALLBACK(on_toolbutton_search_clicked) },
-	{ "Goto", GTK_STOCK_JUMP_TO, NULL, NULL, N_("Jump to the entered line number"), G_CALLBACK(on_toolbutton_goto_clicked) },
-	{ "Preferences", GTK_STOCK_PREFERENCES, NULL, NULL, N_("Show the preferences dialog"), G_CALLBACK(on_toolbutton_preferences_clicked) },
-	{ "Replace", GTK_STOCK_FIND_AND_REPLACE, NULL, NULL, N_("Replace text in the current document"), G_CALLBACK(on_replace1_activate) }
+	{ "Goto", GTK_STOCK_JUMP_TO, NULL, NULL, N_("Jump to the entered line number"), G_CALLBACK(on_toolbutton_goto_clicked) }
+};
+static const guint doc_entries_n = G_N_ELEMENTS(doc_entries);
+
+/* Available toolbar actions
+ * Fields: name, stock_id, label, accelerator, tooltip, callback */
+static const GtkActionEntry ui_entries[] = {
+	/* custom actions defined in toolbar_init(): "New", "Open", "SearchEntry", "GotoEntry", "Build" */
+	{ "Undo", GTK_STOCK_UNDO, NULL, NULL, N_("Undo the last modification"), G_CALLBACK(on_undo1_activate) },
+	{ "Redo", GTK_STOCK_REDO, NULL, NULL, N_("Redo the last modification"), G_CALLBACK(on_redo1_activate) },
+	{ "NavBack", GTK_STOCK_GO_BACK, NULL, NULL, N_("Navigate back a location"), G_CALLBACK(on_back_activate) },
+	{ "NavFor", GTK_STOCK_GO_FORWARD, NULL, NULL, N_("Navigate forward a location"), G_CALLBACK(on_forward_activate) },
+	{ "Preferences", GTK_STOCK_PREFERENCES, NULL, NULL, N_("Show the preferences dialog"), G_CALLBACK(on_toolbutton_preferences_clicked) }
 };
 static const guint ui_entries_n = G_N_ELEMENTS(ui_entries);
 
@@ -143,9 +145,16 @@ GtkWidget *toolbar_get_widget_child_by_name(const gchar *name)
 
 GtkAction *toolbar_get_action_by_name(const gchar *name)
 {
+	GtkActionGroup *group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
+	GtkAction *action;
 	g_return_val_if_fail(name != NULL, NULL);
-
-	return gtk_action_group_get_action(group, name);
+	action = gtk_action_group_get_action(group, name);
+	if (! GTK_IS_ACTION(action))
+	{
+		group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
+		action = gtk_action_group_get_action(group, name);
+	}
+	return action;
 }
 
 
@@ -175,6 +184,8 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 	GtkWidget *toolbar_new_file_menu = NULL;
 	GtkWidget *toolbar_recent_files_menu = NULL;
 	GtkWidget *toolbar_build_menu = NULL;
+	GtkActionGroup *win_group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
+	GtkActionGroup *doc_group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
 
 	/* Cleanup old toolbar */
 	if (merge_id > 0)
@@ -187,13 +198,13 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 		}
 		/* ref and hold the submenus of the New, Open and Build toolbar items */
 		toolbar_new_file_menu = geany_menu_button_action_get_menu(
-					GEANY_MENU_BUTTON_ACTION(gtk_action_group_get_action(group, "New")));
+					GEANY_MENU_BUTTON_ACTION(gtk_action_group_get_action(win_group, "New")));
 		g_object_ref(toolbar_new_file_menu);
 		toolbar_recent_files_menu = geany_menu_button_action_get_menu(
-					GEANY_MENU_BUTTON_ACTION(gtk_action_group_get_action(group, "Open")));
+					GEANY_MENU_BUTTON_ACTION(gtk_action_group_get_action(win_group, "Open")));
 		g_object_ref(toolbar_recent_files_menu);
 		toolbar_build_menu = geany_menu_button_action_get_menu(
-					GEANY_MENU_BUTTON_ACTION(gtk_action_group_get_action(group, "Build")));
+					GEANY_MENU_BUTTON_ACTION(gtk_action_group_get_action(win_group, "Build")));
 		g_object_ref(toolbar_build_menu);
 
 		/* Get rid of it! */
@@ -263,19 +274,19 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 	if (toolbar_new_file_menu != NULL)
 	{
 		geany_menu_button_action_set_menu(GEANY_MENU_BUTTON_ACTION(
-			gtk_action_group_get_action(group, "New")), toolbar_new_file_menu);
+			gtk_action_group_get_action(win_group, "New")), toolbar_new_file_menu);
 		g_object_unref(toolbar_new_file_menu);
 	}
 	if (toolbar_recent_files_menu != NULL)
 	{
 		geany_menu_button_action_set_menu(GEANY_MENU_BUTTON_ACTION(
-			gtk_action_group_get_action(group, "Open")), toolbar_recent_files_menu);
+			gtk_action_group_get_action(win_group, "Open")), toolbar_recent_files_menu);
 		g_object_unref(toolbar_recent_files_menu);
 	}
 	if (toolbar_build_menu != NULL)
 	{
 		geany_menu_button_action_set_menu(GEANY_MENU_BUTTON_ACTION(
-			gtk_action_group_get_action(group, "Build")), toolbar_build_menu);
+			gtk_action_group_get_action(win_group, "Build")), toolbar_build_menu);
 		g_object_unref(toolbar_build_menu);
 	}
 
@@ -350,12 +361,16 @@ GtkWidget *toolbar_init(void)
 	GtkAction *action_searchentry;
 	GtkAction *action_gotoentry;
 	GtkSettings *gtk_settings;
+	GtkActionGroup *win_group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
+	GtkActionGroup *doc_group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
 
 	uim = gtk_ui_manager_new();
-	group = GTK_ACTION_GROUP(ui_builder_get_object("window_actiongroup"));
 
-	gtk_action_group_set_translation_domain(group, GETTEXT_PACKAGE);
-	gtk_action_group_add_actions(group, ui_entries, ui_entries_n, NULL);
+	gtk_action_group_set_translation_domain(win_group, GETTEXT_PACKAGE);
+	gtk_action_group_add_actions(win_group, ui_entries, ui_entries_n, NULL);
+	
+	gtk_action_group_set_translation_domain(doc_group, GETTEXT_PACKAGE);
+	gtk_action_group_add_actions(doc_group, doc_entries, doc_entries_n, NULL);
 
 	/* Create our custom actions */
 	action_new = geany_menu_button_action_new(
@@ -364,7 +379,7 @@ GtkWidget *toolbar_init(void)
 		_("Create a new file from a template"),
 		GTK_STOCK_NEW);
 	g_signal_connect(action_new, "button-clicked", G_CALLBACK(on_toolbutton_new_activate), NULL);
-	gtk_action_group_add_action(group, action_new);
+	gtk_action_group_add_action(win_group, action_new);
 
 	action_open = geany_menu_button_action_new(
 		"Open", NULL,
@@ -372,7 +387,7 @@ GtkWidget *toolbar_init(void)
 		_("Open a recent file"),
 		GTK_STOCK_OPEN);
 	g_signal_connect(action_open, "button-clicked", G_CALLBACK(on_toolbutton_open_activate), NULL);
-	gtk_action_group_add_action(group, action_open);
+	gtk_action_group_add_action(win_group, action_open);
 
 	action_build = geany_menu_button_action_new(
 		"Build", NULL,
@@ -381,7 +396,7 @@ GtkWidget *toolbar_init(void)
 		GEANY_STOCK_BUILD);
 	g_signal_connect(action_build, "button-clicked",
 		G_CALLBACK(build_toolbutton_build_clicked), NULL);
-	gtk_action_group_add_action(group, action_build);
+	gtk_action_group_add_action(win_group, action_build);
 
 	action_searchentry = geany_entry_action_new(
 		"SearchEntry", _("Search Field"), _("Find the entered text in the current file"), FALSE);
@@ -391,15 +406,16 @@ GtkWidget *toolbar_init(void)
 		G_CALLBACK(on_toolbar_search_entry_activate), GINT_TO_POINTER(TRUE));
 	g_signal_connect(action_searchentry, "entry-changed",
 		G_CALLBACK(on_toolbar_search_entry_changed), NULL);
-	gtk_action_group_add_action(group, action_searchentry);
+	gtk_action_group_add_action(doc_group, action_searchentry);
 
 	action_gotoentry = geany_entry_action_new(
 		"GotoEntry", _("Goto Field"), _("Jump to the entered line number"), TRUE);
 	g_signal_connect(action_gotoentry, "entry-activate",
 		G_CALLBACK(on_toolbutton_goto_entry_activate), NULL);
-	gtk_action_group_add_action(group, action_gotoentry);
+	gtk_action_group_add_action(doc_group, action_gotoentry);
 
-	gtk_ui_manager_insert_action_group(uim, group, 0);
+	gtk_ui_manager_insert_action_group(uim, win_group, 0);
+	gtk_ui_manager_insert_action_group(uim, doc_group, 0);
 
 	toolbar = toolbar_reload(NULL);
 #if GTK_CHECK_VERSION(3, 0, 0)
@@ -676,7 +692,7 @@ static void tb_editor_set_item_values(const gchar *name, GtkListStore *store, Gt
 	gchar *label_clean = NULL;
 	GtkAction *action;
 
-	action = gtk_action_group_get_action(group, name);
+	action = toolbar_get_action_by_name(name);
 	if (action == NULL)
 	{
 		if (utils_str_equal(name, TB_EDITOR_SEPARATOR))
@@ -1079,10 +1095,12 @@ void toolbar_configure(GtkWindow *parent)
 	gchar *markup;
 	const gchar *name;
 	GSList *sl, *used_items;
-	GList *l, *all_items;
+	GList *l, *all_items, *list_tmp;
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	TBEditorWidget *tbw;
+	GtkActionGroup *win_group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
+	GtkActionGroup *doc_group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
 
 	/* read the current active toolbar items */
 	markup = gtk_ui_manager_get_ui(uim);
@@ -1090,7 +1108,11 @@ void toolbar_configure(GtkWindow *parent)
 	g_free(markup);
 
 	/* get all available actions */
-	all_items = gtk_action_group_list_actions(group);
+	all_items = gtk_action_group_list_actions(win_group);
+	list_tmp = gtk_action_group_list_actions(doc_group);
+	for (l = list_tmp; l != NULL; l = g_list_next(l))
+		all_items = g_list_append(all_items, l->data);
+	g_list_free(list_tmp);
 
 	/* create the GUI */
 	tbw = tb_editor_create_dialog(parent);

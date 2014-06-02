@@ -90,6 +90,157 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkActionGroup" id="document_action_group">
+    <child>
+      <object class="GtkAction" id="print_action">
+        <property name="label" translatable="yes">_Print...</property>
+        <property name="short_label" translatable="yes">_Print...</property>
+        <property name="stock_id">gtk-print</property>
+        <signal name="activate" handler="on_print_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="properties_action">
+        <property name="label" translatable="yes">_Properties</property>
+        <property name="short_label" translatable="yes">_Properties</property>
+        <property name="stock_id">gtk-properties</property>
+        <signal name="activate" handler="on_properties_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="close_others_action">
+        <property name="label" translatable="yes">Close Ot_her Documents</property>
+        <property name="short_label" translatable="yes">Close Ot_her Documents</property>
+        <property name="stock_id">gtk-close</property>
+        <signal name="activate" handler="on_close_others_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="close_all_action">
+        <property name="label" translatable="yes">C_lose All</property>
+        <property name="short_label" translatable="yes">C_lose All</property>
+        <property name="stock_id">geany-close-all</property>
+        <signal name="activate" handler="on_close_all_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="close_action">
+        <property name="label" translatable="yes">_Close</property>
+        <property name="short_label" translatable="yes">_Close</property>
+        <property name="stock_id">gtk-close</property>
+        <signal name="activate" handler="on_close_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="reload_action">
+        <property name="label" translatable="yes">_Reload</property>
+        <property name="short_label" translatable="yes">_Reload</property>
+        <property name="stock_id">gtk-revert-to-saved</property>
+        <signal name="activate" handler="on_reload_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="save_all_action">
+        <property name="label" translatable="yes">Save All</property>
+        <property name="short_label" translatable="yes">Save All</property>
+        <property name="stock_id">geany-save-all</property>
+        <signal name="activate" handler="on_save_all_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="save_as_action">
+        <property name="label" translatable="yes">Save _As...</property>
+        <property name="short_label" translatable="yes">Save _As...</property>
+        <property name="stock_id">gtk-save-as</property>
+        <signal name="activate" handler="on_save_as_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="change_color_scheme_action">
+        <property name="label" translatable="yes">_Change Color Scheme...</property>
+        <property name="short_label" translatable="yes">_Change Color Scheme...</property>
+        <property name="stock_id">gtk-select-color</property>
+        <signal name="activate" handler="on_change_color_scheme_action_activated" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="change_font_action">
+        <property name="label" translatable="yes">Change _Font...</property>
+        <property name="short_label" translatable="yes">Change _Font...</property>
+        <property name="stock_id">gtk-select-font</property>
+        <signal name="activate" handler="on_change_font_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_indentation_guides_action">
+        <property name="label" translatable="yes">Show Indentation _Guides</property>
+        <property name="short_label" translatable="yes">Show Indentation _Guides</property>
+        <signal name="toggled" handler="on_toggle_indentation_guides_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_line_endings_action">
+        <property name="label" translatable="yes">Show Line _Endings</property>
+        <property name="short_label" translatable="yes">Show Line _Endings</property>
+        <signal name="toggled" handler="on_toggle_line_endings_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_white_space_action">
+        <property name="label" translatable="yes">Show White S_pace</property>
+        <property name="short_label" translatable="yes">Show White S_pace</property>
+        <signal name="toggled" handler="on_toggle_white_space_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_line_numbers_action">
+        <property name="label" translatable="yes">Show _Line Numbers</property>
+        <property name="short_label" translatable="yes">Show _Line Numbers</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_line_numbers_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_markers_margin_action">
+        <property name="label" translatable="yes">Show _Markers Margin</property>
+        <property name="short_label" translatable="yes">Show _Markers Margin</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_markers_margin_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="zoom_reset_action">
+        <property name="label" translatable="yes">_Normal Size</property>
+        <property name="short_label" translatable="yes">_Normal Size</property>
+        <property name="stock_id">gtk-zoom-100</property>
+        <signal name="activate" handler="on_zoom_reset_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="zoom_out_action">
+        <property name="label" translatable="yes">Zoom _Out</property>
+        <property name="short_label" translatable="yes">Zoom _Out</property>
+        <property name="stock_id">gtk-zoom-out</property>
+        <signal name="activate" handler="on_zoom_out_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="zoom_in_action">
+        <property name="label" translatable="yes">Zoom _In</property>
+        <property name="short_label" translatable="yes">Zoom _In</property>
+        <property name="stock_id">gtk-zoom-in</property>
+        <signal name="activate" handler="on_zoom_in_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="save_action">
+        <property name="label" translatable="yes">_Save</property>
+        <property name="short_label" translatable="yes">_Save</property>
+        <property name="stock_id">gtk-save</property>
+        <signal name="activate" handler="on_save_action_activate" swapped="no"/>
+      </object>
+    </child>
+  </object>
   <object class="GtkListStore" id="eol_list">
     <columns>
       <!-- column-name text -->
@@ -6211,90 +6362,7 @@
     </action-widgets>
   </object>
   <object class="GtkTextBuffer" id="textbuffer1"/>
-  <object class="GtkActionGroup" id="window_actiongroup">
-    <child>
-      <object class="GtkAction" id="print_action">
-        <property name="label" translatable="yes">_Print...</property>
-        <property name="stock_id">gtk-print</property>
-        <signal name="activate" handler="on_print_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="page_setup_action">
-        <property name="label" translatable="yes">Page Set_up</property>
-        <signal name="activate" handler="on_page_setup_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="properties_action">
-        <property name="label" translatable="yes">_Properties</property>
-        <property name="stock_id">gtk-properties</property>
-        <signal name="activate" handler="on_properties_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="close_others_action">
-        <property name="label" translatable="yes">Close Ot_her Documents</property>
-        <property name="stock_id">gtk-close</property>
-        <signal name="activate" handler="on_close_others_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="close_all_action">
-        <property name="label" translatable="yes">C_lose All</property>
-        <property name="stock_id">geany-close-all</property>
-        <signal name="activate" handler="on_close_all_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="close_action">
-        <property name="label" translatable="yes">_Close</property>
-        <property name="stock_id">gtk-close</property>
-        <signal name="activate" handler="on_close_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="exit_action">
-        <property name="label" translatable="yes">_Quit</property>
-        <property name="stock_id">gtk-quit</property>
-        <signal name="activate" handler="on_exit_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="reload_action">
-        <property name="label" translatable="yes">_Reload</property>
-        <property name="stock_id">gtk-revert-to-saved</property>
-        <signal name="activate" handler="on_reload_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="save_all_action">
-        <property name="label" translatable="yes">Save All</property>
-        <property name="stock_id">geany-save-all</property>
-        <signal name="activate" handler="on_save_all_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="save_as_action">
-        <property name="label" translatable="yes">Save _As...</property>
-        <property name="stock_id">gtk-save-as</property>
-        <signal name="activate" handler="on_save_as_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="save_action">
-        <property name="label" translatable="yes">_Save</property>
-        <property name="stock_id">gtk-save</property>
-        <signal name="activate" handler="on_save_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="open_action">
-        <property name="label" translatable="yes">_Open</property>
-        <property name="stock_id">gtk-open</property>
-        <signal name="activate" handler="on_open_action_activate" swapped="no"/>
-      </object>
-    </child>
+  <object class="GtkActionGroup" id="window_action_group">
     <child>
       <object class="GtkAction" id="new_action">
         <property name="label" translatable="yes">_New</property>
@@ -6303,141 +6371,8 @@
       </object>
     </child>
     <child>
-      <object class="GtkAction" id="toggle_additional_widgets_action">
-        <property name="label" translatable="yes">Toggle All _Additional Widgets</property>
-        <signal name="activate" handler="on_toggle_additional_widgets_action_activated" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="change_color_scheme_action">
-        <property name="label" translatable="yes">_Change Color Scheme...</property>
-        <property name="stock_id">gtk-select-color</property>
-        <signal name="activate" handler="on_change_color_scheme_action_activated" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="change_font_action">
-        <property name="label" translatable="yes">Change _Font...</property>
-        <property name="stock_id">gtk-select-font</property>
-        <signal name="activate" handler="on_change_font_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_indentation_guides_action">
-        <property name="label" translatable="yes">Show Indentation _Guides</property>
-        <signal name="toggled" handler="on_toggle_indentation_guides_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_line_endings_action">
-        <property name="label" translatable="yes">Show Line _Endings</property>
-        <signal name="toggled" handler="on_toggle_line_endings_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_white_space_action">
-        <property name="label" translatable="yes">Show White S_pace</property>
-        <signal name="toggled" handler="on_toggle_white_space_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_line_numbers_action">
-        <property name="label" translatable="yes">Show _Line Numbers</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_toggle_line_numbers_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_markers_margin_action">
-        <property name="label" translatable="yes">Show _Markers Margin</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_toggle_markers_margin_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="zoom_reset_action">
-        <property name="label" translatable="yes">_Normal Size</property>
-        <property name="stock_id">gtk-zoom-100</property>
-        <signal name="activate" handler="on_zoom_reset_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="zoom_out_action">
-        <property name="label" translatable="yes">Zoom _Out</property>
-        <property name="stock_id">gtk-zoom-out</property>
-        <signal name="activate" handler="on_zoom_out_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="zoom_in_action">
-        <property name="label" translatable="yes">Zoom _In</property>
-        <property name="stock_id">gtk-zoom-in</property>
-        <signal name="activate" handler="on_zoom_in_action_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_statusbar_action">
-        <property name="label" translatable="yes">Show Statusbar</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_toggle_statusbar_action_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_toolbar_action">
-        <property name="label" translatable="yes">Show _Toolbar</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_toggle_toolbar_action_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_sidebar_action">
-        <property name="label" translatable="yes">Show Side_bar</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_show_sidebar_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_msgwin_action">
-        <property name="label" translatable="yes">Show Message _Window</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_toggle_msgwin_action_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_fullscreen_action">
-        <property name="label" translatable="yes">Full_screen</property>
-        <signal name="toggled" handler="on_ui_fullscreen_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_sidebar_documents_action">
-        <property name="label" translatable="yes">Show _Document List</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_show_sidebar_documents_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_sidebar_symbols_action">
-        <property name="label" translatable="yes">Show S_ymbol List</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_show_sidebar_symbols_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_msgwin_status_action">
-        <property name="label" translatable="yes">Show Status Tab</property>
-        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_msgwin_compiler_action">
-        <property name="label" translatable="yes">Show Compiler Tab</property>
-        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="toggle_msgwin_messages_action">
-        <property name="label" translatable="yes">Show Messages Tab</property>
+      <object class="GtkToggleAction" id="toggle_msgwin_terminal_action">
+        <property name="label" translatable="yes">Show Terminal Tab</property>
         <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
       </object>
     </child>
@@ -6448,9 +6383,95 @@
       </object>
     </child>
     <child>
-      <object class="GtkToggleAction" id="toggle_msgwin_terminal_action">
-        <property name="label" translatable="yes">Show Terminal Tab</property>
+      <object class="GtkToggleAction" id="toggle_msgwin_messages_action">
+        <property name="label" translatable="yes">Show Messages Tab</property>
         <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_compiler_action">
+        <property name="label" translatable="yes">Show Compiler Tab</property>
+        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_status_action">
+        <property name="label" translatable="yes">Show Status Tab</property>
+        <signal name="toggled" handler="on_msgwin_tab_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_sidebar_symbols_action">
+        <property name="label" translatable="yes">Show S_ymbol List</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_show_sidebar_symbols_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_sidebar_documents_action">
+        <property name="label" translatable="yes">Show _Document List</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_show_sidebar_documents_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_fullscreen_action">
+        <property name="label" translatable="yes">Full_screen</property>
+        <signal name="toggled" handler="on_ui_fullscreen_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_msgwin_action">
+        <property name="label" translatable="yes">Show Message _Window</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_msgwin_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_sidebar_action">
+        <property name="label" translatable="yes">Show Side_bar</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_show_sidebar_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_toolbar_action">
+        <property name="label" translatable="yes">Show _Toolbar</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_toolbar_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggle_statusbar_action">
+        <property name="label" translatable="yes">Show Statusbar</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_toggle_statusbar_action_toggled" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="toggle_additional_widgets_action">
+        <property name="label" translatable="yes">Toggle All _Additional Widgets</property>
+        <signal name="activate" handler="on_toggle_additional_widgets_action_activated" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="open_action">
+        <property name="label" translatable="yes">_Open</property>
+        <property name="stock_id">gtk-open</property>
+        <signal name="activate" handler="on_open_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="exit_action">
+        <property name="label" translatable="yes">_Quit</property>
+        <property name="stock_id">gtk-quit</property>
+        <signal name="activate" handler="on_exit_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="page_setup_action">
+        <property name="label" translatable="yes">Page Set_up</property>
+        <signal name="activate" handler="on_page_setup_action_activate" swapped="no"/>
       </object>
     </child>
   </object>

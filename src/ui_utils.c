@@ -770,26 +770,6 @@ void ui_save_buttons_toggle(gboolean enable)
 	g_ptr_array_add(widgets.document_buttons, toolbar_get_action_by_name(widget_name))
 
 
-static void add_doc_actions(const gchar *action_name1, ...)
-{
-	va_list ap;
-	const gchar *name;
-
-	va_start(ap, action_name1);
-
-	name = action_name1;
-	while (name != NULL)
-	{
-		GtkAction *action = GTK_ACTION(ui_builder_get_object(name));
-		if (GTK_IS_ACTION(action))
-			g_ptr_array_add(widgets.document_buttons, action);
-		name = va_arg(ap, const gchar*);
-	}
-
-	va_end(ap);
-}
-
-
 static void init_document_widgets(void)
 {
 	widgets.document_buttons = g_ptr_array_new();
@@ -826,21 +806,13 @@ static void init_document_widgets(void)
 	add_doc_widget("goto_tag_definition1");
 	add_doc_widget("goto_tag_declaration1");
 	add_doc_widget("reset_indentation1");
-	add_doc_toolitem("Close");
-	add_doc_toolitem("CloseAll");
 	add_doc_toolitem("Search");
-	add_doc_toolitem("SearchEntry");
-	add_doc_toolitem("ZoomIn");
-	add_doc_toolitem("ZoomOut");
 	add_doc_toolitem("Indent");
 	add_doc_toolitem("UnIndent");
 	add_doc_toolitem("Cut");
 	add_doc_toolitem("Copy");
 	add_doc_toolitem("Paste");
 	add_doc_toolitem("Delete");
-	add_doc_toolitem("Save");
-	add_doc_toolitem("SaveAs");
-	add_doc_toolitem("SaveAll");
 	add_doc_toolitem("Compile");
 	add_doc_toolitem("Run");
 	add_doc_toolitem("Reload");
@@ -848,29 +820,6 @@ static void init_document_widgets(void)
 	add_doc_toolitem("Goto");
 	add_doc_toolitem("GotoEntry");
 	add_doc_toolitem("Replace");
-	add_doc_toolitem("Print");
-
-	add_doc_actions(
-		"change_color_scheme_action",
-		"change_font_action",
-		"close_action",
-		"close_all_action",
-		"close_others_action",
-		"print_action",
-		"properties_action",
-		"reload_action",
-		"save_action",
-		"save_all_action",
-		"save_as_action",
-		"toggle_indentation_guides_action",
-		"toggle_line_endings_action",
-		"toggle_line_numbers_action",
-		"toggle_markers_margin_action",
-		"toggle_white_space_action",
-		"zoom_in_action",
-		"zoom_out_action",
-		"zoom_reset_action",
-		NULL);
 }
 
 
@@ -887,6 +836,9 @@ void ui_document_buttons_update(void)
 		else
 			ui_widget_set_sensitive(widget, enable);
 	}
+
+	gtk_action_group_set_sensitive(GTK_ACTION_GROUP(
+		ui_builder_get_object("document_action_group")), enable);
 }
 
 
@@ -2191,16 +2143,16 @@ static GtkWidget *ui_get_top_parent(GtkWidget *widget)
 /* FIXME: Hack to work-around a Glade bug (apparently fixed in newer versions) where
  * it doesn't/can't set the action group's accel group which causes spam on
  * the console. Related to: https://bugzilla.gnome.org/show_bug.cgi?id=671786 */
-static void ui_set_action_accel_group(void)
+static void ui_set_action_group_accel_group(const gchar *act_group_name)
 {
-	GtkAccelGroup *accel_group = GTK_ACCEL_GROUP(ui_builder_get_object("accelgroup1"));
-	GtkActionGroup *action_group = GTK_ACTION_GROUP(ui_builder_get_object("window_actiongroup"));
+	GtkActionGroup *group = GTK_ACTION_GROUP(ui_builder_get_object(act_group_name));
+	GtkAccelGroup *ac_group = GTK_ACCEL_GROUP(ui_builder_get_object("accelgroup1"));
 #if GTK_CHECK_VERSION(3, 6, 0)
-	gtk_action_group_set_accel_group(action_group, accel_group);
+	gtk_action_group_set_accel_group(group, ac_group);
 #else
-	GList *iter, *actions = gtk_action_group_list_actions(action_group);
+	GList *iter, *actions = gtk_action_group_list_actions(group);
 	for (iter = actions; iter != NULL; iter = g_list_next(iter))
-		gtk_action_set_accel_group(iter->data, accel_group);
+		gtk_action_set_accel_group(iter->data, ac_group);
 	g_list_free(actions);
 #endif
 }
@@ -2238,7 +2190,8 @@ void ui_init_builder(void)
 	}
 	g_free(interface_file);
 
-	ui_set_action_accel_group();
+	ui_set_action_group_accel_group("window_action_group");
+	ui_set_action_group_accel_group("document_action_group");
 
 	gtk_builder_connect_signals(builder, NULL);
 
