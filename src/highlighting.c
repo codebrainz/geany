@@ -1265,7 +1265,7 @@ static void add_color_scheme_item(GtkListStore *store,
 	if (utils_str_equal(fn, editor_prefs.color_scheme))
 	{
 		GtkTreeSelection *treesel = gtk_tree_view_get_selection(
-			GTK_TREE_VIEW(ui_builder_get_object("color_schemes_tree_view")));
+			ui_builder_get_object("color_schemes_tree_view"));
 		gtk_tree_selection_select_iter(treesel, &iter);
 	}
 }
@@ -1340,14 +1340,14 @@ void on_change_color_scheme_action_activated(GtkAction *action, gpointer user_da
 			_("This may cause color schemes to display incorrectly."));
 	}
 
-	dialog = GTK_WIDGET(ui_builder_get_object("color_schemes_dialog"));
+	dialog = ui_builder_get_object("color_schemes_dialog");
 
 	/* Setup some stuff we can't do from Glade */
 	if (! dialog_setup)
 	{
 		GtkTreeSelection *treesel = gtk_tree_view_get_selection(
-			GTK_TREE_VIEW(ui_builder_get_object("color_schemes_tree_view")));
-		GtkListStore *store = GTK_LIST_STORE(ui_builder_get_object("color_schemes_model"));
+			ui_builder_get_object("color_schemes_tree_view"));
+		GtkListStore *store = ui_builder_get_object("color_schemes_model");
 		g_signal_connect(treesel, "changed", G_CALLBACK(on_color_scheme_changed), NULL);
 		add_color_scheme_items(store);
 		g_signal_connect(dialog, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);

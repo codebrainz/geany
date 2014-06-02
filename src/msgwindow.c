@@ -316,7 +316,7 @@ void on_toggle_msgwin_action_toggled(GtkToggleAction *action, gpointer user_data
 {
 	gint n_builtin_tabs = 4;
 	gboolean show = gtk_toggle_action_get_active(action);
-	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook_info"));
+	GtkNotebook *nb = ui_builder_get_object("notebook_info");
 
 #ifdef HAVE_VTE
 	if (vte_info.have_vte)
@@ -334,7 +334,7 @@ void on_toggle_msgwin_action_toggled(GtkToggleAction *action, gpointer user_data
 		gtk_action_unblock_activate(GTK_ACTION(action));
 	}
 
-	gtk_widget_set_visible(GTK_WIDGET(ui_builder_get_object("scrolledwindow1")), show);
+	gtk_widget_set_visible(ui_builder_get_object("scrolledwindow1"), show);
 
 	ui_focus_current_document();
 }
@@ -358,13 +358,13 @@ G_MODULE_EXPORT
 void on_msgwin_tab_action_toggled(GtkToggleAction *action, gpointer user_data)
 {
 	gint n_builtin_tabs = 4;
-	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook1"));
-	GtkWidget *mw_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow1"));
-	GtkWidget *mw_status_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow4"));
-	GtkWidget *mw_compiler_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow3"));
-	GtkWidget *mw_messages_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow5"));
-	GtkWidget *mw_scribble_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow6"));
-	GtkToggleAction *mw_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_msgwin_action"));
+	GtkNotebook *nb = ui_builder_get_object("notebook1");
+	GtkWidget *mw_win = ui_builder_get_object("scrolledwindow1");
+	GtkWidget *mw_status_win = ui_builder_get_object("scrolledwindow4");
+	GtkWidget *mw_compiler_win = ui_builder_get_object("scrolledwindow3");
+	GtkWidget *mw_messages_win = ui_builder_get_object("scrolledwindow5");
+	GtkWidget *mw_scribble_win = ui_builder_get_object("scrolledwindow6");
+	GtkToggleAction *mw_action = ui_builder_get_object("toggle_msgwin_action");
 
 	gtk_widget_set_visible(mw_status_win, msgwin_get_status_visible());
 	gtk_widget_set_visible(mw_compiler_win, msgwin_get_compiler_visible());
@@ -771,7 +771,7 @@ void msgwin_menu_add_common_items(GtkMenu *menu)
 		gtk_widget_show(item);
 	}
 
-	action = GTK_ACTION(ui_builder_get_object("toggle_msgwin_action"));
+	action = ui_builder_get_object("toggle_msgwin_action");
 	item = gtk_action_create_menu_item(action);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);

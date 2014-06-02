@@ -145,13 +145,13 @@ GtkWidget *toolbar_get_widget_child_by_name(const gchar *name)
 
 GtkAction *toolbar_get_action_by_name(const gchar *name)
 {
-	GtkActionGroup *group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
+	GtkActionGroup *group = ui_builder_get_object("document_action_group");
 	GtkAction *action;
 	g_return_val_if_fail(name != NULL, NULL);
 	action = gtk_action_group_get_action(group, name);
 	if (! GTK_IS_ACTION(action))
 	{
-		group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
+		group = ui_builder_get_object("window_action_group");
 		action = gtk_action_group_get_action(group, name);
 	}
 	return action;
@@ -184,8 +184,8 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 	GtkWidget *toolbar_new_file_menu = NULL;
 	GtkWidget *toolbar_recent_files_menu = NULL;
 	GtkWidget *toolbar_build_menu = NULL;
-	GtkActionGroup *win_group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
-	GtkActionGroup *doc_group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
+	GtkActionGroup *win_group = ui_builder_get_object("window_action_group");
+	GtkActionGroup *doc_group = ui_builder_get_object("document_action_group");
 
 	/* Cleanup old toolbar */
 	if (merge_id > 0)
@@ -361,8 +361,8 @@ GtkWidget *toolbar_init(void)
 	GtkAction *action_searchentry;
 	GtkAction *action_gotoentry;
 	GtkSettings *gtk_settings;
-	GtkActionGroup *win_group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
-	GtkActionGroup *doc_group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
+	GtkActionGroup *win_group = ui_builder_get_object("window_action_group");
+	GtkActionGroup *doc_group = ui_builder_get_object("document_action_group");
 
 	uim = gtk_ui_manager_new();
 
@@ -1099,8 +1099,8 @@ void toolbar_configure(GtkWindow *parent)
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	TBEditorWidget *tbw;
-	GtkActionGroup *win_group = GTK_ACTION_GROUP(ui_builder_get_object("window_action_group"));
-	GtkActionGroup *doc_group = GTK_ACTION_GROUP(ui_builder_get_object("document_action_group"));
+	GtkActionGroup *win_group = ui_builder_get_object("window_action_group");
+	GtkActionGroup *doc_group = ui_builder_get_object("document_action_group");
 
 	/* read the current active toolbar items */
 	markup = gtk_ui_manager_get_ui(uim);

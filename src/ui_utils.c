@@ -2146,7 +2146,7 @@ static GtkWidget *ui_get_top_parent(GtkWidget *widget)
 static void ui_set_action_group_accel_group(const gchar *act_group_name)
 {
 	GtkActionGroup *group = GTK_ACTION_GROUP(ui_builder_get_object(act_group_name));
-	GtkAccelGroup *ac_group = GTK_ACCEL_GROUP(ui_builder_get_object("accelgroup1"));
+	GtkAccelGroup *ac_group = ui_builder_get_object("accelgroup1");
 #if GTK_CHECK_VERSION(3, 6, 0)
 	gtk_action_group_set_accel_group(group, ac_group);
 #else
@@ -2875,7 +2875,7 @@ void on_zoom_in_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_zoom_in(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("zoom_in_action")));
+	gtk_action_activate(ui_builder_get_object("zoom_in_action"));
 }
 
 
@@ -2890,7 +2890,7 @@ void on_zoom_out_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_zoom_out(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("zoom_out_action")));
+	gtk_action_activate(ui_builder_get_object("zoom_out_action"));
 }
 
 
@@ -2905,7 +2905,7 @@ void on_zoom_reset_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_zoom_off(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("zoom_reset_action")));
+	gtk_action_activate(ui_builder_get_object("zoom_reset_action"));
 }
 
 
@@ -3088,7 +3088,7 @@ void on_toggle_additional_widgets_action_activated(GtkAction *action, gpointer u
 
 void ui_toggle_additional_widgets(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("toggle_additional_widgets_action")));
+	gtk_action_activate(ui_builder_get_object("toggle_additional_widgets_action"));
 }
 
 
@@ -3101,7 +3101,7 @@ void on_new_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_new_file(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("new_action")));
+	gtk_action_activate(ui_builder_get_object("new_action"));
 }
 
 
@@ -3114,7 +3114,7 @@ void on_open_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_open_file(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("open_action")));
+	gtk_action_activate(ui_builder_get_object("open_action"));
 }
 
 
@@ -3131,7 +3131,7 @@ void on_save_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_save_file(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("save_action")));
+	gtk_action_activate(ui_builder_get_object("save_action"));
 }
 
 
@@ -3144,7 +3144,7 @@ void on_save_as_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_save_file_as(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("save_as_action")));
+	gtk_action_activate(ui_builder_get_object("save_as_action"));
 }
 
 
@@ -3177,7 +3177,7 @@ void on_save_all_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_save_all_files(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("save_all_action")));
+	gtk_action_activate(ui_builder_get_object("save_all_action"));
 }
 
 
@@ -3228,7 +3228,7 @@ void on_reload_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_reload_file(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("reload_action")));
+	gtk_action_activate(ui_builder_get_object("reload_action"));
 }
 
 
@@ -3243,7 +3243,7 @@ void on_close_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_close_file(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("close_action")));
+	gtk_action_activate(ui_builder_get_object("close_action"));
 }
 
 
@@ -3256,7 +3256,7 @@ void on_close_all_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_close_all_files(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("close_all_action")));
+	gtk_action_activate(ui_builder_get_object("close_all_action"));
 }
 
 
@@ -3314,7 +3314,7 @@ void on_print_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_print_file(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("print_action")));
+	gtk_action_activate(ui_builder_get_object("print_action"));
 }
 
 
@@ -3372,5 +3372,5 @@ void on_exit_action_activate(GtkAction *action, gpointer user_data)
 
 void ui_exit_application(void)
 {
-	gtk_action_activate(GTK_ACTION(ui_builder_get_object("exit_action")));
+	gtk_action_activate(ui_builder_get_object("exit_action"));
 }

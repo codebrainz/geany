@@ -1494,7 +1494,7 @@ static gboolean cb_func_view_action(guint key_id)
 			break;
 		case GEANY_KEYS_VIEW_SIDEBAR:
 		{
-			GtkToggleAction *action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_action"));
+			GtkToggleAction *action = ui_builder_get_object("toggle_sidebar_action");
 			gtk_toggle_action_set_active(action, ! gtk_toggle_action_get_active(action));
 			break;
 		}

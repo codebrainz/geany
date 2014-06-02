@@ -477,7 +477,7 @@ static void show_tab_bar_popup_menu(GdkEventButton *event, GeanyDocument *doc)
 	gtk_widget_show(menu_item);
 	gtk_container_add(GTK_CONTAINER(menu), menu_item);
 
-	action = GTK_ACTION(ui_builder_get_object("close_action"));
+	action = ui_builder_get_object("close_action");
 	menu_item = gtk_action_create_menu_item(action);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
 	gtk_widget_show(menu_item);
@@ -489,7 +489,7 @@ static void show_tab_bar_popup_menu(GdkEventButton *event, GeanyDocument *doc)
 	gtk_widget_set_sensitive(GTK_WIDGET(menu_item), (doc != NULL));
 	gtk_widget_show(menu_item);
 
-	action = GTK_ACTION(ui_builder_get_object("close_all_action"));
+	action = ui_builder_get_object("close_all_action");
 	menu_item = gtk_action_create_menu_item(action);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
 	gtk_widget_show(menu_item);

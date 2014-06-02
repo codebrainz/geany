@@ -566,17 +566,17 @@ void sidebar_add_common_menu_items(GtkMenu *menu)
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(menu), item);
 
-	action = GTK_ACTION(ui_builder_get_object("toggle_sidebar_symbols_action"));
+	action = ui_builder_get_object("toggle_sidebar_symbols_action");
 	item = gtk_action_create_menu_item(action);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);
 
-	action = GTK_ACTION(ui_builder_get_object("toggle_sidebar_documents_action"));
+	action = ui_builder_get_object("toggle_sidebar_documents_action");
 	item = gtk_action_create_menu_item(action);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);
 
-	action = GTK_ACTION(ui_builder_get_object("toggle_sidebar_action"));
+	action = ui_builder_get_object("toggle_sidebar_action");
 	item = gtk_action_create_menu_item(action);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 }
@@ -1068,7 +1068,7 @@ void sidebar_focus_symbols_tab(void)
 	{
 		GtkNotebook *notebook = GTK_NOTEBOOK(main_widgets.sidebar_notebook);
 		gtk_notebook_set_current_page(notebook, TREEVIEW_SYMBOL);
-		gtk_widget_grab_focus(GTK_WIDGET(ui_builder_get_object("treeview2")));
+		gtk_widget_grab_focus(ui_builder_get_object("treeview2"));
 	}
 }
 
@@ -1076,7 +1076,7 @@ void sidebar_focus_symbols_tab(void)
 /* Hide the sidebar notebook tabs if there's only one tab in the notebook */
 static void sidebar_show_hide_tabs(void)
 {
-	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook3"));
+	GtkNotebook *nb = ui_builder_get_object("notebook3");
 	gint tabs = gtk_notebook_get_n_pages(nb);
 
 	if (! sidebar_get_symbols_visible())
@@ -1091,12 +1091,12 @@ static void sidebar_show_hide_tabs(void)
 /* Show or hide the sidebar notebook and tabs as per the current settings */
 static void sidebar_update_visibility(void)
 {
-	GtkNotebook *nb = GTK_NOTEBOOK(ui_builder_get_object("notebook3"));
-	GtkWidget *sym_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow2"));
-	GtkWidget *doc_win = GTK_WIDGET(ui_builder_get_object("scrolledwindow7"));
-	GtkToggleAction *sb_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_action"));
-	GtkToggleAction *sb_sym_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_symbols_action"));
-	GtkToggleAction *sb_doc_action = GTK_TOGGLE_ACTION(ui_builder_get_object("toggle_sidebar_documents_action"));
+	GtkNotebook *nb = ui_builder_get_object("notebook3");
+	GtkWidget *sym_win = ui_builder_get_object("scrolledwindow2");
+	GtkWidget *doc_win = ui_builder_get_object("scrolledwindow7");
+	GtkToggleAction *sb_action = ui_builder_get_object("toggle_sidebar_action");
+	GtkToggleAction *sb_sym_action = ui_builder_get_object("toggle_sidebar_symbols_action");
+	GtkToggleAction *sb_doc_action = ui_builder_get_object("toggle_sidebar_documents_action");
 	gboolean sb_visible = gtk_toggle_action_get_active(sb_action);
 	gboolean sb_sym_visible = gtk_toggle_action_get_active(sb_sym_action);
 	gboolean sb_doc_visible = gtk_toggle_action_get_active(sb_doc_action);
