@@ -92,6 +92,56 @@
   </object>
   <object class="GtkActionGroup" id="document_action_group">
     <child>
+      <object class="GtkAction" id="undo_action">
+        <property name="label" translatable="yes">_Undo</property>
+        <property name="short_label" translatable="yes">_Undo</property>
+        <property name="tooltip" translatable="yes">Undo the last modification</property>
+        <property name="stock_id">gtk-undo</property>
+        <signal name="activate" handler="on_undo_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="redo_action">
+        <property name="label" translatable="yes">_Redo</property>
+        <property name="short_label" translatable="yes">_Redo</property>
+        <property name="tooltip" translatable="yes">Redo the last modification</property>
+        <property name="stock_id">gtk-redo</property>
+        <signal name="activate" handler="on_redo_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="delete_action">
+        <property name="label" translatable="yes">_Delete</property>
+        <property name="tooltip" translatable="yes">Delete the current selection</property>
+        <property name="stock_id">gtk-delete</property>
+        <signal name="activate" handler="on_delete_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="paste_action">
+        <property name="label" translatable="yes">_Paste</property>
+        <property name="tooltip" translatable="yes">Paste the contents of the clipboard</property>
+        <property name="stock_id">gtk-paste</property>
+        <signal name="activate" handler="on_paste_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="copy_action">
+        <property name="label" translatable="yes">_Copy</property>
+        <property name="tooltip" translatable="yes">Copy the current selection</property>
+        <property name="stock_id">gtk-copy</property>
+        <signal name="activate" handler="on_copy_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="cut_action">
+        <property name="label" translatable="yes">Cu_t</property>
+        <property name="tooltip" translatable="yes">Cut the current selection</property>
+        <property name="stock_id">gtk-cut</property>
+        <signal name="activate" handler="on_cut_action_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="print_action">
         <property name="label" translatable="yes">_Print...</property>
         <property name="short_label" translatable="yes">_Print...</property>
@@ -305,22 +355,18 @@
     <property name="can_focus">False</property>
     <child>
       <object class="GtkImageMenuItem" id="undo1">
-        <property name="label">gtk-undo</property>
+        <property name="related_action">undo_action</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
-        <signal name="activate" handler="on_undo1_activate" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="redo1">
-        <property name="label">gtk-redo</property>
+        <property name="related_action">redo_action</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
-        <signal name="activate" handler="on_redo1_activate" swapped="no"/>
       </object>
     </child>
     <child>
@@ -331,42 +377,34 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="cut1">
-        <property name="label">gtk-cut</property>
+        <property name="related_action">cut_action</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
-        <signal name="activate" handler="on_cut1_activate" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="copy1">
-        <property name="label">gtk-copy</property>
+        <property name="related_action">copy_action</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
-        <signal name="activate" handler="on_copy1_activate" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="paste1">
-        <property name="label">gtk-paste</property>
+        <property name="related_action">paste_action</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
-        <signal name="activate" handler="on_paste1_activate" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="delete1">
-        <property name="label">gtk-delete</property>
+        <property name="related_action">delete_action</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
-        <signal name="activate" handler="on_delete1_activate" swapped="no"/>
       </object>
     </child>
     <child>
@@ -6690,22 +6728,18 @@
                         <property name="can_focus">False</property>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_undo2">
-                            <property name="label">gtk-undo</property>
+                            <property name="related_action">undo_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_undo1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_redo2">
-                            <property name="label">gtk-redo</property>
+                            <property name="related_action">redo_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_redo1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
@@ -6716,42 +6750,34 @@
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_cut1">
-                            <property name="label">gtk-cut</property>
+                            <property name="related_action">cut_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_cut1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_copy1">
-                            <property name="label">gtk-copy</property>
+                            <property name="related_action">copy_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_copy1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_paste1">
-                            <property name="label">gtk-paste</property>
+                            <property name="related_action">paste_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_paste1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_delete1">
-                            <property name="label">gtk-delete</property>
+                            <property name="related_action">delete_action</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="on_delete1_activate" swapped="no"/>
                           </object>
                         </child>
                         <child>

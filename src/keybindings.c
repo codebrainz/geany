@@ -1844,13 +1844,13 @@ static gboolean cb_func_clipboard_action(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_CLIPBOARD_CUT:
-			on_cut1_activate(NULL, NULL);
+			ui_cut();
 			break;
 		case GEANY_KEYS_CLIPBOARD_COPY:
-			on_copy1_activate(NULL, NULL);
+			ui_copy();
 			break;
 		case GEANY_KEYS_CLIPBOARD_PASTE:
-			on_paste1_activate(NULL, NULL);
+			ui_paste();
 			break;
 		case GEANY_KEYS_CLIPBOARD_COPYLINE:
 			sci_send_command(doc->editor->sci, SCI_LINECOPY);
@@ -2012,10 +2012,10 @@ static gboolean cb_func_editor_action(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_EDITOR_UNDO:
-			on_undo1_activate(NULL, NULL);
+			ui_undo();
 			break;
 		case GEANY_KEYS_EDITOR_REDO:
-			on_redo1_activate(NULL, NULL);
+			ui_redo();
 			break;
 		case GEANY_KEYS_EDITOR_SCROLLTOLINE:
 			editor_scroll_to_line(doc->editor, -1, 0.5F);

@@ -779,8 +779,6 @@ static void init_document_widgets(void)
 	add_doc_widget("menu_count_words1");
 	add_doc_widget("menu_build1");
 	add_doc_widget("add_comments1");
-	add_doc_widget("menu_paste1");
-	add_doc_widget("menu_undo2");
 	add_doc_widget("menu_document1");
 	add_doc_widget("menu_choose_color1");
 	add_doc_widget("treeview6");
@@ -809,10 +807,6 @@ static void init_document_widgets(void)
 	add_doc_toolitem("Search");
 	add_doc_toolitem("Indent");
 	add_doc_toolitem("UnIndent");
-	add_doc_toolitem("Cut");
-	add_doc_toolitem("Copy");
-	add_doc_toolitem("Paste");
-	add_doc_toolitem("Delete");
 	add_doc_toolitem("Compile");
 	add_doc_toolitem("Run");
 	add_doc_toolitem("Reload");
@@ -1947,10 +1941,10 @@ void ui_init_stock_items(void)
 
 void ui_init_toolbar_widgets(void)
 {
-	widgets.save_buttons[1] = toolbar_get_widget_by_name("Save");
-	widgets.save_buttons[3] = toolbar_get_widget_by_name("SaveAll");
-	widgets.redo_items[2] = toolbar_get_widget_by_name("Redo");
-	widgets.undo_items[2] = toolbar_get_widget_by_name("Undo");
+	widgets.save_buttons[1] = toolbar_get_widget_by_name("save_action");
+	widgets.save_buttons[3] = toolbar_get_widget_by_name("save_all_action");
+	widgets.redo_items[2] = toolbar_get_widget_by_name("redo_action");
+	widgets.undo_items[2] = toolbar_get_widget_by_name("undo_action");
 }
 
 
@@ -3336,6 +3330,146 @@ void on_print_action_activate(GtkAction *action, gpointer user_data)
 void ui_print_file(void)
 {
 	gtk_action_activate(ui_builder_get_object("print_action"));
+}
+
+
+G_MODULE_EXPORT
+void on_cut_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	GtkWidget *focusw = gtk_window_get_focus(GTK_WINDOW(main_widgets.window));
+
+	if (GTK_IS_EDITABLE(focusw))
+		gtk_editable_cut_clipboard(GTK_EDITABLE(focusw));
+	else if (IS_SCINTILLA(focusw) && doc != NULL)
+		sci_cut(doc->editor->sci);
+	else if (GTK_IS_TEXT_VIEW(focusw))
+	{
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focusw));
+		gtk_text_buffer_cut_clipboard(buffer, gtk_clipboard_get(GDK_NONE), TRUE);
+	}
+}
+
+
+void ui_cut(void)
+{
+	gtk_action_activate(ui_builder_get_object("cut_action"));
+}
+
+
+G_MODULE_EXPORT
+void on_copy_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	GtkWidget *focusw = gtk_window_get_focus(GTK_WINDOW(main_widgets.window));
+
+	if (GTK_IS_EDITABLE(focusw))
+		gtk_editable_copy_clipboard(GTK_EDITABLE(focusw));
+	else if (IS_SCINTILLA(focusw) && doc != NULL)
+		sci_copy(doc->editor->sci);
+	else if (GTK_IS_TEXT_VIEW(focusw))
+	{
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focusw));
+		gtk_text_buffer_copy_clipboard(buffer, gtk_clipboard_get(GDK_NONE));
+	}
+}
+
+
+void ui_copy(void)
+{
+	gtk_action_activate(ui_builder_get_object("copy_action"));
+}
+
+
+G_MODULE_EXPORT
+void on_paste_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	GtkWidget *focusw = gtk_window_get_focus(GTK_WINDOW(main_widgets.window));
+
+	if (GTK_IS_EDITABLE(focusw))
+		gtk_editable_paste_clipboard(GTK_EDITABLE(focusw));
+	else if (IS_SCINTILLA(focusw) && doc != NULL)
+	{
+		sci_paste(doc->editor->sci);
+	}
+	else if (GTK_IS_TEXT_VIEW(focusw))
+	{
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focusw));
+		gtk_text_buffer_paste_clipboard(buffer, gtk_clipboard_get(GDK_NONE), NULL, TRUE);
+	}
+}
+
+
+void ui_paste(void)
+{
+	gtk_action_activate(ui_builder_get_object("paste_action"));
+}
+
+
+G_MODULE_EXPORT
+void on_delete_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	GtkWidget *focusw = gtk_window_get_focus(GTK_WINDOW(main_widgets.window));
+
+	if (GTK_IS_EDITABLE(focusw))
+		gtk_editable_delete_selection(GTK_EDITABLE(focusw));
+	else if (IS_SCINTILLA(focusw) && doc != NULL && sci_has_selection(doc->editor->sci))
+		sci_clear(doc->editor->sci);
+	else if (GTK_IS_TEXT_VIEW(focusw))
+	{
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focusw));
+		gtk_text_buffer_delete_selection(buffer, TRUE, TRUE);
+	}
+}
+
+
+void ui_delete(void)
+{
+	gtk_action_activate(ui_builder_get_object("delete_action"));
+}
+
+
+G_MODULE_EXPORT
+void on_undo_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+
+	g_return_if_fail(DOC_VALID(doc));
+
+	if (document_can_undo(doc))
+	{
+		sci_cancel(doc->editor->sci);
+		document_undo(doc);
+	}
+}
+
+
+void ui_undo(void)
+{
+	gtk_action_activate(ui_builder_get_object("undo_action"));
+}
+
+
+G_MODULE_EXPORT
+void on_redo_action_activate(GtkAction *action, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+
+	g_return_if_fail(DOC_VALID(doc));
+
+	if (document_can_redo(doc))
+	{
+		sci_cancel(doc->editor->sci);
+		document_redo(doc);
+	}
+}
+
+
+void ui_redo(void)
+{
+	gtk_action_activate(ui_builder_get_object("redo_action"));
 }
 
 

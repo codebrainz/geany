@@ -379,6 +379,18 @@ void ui_close_all_files(void);
 
 void ui_print_file(void);
 
+void ui_cut(void);
+
+void ui_copy(void);
+
+void ui_paste(void);
+
+void ui_delete(void);
+
+void ui_undo(void);
+
+void ui_redo(void);
+
 G_MODULE_EXPORT
 void ui_activate_close_others(gpointer unused, gpointer doc_ptr);
 

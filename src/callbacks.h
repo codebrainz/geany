@@ -58,30 +58,6 @@ toolbar_popup_menu					 (GtkWidget *widget,
 										gpointer user_data);
 
 G_MODULE_EXPORT void
-on_undo1_activate					  (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_redo1_activate					  (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_cut1_activate					   (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_copy1_activate					  (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_paste1_activate					 (GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
-on_delete1_activate					(GtkMenuItem	 *menuitem,
-										gpointer		 user_data);
-
-G_MODULE_EXPORT void
 on_zoom_in1_activate				   (GtkMenuItem	 *menuitem,
 										gpointer		 user_data);
 
