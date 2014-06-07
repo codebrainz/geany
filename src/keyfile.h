@@ -42,6 +42,8 @@ void configuration_add_various_pref_group(struct StashGroup *group);
 
 void configuration_save(void);
 
+void configuration_queue_save(void);
+
 gboolean configuration_load(void);
 
 void configuration_open_files(void);

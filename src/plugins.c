@@ -1475,7 +1475,7 @@ static void pm_dialog_response(GtkDialog *dialog, gint response, gpointer user_d
 	}
 	gtk_widget_destroy(GTK_WIDGET(dialog));
 
-	configuration_save();
+	configuration_queue_save();
 }
 
 

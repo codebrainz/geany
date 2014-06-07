@@ -97,6 +97,7 @@ static gint session_notebook_page;
 static gint hpan_position;
 static gint vpan_position;
 static const gchar atomic_file_saving_key[] = "use_atomic_file_saving";
+static gulong config_save_handler_id = 0; /* for configuration_queue_save() */
 
 static GPtrArray *keyfile_groups = NULL;
 
@@ -618,6 +619,21 @@ void configuration_save(void)
 
 	g_key_file_free(config);
 	g_free(configfile);
+}
+
+
+static gboolean on_config_save_later(gpointer user_data)
+{
+	configuration_save();
+	config_save_handler_id = 0;
+	return FALSE;
+}
+
+
+void configuration_queue_save(void)
+{
+	if (config_save_handler_id == 0)
+		config_save_handler_id = g_idle_add_full(G_PRIORITY_LOW, on_config_save_later, NULL, NULL);
 }
 
 
