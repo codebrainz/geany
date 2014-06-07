@@ -346,7 +346,7 @@ static void remove_foreach_project_filetype(gpointer data, gpointer user_data)
 
 
 /* open_default will make function reload default session files on close */
-void project_close(gboolean open_default)
+gboolean project_close(gboolean open_default)
 {
 	GSList *node;
 
@@ -360,7 +360,7 @@ void project_close(gboolean open_default)
 	{
 		/* close all existing tabs first */
 		if (!document_close_all())
-			return;
+			return FALSE;
 	}
 	ui_set_statusbar(TRUE, _("Project \"%s\" closed."), app->project->name);
 
@@ -406,6 +406,8 @@ void project_close(gboolean open_default)
 	g_signal_emit_by_name(geany_object, "project-close");
 
 	update_ui();
+
+	return TRUE;
 }
 
 

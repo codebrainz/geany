@@ -787,13 +787,13 @@ static gint setup_config_dir(void)
 	return mkdir_result;
 }
 
-/* Signal handling removed since on_exit_clicked() uses functions that are
+/* Signal handling removed since main_quit() uses functions that are
  * illegal in signal handlers
 static void signal_cb(gint sig)
 {
 	if (sig == SIGTERM)
 	{
-		on_exit_clicked(NULL, NULL);
+		main_quit();
 	}
 }
  */
@@ -1156,7 +1156,8 @@ gint main(gint argc, gchar **argv)
 	symbols_init();
 	editor_snippets_init();
 
-	/* registering some basic events */
+	/* registering some basic events
+	 * TODO: move these connections to the Glade file */
 	g_signal_connect(main_widgets.window, "delete-event", G_CALLBACK(on_exit_clicked), NULL);
 	g_signal_connect(main_widgets.window, "window-state-event", G_CALLBACK(on_window_state_event), NULL);
 
@@ -1252,7 +1253,7 @@ static void queue_free(GQueue *queue)
 }
 
 
-void main_quit(void)
+static void main_finalize(void)
 {
 	geany_debug("Quitting...");
 
@@ -1345,6 +1346,29 @@ void main_quit(void)
 	ui_finalize_builder();
 
 	gtk_main_quit();
+}
+
+
+gboolean main_quit(void)
+{
+	configuration_save();
+
+	if (app->project && ! project_close(FALSE))
+		return FALSE;
+
+	if (! document_close_all())
+		return FALSE;
+
+	if (prefs.confirm_exit &&
+		! dialogs_show_question_full(NULL, GTK_STOCK_QUIT, GTK_STOCK_CANCEL, NULL,
+			_("Do you really want to quit?")))
+	{
+		return FALSE;
+	}
+
+	main_finalize();
+
+	return TRUE;
 }
 
 
