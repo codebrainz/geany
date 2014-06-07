@@ -37,6 +37,7 @@
 #include "document.h"
 #include "geany.h"
 #include "highlighting.h"
+#include "keyfile.h"
 #include "msgwindow.h"
 #include "sciwrappers.h"
 #include "support.h"
@@ -207,6 +208,8 @@ static void custom_widget_apply(GtkPrintOperation *operation, GtkWidget *widget,
 	g_free(printing_prefs.page_header_datefmt);
 	printing_prefs.page_header_datefmt =
 		g_strdup(gtk_entry_get_text(GTK_ENTRY(w->entry_print_dateformat)));
+
+	configuration_queue_save();
 }
 
 

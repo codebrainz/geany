@@ -320,6 +320,8 @@ void project_open(void)
 	run_open_dialog(GTK_DIALOG(dialog));
 	gtk_widget_destroy(GTK_WIDGET(dialog));
 #endif
+
+	configuration_queue_save();
 }
 
 
@@ -409,6 +411,8 @@ void project_close(gboolean open_default)
 	g_signal_emit_by_name(geany_object, "project-close");
 
 	update_ui();
+
+	configuration_queue_save();
 }
 
 

@@ -804,6 +804,8 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, 
 	msgwin_status_add(_("New file \"%s\" opened."),
 		DOC_FILENAME(doc));
 
+	configuration_queue_save();
+
 	return doc;
 }
 
@@ -1299,6 +1301,8 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 	pos = set_cursor_position(doc->editor, pos);
 	/* now bring the file in front */
 	editor_goto_pos(doc->editor, pos, FALSE);
+
+	configuration_queue_save();
 
 	/* finally, let the editor widget grab the focus so you can start coding
 	 * right away */

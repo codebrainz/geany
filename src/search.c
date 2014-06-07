@@ -1362,6 +1362,8 @@ on_find_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 		if (check_close)
 			gtk_widget_hide(find_dlg.dialog);
 	}
+
+	configuration_queue_save();
 }
 
 
@@ -1521,6 +1523,9 @@ on_replace_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 	g_free(replace);
 	g_free(original_find);
 	g_free(original_replace);
+
+	configuration_queue_save();
+
 	return;
 
 fail:
@@ -1623,6 +1628,8 @@ on_find_in_files_dialog_response(GtkDialog *dialog, gint response,
 	}
 	else
 		gtk_widget_hide(fif_dlg.dialog);
+
+	configuration_queue_save();
 }
 
 

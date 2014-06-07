@@ -773,6 +773,8 @@ G_MODULE_EXPORT void on_show_toolbar1_toggled(GtkCheckMenuItem *checkmenuitem, g
 
 	toolbar_prefs.visible = (toolbar_prefs.visible) ? FALSE : TRUE;;
 	ui_widget_show_hide(GTK_WIDGET(main_widgets.toolbar), toolbar_prefs.visible);
+
+	configuration_queue_save();
 }
 
 
@@ -783,6 +785,8 @@ G_MODULE_EXPORT void on_fullscreen1_toggled(GtkCheckMenuItem *checkmenuitem, gpo
 
 	ui_prefs.fullscreen = (ui_prefs.fullscreen) ? FALSE : TRUE;
 	ui_set_fullscreen();
+
+	configuration_queue_save();
 }
 
 
@@ -793,6 +797,8 @@ G_MODULE_EXPORT void on_show_messages_window1_toggled(GtkCheckMenuItem *checkmen
 
 	ui_prefs.msgwindow_visible = (ui_prefs.msgwindow_visible) ? FALSE : TRUE;
 	msgwin_show_hide(ui_prefs.msgwindow_visible);
+
+	configuration_queue_save();
 }
 
 
@@ -809,6 +815,8 @@ G_MODULE_EXPORT void on_markers_margin1_toggled(GtkCheckMenuItem *checkmenuitem,
 
 	editor_prefs.show_markers_margin = ! editor_prefs.show_markers_margin;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_MARKERS_MARGIN);
+
+	configuration_queue_save();
 }
 
 
@@ -819,6 +827,8 @@ G_MODULE_EXPORT void on_show_line_numbers1_toggled(GtkCheckMenuItem *checkmenuit
 
 	editor_prefs.show_linenumber_margin = ! editor_prefs.show_linenumber_margin;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_LINE_NUMBERS);
+
+	configuration_queue_save();
 }
 
 
@@ -829,6 +839,8 @@ G_MODULE_EXPORT void on_menu_show_white_space1_toggled(GtkCheckMenuItem *checkme
 
 	editor_prefs.show_white_space = ! editor_prefs.show_white_space;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_WHITE_SPACE);
+
+	configuration_queue_save();
 }
 
 
@@ -839,6 +851,8 @@ G_MODULE_EXPORT void on_menu_show_line_endings1_toggled(GtkCheckMenuItem *checkm
 
 	editor_prefs.show_line_endings = ! editor_prefs.show_line_endings;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_LINE_ENDINGS);
+
+	configuration_queue_save();
 }
 
 
@@ -849,6 +863,8 @@ G_MODULE_EXPORT void on_menu_show_indentation_guides1_toggled(GtkCheckMenuItem *
 
 	editor_prefs.show_indent_guide = ! editor_prefs.show_indent_guide;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_INDENTATION_GUIDES);
+
+	configuration_queue_save();
 }
 
 
