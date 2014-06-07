@@ -119,8 +119,6 @@ static void quit_app(void)
 
 	document_close_all();
 
-	main_status.quitting = TRUE;
-
 	main_quit();
 }
 
@@ -128,8 +126,6 @@ static void quit_app(void)
 /* wrapper function to abort exit process if cancel button is pressed */
 G_MODULE_EXPORT gboolean on_exit_clicked(GtkWidget *widget, gpointer gdata)
 {
-	main_status.quitting = TRUE;
-
 	if (! check_no_unsaved())
 	{
 		if (document_account_for_unsaved())
@@ -147,7 +143,6 @@ G_MODULE_EXPORT gboolean on_exit_clicked(GtkWidget *widget, gpointer gdata)
 		return FALSE;
 	}
 
-	main_status.quitting = FALSE;
 	return TRUE;
 }
 

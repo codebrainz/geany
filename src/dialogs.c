@@ -781,12 +781,8 @@ gboolean dialogs_show_unsaved_file(GeanyDocument *doc)
 	gchar *msg, *short_fn = NULL;
 	const gchar *msg2;
 	gint response;
-	gboolean old_quitting_state = main_status.quitting;
 
-	/* display the file tab to remind the user of the document */
-	main_status.quitting = FALSE;
 	document_show_tab(doc);
-	main_status.quitting = old_quitting_state;
 
 	short_fn = document_get_basename_for_display(doc, -1);
 

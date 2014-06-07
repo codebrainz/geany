@@ -114,14 +114,11 @@ static void on_notebook_switch_page(GtkNotebook *notebook,
 
 static void on_document_close(GObject *obj, GeanyDocument *doc)
 {
-	if (! main_status.quitting)
-	{
-		g_queue_remove(mru_docs, doc);
-		/* this prevents the pop up window from showing when there's a single
-		 * document */
-		if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook)) == 2)
-			g_queue_clear(mru_docs);
-	}
+	g_queue_remove(mru_docs, doc);
+	/* this prevents the pop up window from showing when there's a single
+	 * document */
+	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook)) == 2)
+		g_queue_clear(mru_docs);
 }
 
 

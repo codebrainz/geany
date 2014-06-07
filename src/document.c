@@ -398,13 +398,10 @@ void document_set_text_changed(GeanyDocument *doc, gboolean changed)
 
 	doc->changed = changed;
 
-	if (! main_status.quitting)
-	{
-		ui_update_tab_status(doc);
-		ui_save_buttons_toggle(changed);
-		ui_set_window_title(doc);
-		ui_update_statusbar(doc, -1);
-	}
+	ui_update_tab_status(doc);
+	ui_save_buttons_toggle(changed);
+	ui_set_window_title(doc);
+	ui_update_statusbar(doc, -1);
 }
 
 
@@ -642,20 +639,11 @@ static gboolean remove_page(guint page_num)
 
 	doc->is_valid = FALSE;
 
-	if (main_status.quitting)
-	{
-		/* we need to destroy the ScintillaWidget so our handlers on it are
-		 * disconnected before we free any data they may use (like the editor).
-		 * when not quitting, this is handled by removing the notebook page. */
-		gtk_widget_destroy(GTK_WIDGET(doc->editor->sci));
-	}
-	else
-	{
-		notebook_remove_page(page_num);
-		sidebar_remove_document(doc);
-		navqueue_remove_file(doc->file_name);
-		msgwin_status_add(_("File %s closed."), DOC_FILENAME(doc));
-	}
+	notebook_remove_page(page_num);
+	sidebar_remove_document(doc);
+	navqueue_remove_file(doc->file_name);
+	msgwin_status_add(_("File %s closed."), DOC_FILENAME(doc));
+
 	g_free(doc->encoding);
 	g_free(doc->priv->saved_encoding.encoding);
 	g_free(doc->file_name);
@@ -1887,25 +1875,22 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	/* store the opened encoding for undo/redo */
 	store_saved_encoding(doc);
 
-	/* ignore the following things if we are quitting */
-	if (! main_status.quitting)
-	{
-		sci_set_savepoint(doc->editor->sci);
+	sci_set_savepoint(doc->editor->sci);
 
-		if (file_prefs.disk_check_timeout > 0)
-			document_update_timestamp(doc, locale_filename);
+	if (file_prefs.disk_check_timeout > 0)
+		document_update_timestamp(doc, locale_filename);
 
-		/* update filetype-related things */
-		document_set_filetype(doc, doc->file_type);
+	/* update filetype-related things */
+	document_set_filetype(doc, doc->file_type);
 
-		document_update_tab_label(doc);
+	document_update_tab_label(doc);
 
-		msgwin_status_add(_("File %s saved."), doc->file_name);
-		ui_update_statusbar(doc, -1);
+	msgwin_status_add(_("File %s saved."), doc->file_name);
+	ui_update_statusbar(doc, -1);
 #ifdef HAVE_VTE
-		vte_cwd((doc->real_path != NULL) ? doc->real_path : doc->file_name, FALSE);
+	vte_cwd((doc->real_path != NULL) ? doc->real_path : doc->file_name, FALSE);
 #endif
-	}
+
 	g_free(locale_filename);
 
 	g_signal_emit_by_name(geany_object, "document-save", doc);
@@ -2445,8 +2430,7 @@ static gboolean on_document_update_tag_list_idle(gpointer data)
 	if (! DOC_VALID(doc))
 		return FALSE;
 
-	if (! main_status.quitting)
-		document_update_tags(doc);
+	document_update_tags(doc);
 
 	doc->priv->tag_list_update_source = 0;
 
@@ -2610,7 +2594,7 @@ void document_undo_clear(GeanyDocument *doc)
 	}
 	doc->priv->redo_actions = NULL;
 
-	if (! main_status.quitting && doc->editor != NULL)
+	if (doc->editor != NULL)
 		document_set_text_changed(doc, FALSE);
 }
 

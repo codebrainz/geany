@@ -4989,9 +4989,6 @@ void editor_apply_update_prefs(GeanyEditor *editor)
 
 	g_return_if_fail(editor != NULL);
 
-	if (main_status.quitting)
-		return;
-
 	sci = editor->sci;
 
 	sci_set_mark_long_lines(sci, editor_get_long_line_type(),
