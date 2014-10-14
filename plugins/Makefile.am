@@ -7,6 +7,7 @@ plugindir = $(libdir)/geany
 
 plugins_includedir = $(includedir)/geany
 plugins_include_HEADERS = \
+	geanyfunctions.h \
 	geanyplugin.h
 
 demoplugin_la_LDFLAGS    = -module -avoid-version

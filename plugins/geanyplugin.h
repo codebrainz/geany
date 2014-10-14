@@ -40,6 +40,7 @@
 #include "encodings.h"
 #include "filetypes.h"
 #include "geany.h"
+#include "geanyfunctions.h"
 #include "highlighting.h"
 #include "keybindings.h"
 #include "main.h"
@@ -58,9 +59,5 @@
 #include "toolbar.h"
 #include "ui_utils.h"
 #include "utils.h"
-
-/* This remains for compatibility with older plugin API, it is never actually
- * defined anymore and should not be used in new plugins. */
-typedef struct GeanyFunctionsUndefined GeanyFunctions;
 
 #endif
