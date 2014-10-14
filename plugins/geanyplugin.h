@@ -28,8 +28,13 @@
 #ifndef GEANY_PLUGIN_H
 #define GEANY_PLUGIN_H 1
 
-/* Note: only include headers that define types or macros, not just functions */
+#ifndef HAVE_PLUGINS
+# define HAVE_PLUGINS 1
+#endif
+
+/* Only include public headers here */
 #include "app.h"
+#include "dialogs.h"
 #include "document.h"
 #include "editor.h"
 #include "encodings.h"
@@ -37,18 +42,25 @@
 #include "geany.h"
 #include "highlighting.h"
 #include "keybindings.h"
+#include "main.h"
 #include "msgwindow.h"
+#include "navqueue.h"
 #include "plugindata.h"
+#include "pluginutils.h"
 #include "prefs.h"
 #include "project.h"
+#include "sciwrappers.h"
 #include "search.h"
 #include "stash.h"
 #include "support.h"
+#include "symbols.h"
 #include "templates.h"
 #include "toolbar.h"
 #include "ui_utils.h"
 #include "utils.h"
 
-#include "geanyfunctions.h"
+/* This remains for compatibility with older plugin API, it is never actually
+ * defined anymore and should not be used in new plugins. */
+typedef struct GeanyFunctionsUndefined GeanyFunctions;
 
 #endif
