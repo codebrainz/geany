@@ -5,7 +5,7 @@ AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Tagmanager\"
 AM_CFLAGS = \
 	$(GTK_CFLAGS) \
-	-fvisibility=hidden
+	@LIBGEANY_CFLAGS@
 
 EXTRA_DIST = \
 	makefile.win32
@@ -29,3 +29,5 @@ libtagmanager_la_SOURCES =\
 	tm_tag.c \
 	tm_work_object.c \
 	tm_workspace.c
+
+libtagmanager_la_LDFLAGS = @LIBGEANY_LIBS@
