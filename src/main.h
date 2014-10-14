@@ -72,6 +72,8 @@ gboolean main_is_realized(void);
 
 void main_load_project_from_command_line(const gchar *locale_filename, gboolean use_session);
 
+gint main_lib(gint argc, gchar **argv);
+
 G_END_DECLS
 
 #endif /* GEANY_MAIN_H */
