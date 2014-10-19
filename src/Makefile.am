@@ -11,8 +11,7 @@ EXTRA_DIST = \
 	pluginprivate.h \
 	projectprivate.h \
 	makefile.win32 \
-	$(srcdir)/signalconn.c.in \
-	$(top_srcdir)/scripts/signalconn
+	$(srcdir)/signalconn.c.in
 
 bin_PROGRAMS = geany
 lib_LTLIBRARIES = libgeany.la
@@ -174,5 +173,13 @@ endif
 
 callbacks.c: signalconn.c
 
-signalconn.c: $(srcdir)/signalconn.c.in $(top_srcdir)/data/geany.glade $(top_srcdir)/scripts/signalconn
-	$(AM_V_GEN)python $(top_srcdir)/scripts/signalconn -o $@ -t $(srcdir)/signalconn.c.in $(top_srcdir)/data/geany.glade
+glade_file=$(top_srcdir)/data/geany.glade
+template_file=$(srcdir)/signalconn.c.in
+
+signalconn.c: $(glade_file) $(template_file)
+	$(AM_V_GEN)( \
+		$(SED) -n '/@callback_map@/q;p' "$(template_file)" && \
+		$(SED) -n 's/^.*handler="\([^"]\+\)".*$$/\tg_hash_table_insert(hash, "\1", G_CALLBACK(\1));/p' "$(glade_file)" \
+			| $(SORT) | $(UNIQ) && \
+		$(SED) -n '/@callback_map@/{:l;n;p;b l}' "$(template_file)" \
+	) > $@ || { $(RM) $@ && exit 1; }

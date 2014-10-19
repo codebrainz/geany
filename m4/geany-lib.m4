@@ -29,4 +29,9 @@ dnl `__attribute__((visibility(...)))` extension and use it if so.
 	AC_SUBST([LIBGEANY_CFLAGS])
 	AC_SUBST([LIBGEANY_LIBS])
 
+dnl Check for utilities needed to do codegen
+	AC_PATH_PROG([SORT], [sort], [
+		AC_MSG_ERROR([The 'sort' utility is required, is it installed?])])
+	AC_PATH_PROG([UNIQ], [uniq], [
+		AC_MSG_ERROR([The 'uniq' utility is required, is it installed?])])
 ])
