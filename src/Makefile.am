@@ -11,7 +11,8 @@ EXTRA_DIST = \
 	pluginprivate.h \
 	projectprivate.h \
 	makefile.win32 \
-	$(top_srcdir)/src/dynamicsymbols.list
+	$(srcdir)/signalconn.c.in \
+	$(top_srcdir)/scripts/signalconn
 
 bin_PROGRAMS = geany
 lib_LTLIBRARIES = libgeany.la
@@ -169,10 +170,9 @@ AM_CFLAGS = -DGEANY_DATADIR=\""$(datadir)"\" \
 
 clean-local:
 
-# Helper rule to rebuild the dynamicsymbols.list file when handlers are
-# added to data/geany.glade. Run `make dynamic-symbols' from the src builddir.
-$(top_srcdir)/src/dynamicsymbols.list: $(top_srcdir)/data/geany.glade
-	-python $(top_srcdir)/scripts/dynamicsymbols.py -o $@ $(top_srcdir)/data/geany.glade
-dynamic-symbols: $(top_srcdir)/src/dynamicsymbols.list
-
 endif
+
+callbacks.c: signalconn.c
+
+signalconn.c: $(srcdir)/signalconn.c.in $(top_srcdir)/data/geany.glade $(top_srcdir)/scripts/signalconn
+	$(AM_V_GEN)python $(top_srcdir)/scripts/signalconn -o $@ -t $(srcdir)/signalconn.c.in $(top_srcdir)/data/geany.glade
