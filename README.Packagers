@@ -17,13 +17,16 @@ If the final file size of the created packaged is a problem, you might
 ignore some files and don't package them or put them into a separate
 package. This can be easily done (without any further complications)
 with the translations files(files in %prefix/share/locale/).
+
 Another possibility is to skip the tags files in the data/ subdirectory.
 These are only for auto completion of global symbols. If the files are
 missing Geany just doesn't provide these global symbol auto completion
 but all other things will work anyways.
+
 You can also skip packaging the full HTML documentation including
 images. But if you do so, please include at least the text form of the
 manual.
+
 What you shouldn't skip in your package: the filetype.* files in the
 data/ subdirectory, these files are important. If they are missing,
 Geany still has a fallback mechanism for syntax highlighting (if
@@ -33,6 +36,11 @@ filetypes will fail (mainly build support).
 For 32 bit builds targetting systems which support large filesystems
 (eg XFS) it may be necessary to build with -D_FILE_OFFSET_BITS=64.
 
+GTK+ Version
+------------
+
+If you would like to build Geany against GTK+ 3, pass the ``--enable-gtk3``
+argument to the ``configure`` script. The default is to build against GTK+ 2.
 
 Testing your package
 --------------------
