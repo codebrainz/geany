@@ -2,7 +2,7 @@
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
 	<assemblyIdentity
 		version="1.27.0.0"
-		processorArchitecture="X86"
+		processorArchitecture="*"
 		name="Geany"
 		type="win32" />
 	<description>Geany is a fast and lightweight IDE</description>
