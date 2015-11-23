@@ -1,28 +1,92 @@
 #!/usr/bin/env bash
 
+########################################################################
+# Build script for Geany 32 or 64-bit using MSYS2                      #
+# -------------------------------------------------------------------- #
+# Dependencies:                                                        #
+#   - First you need to install MSYS2 and NSIS. Depending on where     #
+#     they installed, you may need to edit the `MSYS2_PREFIX' and      #
+#     `NSIS_PREFIX' variables below. If you installed them in their    #
+#     default locations there should be no need to modify those        #
+#     variables below (assuming 64-bit build machine).                 #
+#   - If you plan to produce 32-bit builds, run the following command  #
+#     in the MSYS2 shell:                                              #
+#       $ pacman -S mingw32/mingw-w64-i686-toolchain                   #
+#   - For a 64-bit builds, use:                                        #
+#       $ pacman -S mingw64/mingw-w64-x86_64-toolchain                 #
+#   - Open the appropriate MSYS2 terminal depending on the             #
+#     architecture. For 32-bit builds, use the `mingw32_shell.bat'     #
+#     script in the MSYS2 installation directory. For 64-bit builds,   #
+#     use the `mingw64_shell.bat' script to start the MSYS2 terminal   #
+#     emulator.                                                        #
+#                                                                      #
+# Usage:                                                               #
+#   $ mkdir ~/geany-build                                              #
+#   $ cd ~/geany-build                                                 #
+#   $ /path/to/geanysrc/scripts/win32-installer-msys2.sh [ARCH]        #
+#   < lots of output and a long wait >                                 #
+#                                                                      #
+# Notes:                                                               #
+#   - If no architecture is specified, a 32-bit installer will be      #
+#     generated. To build a 64-bit installer, run the script with the  #
+#     `x86_64' argument.                                               #
+#   - All generated files will be put below the current working        #
+#     directory.                                                       #
+#   - You can specify additional options passed to GNU Make using the  #
+#     `MAKEFLAGS' environment variable. This is especially useful if   #
+#     you have multiple CPUs or CPU cores, you can pass the `-j' flag  #
+#     to Make to tell it how many parallel processes to launch.        #
+########################################################################
+
 set -e
 
-WORKDIR=`pwd`
-BUILDDIR=$WORKDIR/build
-PREFIX=$WORKDIR/prefix
-STAGEDIR=$WORKDIR/stage
-SRCDIR=$(realpath $(dirname $(dirname "${BASH_SOURCE[0]}")))
 
-# Adjust this to wherever NSIS is installed
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# Customizable section                                                 #
+
+# Adjust this to wherever NSIS is installed, this is the default on
+# recent Windows versions.
 NSIS_PREFIX="/c/Program Files (x86)/NSIS"
 
-# Adjust this to wherever msys2 is installed (usually /c/msys64)
-MSYS2_PREFIX=/c/tmp-msys64
+# Adjust this to wherever msys2 is installed, usually `/c/msys64' or
+# `/c/msys32', depending on your OS architecture and which version
+# you installed.
+MSYS2_PREFIX="/c/msys64"
 
-# Adjust this based on 32-bit or 64-bit build
-MINGW="mingw64"
-ARCH="mingw-w64-x86_64"
-TARGET="x64_64-w64-mingw32"
-#MINGW="mingw32"
-#ARCH="mingw-w64-i686"
-#TARGET="i686-w64-mingw32"
-REPO=https://github.com/geany/geany.git
+# End of customizable section, shouldn't need to edit anything else.   #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
+
+#
+# Setup global variables based on arguments and working dir
+#
+if [ ! -z "$1" ]
+then
+	if [ "$1" = "i686" -o "$1" = "x86" ]
+	then
+		BITS="32"
+		TARGET_NAME="i686"
+	elif [ "$1" = "x86_64" -o "$1" = "amd64" ]
+	then
+		BITS="64"
+		TARGET_NAME="x86_64"
+	fi
+else
+	BITS="32"
+	TARGET_NAME="i686"
+fi
+MINGW="mingw$BITS"
+ARCH="mingw-w64-${TARGET_NAME}"
+TARGET="${TARGET_NAME}-w64-mingw32"
+WORKDIR=`pwd`
+SRCDIR=$(realpath $(dirname $(dirname "${BASH_SOURCE[0]}")))
+BUILDDIR="$WORKDIR/$TARGET_NAME/build"
+PREFIX="$WORKDIR/$TARGET_NAME/prefix"
+STAGEDIR="$WORKDIR/$TARGET_NAME/stage"
+
+#
+# Ensures the needed packages are installed and creates working dirs.
+#
 function setup_environment()
 {
 	pacman -Sy # sync
@@ -35,8 +99,6 @@ function setup_environment()
 		msys/gettext \
 		msys/glib2-devel \
 		msys/make \
-		msys/wget \
-		msys/unzip \
 		$MINGW/$ARCH-gcc \
 		$MINGW/$ARCH-glib2 \
 		$MINGW/$ARCH-gtk3 \
@@ -44,51 +106,63 @@ function setup_environment()
 	mkdir -p "$PREFIX" "$BUILDDIR" "$STAGEDIR"
 }
 
+#
+# Configures the build system by calling `configure' script.
+#
 function configure_source_code()
 {
 	pushd "$BUILDDIR"
-	PKG_CONFIG_PATH=$PCDIR \
-	CPPFLAGS="-DGEANY_WIN32_INSTALLER" \
-		"$SRCDIR/configure" \
-			--prefix="$PREFIX" \
-			--target="$TARGET" \
-			--enable-gtk3 \
-			--disable-html-docs \
-			--disable-api-docs
+		PKG_CONFIG_PATH=$PCDIR \
+		CPPFLAGS="-DGEANY_WIN32_INSTALLER" \
+			"$SRCDIR/configure" \
+				--prefix="$PREFIX" \
+				--target="$TARGET" \
+				--enable-gtk3 \
+				--disable-html-docs \
+				--disable-api-docs
 	popd
 }
 
-function get_source_code()
+#
+# Changes to the appropriate branch (if specified) and ensures the
+# build system files are generated.
+#
+function prepare_source_code()
 {
 	pushd "$WORKDIR"
-	if [ ! -d "$SRCDIR" ]
-	then
-		git clone $REPO
-	fi
-	pushd "$SRCDIR"
-	NOCONFIGURE=1 ./autogen.sh
-	popd
-	configure_source_code
-	if [ ! -z "$1" ]
-	then
-		if [ "$1" != "master" ]
+		# if $1 is set, checkout that branch in source tree
+		if [ ! -z "$1" ]
 		then
-			git checkout -b build_$1 $1
-		else
-			git checkout master
+			if [ "$1" != "master" ]
+			then
+				git checkout -b build_$1 $1
+			else
+				git checkout master
+			fi
 		fi
-	fi
+		# Run the `autogen.sh' script to generate `configure' script
+		pushd "$SRCDIR"
+			NOCONFIGURE=1 ./autogen.sh
+		popd
+		# Generate the build system
+		configure_source_code
 	popd
 }
 
+#
+# Compiles source code and installs into `$PREFIX'.
+#
 function compile_source_code()
 {
-	get_source_code $1
-	pushd $BUILDDIR
-	make $MAKEFLAGS install
+	prepare_source_code $1
+	pushd "$BUILDDIR"
+		make $MAKEFLAGS install
 	popd
 }
 
+#
+# Takes the needed files from GTK3 Adwaita theme
+#
 function build_icon_theme()
 {
 	pushd "$MSYS2_PREFIX/$MINGW/share/icons/Adwaita"
@@ -114,74 +188,79 @@ function build_icon_theme()
 		actions/system-run.png \
 		actions/window-close.png \
 	"
-	#	status/image-missing.png \
 
 	mkdir -p "$STAGEDIR/Icons/Adwaita"
 	cp -v index.theme "$STAGEDIR/Icons/Adwaita"
 
 	for size in $sizes
 	do
-		pushd "$size"
-		for icon in $icons
-		do
-			local category=$(basename $(dirname "$icon"))
-			local icon_dir="$STAGEDIR/Icons/Adwaita/$size/$category"
-			if [ -f "$icon" ]
-			then
-				if [ ! -d "$icon_dir" ]
+		if [ -d "$size" ]
+		then
+			pushd "$size"
+			for icon in $icons
+			do
+				local category=$(basename $(dirname "$icon"))
+				local icon_dir="$STAGEDIR/Icons/Adwaita/$size/$category"
+				if [ -f "$icon" ]
 				then
-					mkdir -p "$icon_dir"
+					if [ ! -d "$icon_dir" ]
+					then
+						mkdir -p "$icon_dir"
+					fi
+					cp -v "$icon" "$icon_dir"
 				fi
-				cp -v "$icon" "$icon_dir"
-			fi
-		done
-		popd
+			done
+			popd
+		fi
 	done
 
 	popd
 }
 
+#
+# Moves all files included in the release into the `$STAGEDIR'.
+#
 function stage_files()
 {
-# Geany files
-	pushd $STAGEDIR
+	# Geany files
+	pushd "$STAGEDIR"
 	mkdir -p Data Documentation Icons Include Plugins Locales
 	popd
 
-	pushd $PREFIX
-	cp -v bin/* $STAGEDIR/
-	cp -rv data/* $STAGEDIR/Data/
+	pushd "$PREFIX"
+	cp -v bin/* "$STAGEDIR/"
+	cp -rv data/* "$STAGEDIR/Data/"
 	pushd share/doc/geany
-		cp -v AUTHORS $STAGEDIR/Documentation/Authors.txt
-		cp -v COPYING $STAGEDIR/Documentation/License.txt
-		cp -v manual.txt $STAGEDIR/Documentation/Manual.txt
-		cp -v NEWS $STAGEDIR/Documentation/News.txt
-		cp -v README $STAGEDIR/Documentation/Readme.txt
-		cp -v ScintillaLicense.txt $STAGEDIR/Documentation/
-		cp -v THANKS $STAGEDIR/Documentation/Thanks.txt
-		cp -v TODO $STAGEDIR/Documentation/Todo.txt
+		cp -v AUTHORS "$STAGEDIR/Documentation/Authors.txt"
+		cp -v COPYING "$STAGEDIR/Documentation/License.txt"
+		cp -v manual.txt "$STAGEDIR/Documentation/Manual.txt"
+		cp -v NEWS "$STAGEDIR/Documentation/News.txt"
+		cp -v README "$STAGEDIR/Documentation/Readme.txt"
+		cp -v ScintillaLicense.txt "$STAGEDIR/Documentation/"
+		cp -v THANKS "$STAGEDIR/Documentation/Thanks.txt"
+		cp -v TODO "$STAGEDIR/Documentation/Todo.txt"
 	popd
-	cp -rv share/icons/* $STAGEDIR/Icons/
-	cp -rv include/geany/* $STAGEDIR/Include/
-	cp -v lib/geany/*.dll $STAGEDIR/Plugins/
-	cp -rv share/locale/* $STAGEDIR/Locales/
+	cp -rv share/icons/* "$STAGEDIR/Icons/"
+	cp -rv include/geany/* "$STAGEDIR/Include/"
+	cp -v lib/geany/*.dll "$STAGEDIR/Plugins/"
+	cp -rv share/locale/* "$STAGEDIR/Locales/"
 	popd
 
-# Fixup line-endings on Documentation text files so Notepad can view
-	pushd $STAGEDIR/Documentation
+	# Fixup line-endings on Documentation text files so Notepad can view
+	pushd "$STAGEDIR/Documentation"
 	for FILE in `ls *.txt`
 	do
 		sed -i 's/$/\r/' "$FILE"
 	done
 	popd
 
-# Files from MSYS2
-	pushd $MSYS2_PREFIX/$MINGW
+	# Files from MSYS2
+	pushd "$MSYS2_PREFIX/$MINGW"
 	if [ "$MINGW" = "mingw64" ]
 	then
 		cp -v bin/libgcc_s_seh-1.dll $STAGEDIR
 	else
-		cp -v bin/libgcc_s_dw2.dll $STAGEDIR
+		cp -v bin/libgcc_s_dw2-1.dll $STAGEDIR
 	fi
 	cp -v \
 		bin/libstdc++-6.dll \
@@ -212,38 +291,30 @@ function stage_files()
 		bin/libharfbuzz-0.dll \
 		bin/libatk-1.0-0.dll \
 		bin/zlib1.dll \
-		$STAGEDIR
-	#cp -rv share/icons/Adwaita $STAGEDIR/Icons/
+		"$STAGEDIR"
 	popd
 
+	# Icons
 	build_icon_theme
 }
 
+#
+# Generates the NSIS installer and compiles it with `makensis.exe'.
+#
 function generate_installer()
 {
-	local bits="64"
-	local arch="x86_64"
-	case "$ARCH" in
-		*x86_64*)
-			bits="64"
-			arch="x86_64"
-			;;
-		*i686*)
-			bits="32"
-			arch="i686"
-			;;
-	esac
-
 	pushd "$WORKDIR"
 	# convert msys2-style paths to windows-style paths
 	local stage_dir=$(echo "$STAGEDIR" | sed -e 's/\/c\//C:\\\\/g' -e 's/\//\\\\/g')
 	local src_dir=$(echo "$SRCDIR" | sed -e 's/\/c\//C:\\\\/g' -e 's/\//\\\\/g')
+	local work_dir=$(echo "$WORKDIR" | sed -e 's/\/c\//C:\\\\/g' -e 's/\//\\\\/g')
 	# replace some variables in the NSIS script
 	sed \
-		-e "s|@@bits@@|$bits|" \
-		-e "s|@@arch@@|$arch|" \
+		-e "s|@@bits@@|$BITS|" \
+		-e "s|@@arch@@|$TARGET_NAME|" \
 		-e "s|@@stagedir@@|$stage_dir|" \
 		-e "s|@@srcdir@@|$src_dir|" \
+		-e "s|@@workdir@@|$work_dir|" \
 			"$SRCDIR/scripts/win32-installer-msys2.nsi.in" \
 				> "$BUILDDIR/win32-installer-msys2.nsi"
 	"$NSIS_PREFIX/makensis.exe" "$BUILDDIR/win32-installer-msys2.nsi"
@@ -251,10 +322,13 @@ function generate_installer()
 }
 
 #
-# run the various steps
+# Main entry-point, comment-out steps if desired.
 #
-
-#setup_environment
-#compile_source_code
-#stage_files
-generate_installer
+function main()
+{
+	setup_environment
+	compile_source_code
+	stage_files
+	generate_installer
+}
+main $@

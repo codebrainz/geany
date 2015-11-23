@@ -9,6 +9,7 @@
 !define PRODUCT_PROGRAMFILES "$PROGRAMFILES@@bits@@"
 !define PRODUCT_STAGEDIR "@@stagedir@@"
 !define PRODUCT_SRCDIR "@@srcdir@@"
+!define PRODUCT_WORKDIR "@@workdir@@"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -40,7 +41,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "geany-${PRODUCT_VERSION}-${PRODUCT_ARCHITECTURE}.exe"
+OutFile "${PRODUCT_WORKDIR}\geany-${PRODUCT_VERSION}-${PRODUCT_ARCHITECTURE}.exe"
 InstallDir "${PRODUCT_PROGRAMFILES}\Geany"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
