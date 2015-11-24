@@ -1,41 +1,7 @@
 #!/usr/bin/env bash
 
 ########################################################################
-# Build script for Geany 32 or 64-bit using MSYS2                      #
-# -------------------------------------------------------------------- #
-# Dependencies:                                                        #
-#   - First you need to install MSYS2 and NSIS. Depending on where     #
-#     they installed, you may need to edit the `MSYS2_PREFIX' and      #
-#     `NSIS_PREFIX' variables below. If you installed them in their    #
-#     default locations there should be no need to modify those        #
-#     variables below (assuming 64-bit build machine).                 #
-#   - If you plan to produce 32-bit builds, run the following command  #
-#     in the MSYS2 shell:                                              #
-#       $ pacman -S mingw32/mingw-w64-i686-toolchain                   #
-#   - For a 64-bit builds, use:                                        #
-#       $ pacman -S mingw64/mingw-w64-x86_64-toolchain                 #
-#   - Open the appropriate MSYS2 terminal depending on the             #
-#     architecture. For 32-bit builds, use the `mingw32_shell.bat'     #
-#     script in the MSYS2 installation directory. For 64-bit builds,   #
-#     use the `mingw64_shell.bat' script to start the MSYS2 terminal   #
-#     emulator.                                                        #
-#                                                                      #
-# Usage:                                                               #
-#   $ mkdir ~/geany-build                                              #
-#   $ cd ~/geany-build                                                 #
-#   $ /path/to/geanysrc/scripts/win32-installer-msys2.sh [ARCH]        #
-#   < lots of output and a long wait >                                 #
-#                                                                      #
-# Notes:                                                               #
-#   - If no architecture is specified, a 32-bit installer will be      #
-#     generated. To build a 64-bit installer, run the script with the  #
-#     `x86_64' argument.                                               #
-#   - All generated files will be put below the current working        #
-#     directory.                                                       #
-#   - You can specify additional options passed to GNU Make using the  #
-#     `MAKEFLAGS' environment variable. This is especially useful if   #
-#     you have multiple CPUs or CPU cores, you can pass the `-j' flag  #
-#     to Make to tell it how many parallel processes to launch.        #
+# Build script for Geany for Windows Installer (MSYS2)                 #
 ########################################################################
 
 set -e
@@ -76,6 +42,27 @@ function fatal_error()
 {
 	echo "error: $1" 1>&2
 	exit 1
+}
+
+#
+# Print the help/usage message
+#   $1 is the the script filename (argv[0])
+#
+function print_help()
+{
+	local pgm_name=`basename $1`
+	echo -e "\
+Usage:\n\
+    ${pgm_name} [options]\n\
+\n\
+Options:\n\
+  -h         show this message and exit\n\
+  -d         enable debug build [default release]\n\
+  -a ARCH    target architecture, i686 or x86_64 [default i686]\n\
+  -g GTK     gtk+ version to link to, gtk2 or gtk3 [default gtk2]\n\
+\n\
+For further customization see the top of this script's source file.\
+"
 }
 
 #
@@ -138,7 +125,7 @@ function parse_arguments()
 				esac
 				;;
 			h)
-				echo "Usage: $0 [-a i686|x86_64] [-g gtk2|gtk3]"
+				print_help $0
 				exit 0
 				;;
 			:)
