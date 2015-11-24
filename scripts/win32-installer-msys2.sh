@@ -193,6 +193,8 @@ function configure_build_system()
 		local en_gtk3=no
 		if [ $GTK -eq 3 ]; then en_gtk3=yes; else en_gtk3=no; fi
 		pushd "$BUILDDIR"
+		CFLAGS="$BUILD_FLAGS" \
+		CXXFLAGS="$BUILD_FLAGS" \
 		CPPFLAGS="-DGEANY_WIN32_INSTALLER" \
 			"$SRCDIR/configure" \
 				--prefix="$PREFIX" \
