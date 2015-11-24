@@ -83,6 +83,8 @@ SRCDIR=$(realpath $(dirname $(dirname "${BASH_SOURCE[0]}")))
 BUILDDIR="$WORKDIR/$TARGET_NAME/build"
 PREFIX="$WORKDIR/$TARGET_NAME/prefix"
 STAGEDIR="$WORKDIR/$TARGET_NAME/stage"
+GENSTAMP="$WORKDIR/autogen.stamp"
+CONFSTAMP="$WORKDIR/autoconf.stamp"
 
 #
 # Ensures the needed packages are installed and creates working dirs.
@@ -104,17 +106,37 @@ function setup_environment()
 }
 
 #
+# Generates the build system files
+#
+function generate_build_system()
+{
+	if [ ! -f "$GENSTAMP" -o ! -f "$SRCDIR/configure" ]
+	then
+		pushd "$SRCDIR"
+		NOCONFIGURE=1 ./autogen.sh \
+			&& echo "Delete this file to cause 'autogen.sh' script to be re-run" \
+				> "$GENSTAMP"
+		popd
+	fi
+}
+
+#
 # Configures the build system by calling `configure' script.
 #
-function configure_source_code()
+function configure_build_system()
 {
-	pushd "$BUILDDIR"
+	if [ ! -f "$CONFSTAMP" ]
+	then
+		pushd "$BUILDDIR"
 		CPPFLAGS="-DGEANY_WIN32_INSTALLER" \
 			"$SRCDIR/configure" \
 				--prefix="$PREFIX" \
 				--target="$TARGET" \
-				--enable-gtk3
-	popd
+				--enable-gtk3 \
+					&& echo "Delete the file to cause 'configure' script to be re-run" \
+						> "$CONFSTAMP"
+		popd
+	fi
 }
 
 #
@@ -123,24 +145,20 @@ function configure_source_code()
 #
 function prepare_source_code()
 {
-	pushd "$WORKDIR"
-		# if $1 is set, checkout that branch in source tree
-		if [ ! -z "$1" ]
-		then
-			if [ "$1" != "master" ]
-			then
-				git checkout -b build_$1 $1
-			else
-				git checkout master
-			fi
-		fi
-		# Run the `autogen.sh' script to generate `configure' script
+	# if $1 is set, checkout that branch in source tree
+	if [ ! -z "$1" ]
+	then
 		pushd "$SRCDIR"
-			NOCONFIGURE=1 ./autogen.sh
+		if [ "$1" != "master" ]
+		then
+			git checkout -b build_$1 $1
+		else
+			git checkout master
+		fi
 		popd
-		# Generate the build system
-		configure_source_code
-	popd
+	fi
+	generate_build_system
+	configure_build_system
 }
 
 #
