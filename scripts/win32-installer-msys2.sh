@@ -28,8 +28,8 @@ DEFAULT_ARCH="i686"
 DEFAULT_GTK=2
 
 # Extra compiler flags used for release and debug mode.
-RELEASE_CFLAGS="-s -O3 -DNDEBUG"
-DEBUG_CFLAGS="-g -O0 -UNDEBUG"
+RELEASE_CFLAGS="-s -O3 -DNDEBUG -UGEANY_DEBUG"
+DEBUG_CFLAGS="-UNDEBUG"
 
 # End of customizable section, shouldn't need to edit anything else.   #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -235,7 +235,12 @@ function compile_source_code()
 {
 	prepare_source_code $1
 	pushd "$BUILDDIR"
-		make $MAKEFLAGS install
+		if [ "$BUILD_MODE" = "release" ]
+		then
+			make $MAKEFLAGS install-strip V=1
+		else
+			make $MAKEFLAGS install V=1
+		fi
 	popd
 }
 
