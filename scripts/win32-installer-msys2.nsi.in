@@ -6,6 +6,7 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_ARCHITECTURE "@@arch@@"
+!define PRODUCT_TOOLKIT "@@gtk@@"
 !define PRODUCT_PROGRAMFILES "$PROGRAMFILES@@bits@@"
 !define PRODUCT_STAGEDIR "@@stagedir@@"
 !define PRODUCT_SRCDIR "@@srcdir@@"
@@ -41,7 +42,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "${PRODUCT_WORKDIR}\geany-${PRODUCT_VERSION}-${PRODUCT_ARCHITECTURE}.exe"
+OutFile "${PRODUCT_WORKDIR}\geany-${PRODUCT_VERSION}-${PRODUCT_TOOLKIT}-${PRODUCT_ARCHITECTURE}.exe"
 InstallDir "${PRODUCT_PROGRAMFILES}\Geany"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show

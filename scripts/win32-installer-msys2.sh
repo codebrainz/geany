@@ -51,40 +51,105 @@ NSIS_PREFIX="/c/Program Files (x86)/NSIS"
 # Adjust this to wherever msys2 is installed, usually `/c/msys64' or
 # `/c/msys32', depending on your OS architecture and which version
 # you installed.
-MSYS2_PREFIX="/c/msys64"
+MSYS2_PREFIX="/c/test-msys64"
+
+# The toolchain/architecture used for when no command-line arguments
+# override. Either 'i686' or 'x86_64'.
+DEFAULT_ARCH="i686"
+
+# You can change the GTK+ major version used for when no command-line
+# arguments override. Either 'gtk2' or 'gtk3'.
+DEFAULT_GTK=2
 
 # End of customizable section, shouldn't need to edit anything else.   #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
+#
+# Print error to stderr and exit with non-zero exit code
+#   $1 is the error message string
+#
+function fatal_error()
+{
+	echo "error: $1" 1>&2
+	exit 1
+}
 
 #
-# Setup global variables based on arguments and working dir
+# Set global variables based on command line arguments and defaults
+#   Default TARGET is i686 and default GTK+ version is gtk2.
 #
-if [ ! -z "$1" ]
-then
-	if [ "$1" = "i686" -o "$1" = "x86" ]
-	then
-		BITS="32"
-		TARGET_NAME="i686"
-	elif [ "$1" = "x86_64" -o "$1" = "amd64" ]
-	then
-		BITS="64"
-		TARGET_NAME="x86_64"
-	fi
-else
-	BITS="32"
-	TARGET_NAME="i686"
-fi
-MINGW="mingw$BITS"
-ARCH="mingw-w64-${TARGET_NAME}"
-TARGET="${TARGET_NAME}-w64-mingw32"
-WORKDIR=`pwd`
-SRCDIR=$(realpath $(dirname $(dirname "${BASH_SOURCE[0]}")))
-BUILDDIR="$WORKDIR/$TARGET_NAME/build"
-PREFIX="$WORKDIR/$TARGET_NAME/prefix"
-STAGEDIR="$WORKDIR/$TARGET_NAME/stage"
-GENSTAMP="$WORKDIR/autogen.stamp"
-CONFSTAMP="$WORKDIR/autoconf.stamp"
+function parse_arguments()
+{
+	TARGET_NAME=$DEFAULT_ARCH
+	GTK=$DEFAULT_GTK
+	local OPTIND=0
+
+	case "$DEFAULT_ARCH" in
+		i686)
+			BITS=32
+			;;
+		x86_64)
+			BITS=64
+			;;
+		*)
+			fatal_error "invalid default architecture '$TARGET', expected 'i686' or 'x86_64'"
+			;;
+	esac
+
+	while getopts 'a:g:h' opt
+	do
+		case "$opt" in
+			a)
+				case "$OPTARG" in
+					32|i686|x86)
+						BITS=32
+						TARGET_NAME="i686"
+						;;
+					64|x86_64|amd64)
+						BITS=64
+						TARGET_NAME="x86_64"
+						;;
+					*)
+						fatal_error "invalid architecture '$OPTARG', expected 'i686' or 'x86_64'"
+						;;
+				esac
+				;;
+			g)
+				case "$OPTARG" in
+					2|gtk2)
+						GTK=2
+						;;
+					3|gtk3)
+						GTK=3
+						;;
+					*)
+						fatal_error "invalid GTK+ '$OPTARG', expected 'gtk2' or 'gtk3'"
+						;;
+				esac
+				;;
+			h)
+				echo "Usage: $0 [-a i686|x86_64] [-g gtk2|gtk3]"
+				exit 0
+				;;
+			:)
+				fatal_error "option -$OPTARG requires an argument"
+				;;
+		esac
+	done
+	shift $((OPTIND-1))
+
+	MINGW="mingw$BITS"
+	ARCH="mingw-w64-${TARGET_NAME}"
+	TARGET="${TARGET_NAME}-w64-mingw32"
+	GTK_NAME="gtk${GTK}"
+	WORKDIR=`pwd`
+	SRCDIR=$(realpath $(dirname $(dirname "${BASH_SOURCE[0]}")))
+	BUILDDIR="$WORKDIR/$TARGET_NAME/$GTK_NAME/build"
+	PREFIX="$WORKDIR/$TARGET_NAME/$GTK_NAME/prefix"
+	STAGEDIR="$WORKDIR/$TARGET_NAME/$GTK_NAME/stage"
+	GENSTAMP="$WORKDIR/$TARGET_NAME/$GTK_NAME/autogen.stamp"
+	CONFSTAMP="$WORKDIR/$TARGET_NAME/$GTK_NAME/autoconf.stamp"
+}
 
 #
 # Ensures the needed packages are installed and creates working dirs.
@@ -99,7 +164,7 @@ function setup_environment()
 		msys/make \
 		$MINGW/$ARCH-docutils \
 		$MINGW/$ARCH-doxygen \
-		$MINGW/$ARCH-gtk3 \
+		$MINGW/$ARCH-gtk$GTK \
 		$MINGW/$ARCH-libtool \
 		$MINGW/$ARCH-toolchain
 	mkdir -p "$PREFIX" "$BUILDDIR" "$STAGEDIR"
@@ -127,12 +192,14 @@ function configure_build_system()
 {
 	if [ ! -f "$CONFSTAMP" ]
 	then
+		local en_gtk3=no
+		if [ $GTK -eq 3 ]; then en_gtk3=yes; else en_gtk3=no; fi
 		pushd "$BUILDDIR"
 		CPPFLAGS="-DGEANY_WIN32_INSTALLER" \
 			"$SRCDIR/configure" \
 				--prefix="$PREFIX" \
 				--target="$TARGET" \
-				--enable-gtk3 \
+				--enable-gtk3=$en_gtk3 \
 					&& echo "Delete the file to cause 'configure' script to be re-run" \
 						> "$CONFSTAMP"
 		popd
@@ -268,28 +335,45 @@ function stage_files()
 
 	# Files from MSYS2
 	pushd "$MSYS2_PREFIX/$MINGW"
+
 	if [ "$MINGW" = "mingw64" ]
 	then
-		cp -v bin/libgcc_s_seh-1.dll $STAGEDIR
+		cp -v bin/libgcc_s_seh-1.dll "$STAGEDIR"
+		if [ $GTK -eq 3 ]
+		then
+			cp -v bin/libepoxy-0.dll "$STAGEDIR"
+		fi
 	else
-		cp -v bin/libgcc_s_dw2-1.dll $STAGEDIR
+		cp -v bin/libgcc_s_dw2-1.dll "$STAGEDIR"
+		cp -v bin/libepoxy-0.dll "$STAGEDIR"
 	fi
+
+	if [ $GTK -eq 2 ]
+	then
+		cp -v \
+			bin/libgdk-win32-2.0-0.dll \
+			bin/libgtk-win32-2.0-0.dll \
+			"$STAGEDIR"
+	else
+		cp -v \
+			bin/libgdk-3-0.dll \
+			bin/libgtk-3-0.dll \
+			"$STAGEDIR"
+	fi
+
 	cp -v \
 		bin/libstdc++-6.dll \
 		bin/libcairo-2.dll \
-		bin/libgdk-3-0.dll \
 		bin/libgdk_pixbuf-2.0-0.dll \
 		bin/libgio-2.0-0.dll \
 		bin/libglib-2.0-0.dll \
 		bin/libgmodule-2.0-0.dll \
 		bin/libgobject-2.0-0.dll \
-		bin/libgtk-3-0.dll \
 		bin/libintl-8.dll \
 		bin/libpango-1.0-0.dll \
 		bin/libpangocairo-1.0-0.dll \
 		bin/libwinpthread-1.dll \
 		bin/libcairo-gobject-2.dll \
-		bin/libepoxy-0.dll \
 		bin/libpng16-16.dll \
 		bin/libfontconfig-1.dll \
 		bin/libfreetype-6.dll \
@@ -307,7 +391,10 @@ function stage_files()
 	popd
 
 	# Icons
-	build_icon_theme
+	if [ $GTK -eq 3 ]
+	then
+		build_icon_theme
+	fi
 }
 
 #
@@ -324,6 +411,7 @@ function generate_installer()
 	sed \
 		-e "s|@@bits@@|$BITS|" \
 		-e "s|@@arch@@|$TARGET_NAME|" \
+		-e "s|@@gtk@@|gtk$GTK|" \
 		-e "s|@@stagedir@@|$stage_dir|" \
 		-e "s|@@srcdir@@|$src_dir|" \
 		-e "s|@@workdir@@|$work_dir|" \
@@ -338,6 +426,7 @@ function generate_installer()
 #
 function main()
 {
+	parse_arguments $@
 	setup_environment
 	compile_source_code
 	stage_files
