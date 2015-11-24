@@ -57,9 +57,13 @@ MSYS2_PREFIX="/c/test-msys64"
 # override. Either 'i686' or 'x86_64'.
 DEFAULT_ARCH="i686"
 
-# You can change the GTK+ major version used for when no command-line
-# arguments override. Either 'gtk2' or 'gtk3'.
+# The GTK+ major version used for when no command-line arguments
+# override. Either 'gtk2' or 'gtk3'.
 DEFAULT_GTK=2
+
+# Extra compiler flags used for release and debug mode.
+RELEASE_CFLAGS="-s -O3 -DNDEBUG"
+DEBUG_CFLAGS="-g -O0 -UNDEBUG"
 
 # End of customizable section, shouldn't need to edit anything else.   #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -82,6 +86,8 @@ function parse_arguments()
 {
 	TARGET_NAME=$DEFAULT_ARCH
 	GTK=$DEFAULT_GTK
+	BUILD_FLAGS=$RELEASE_CFLAGS
+	BUILD_MODE="release"
 	local OPTIND=0
 
 	case "$DEFAULT_ARCH" in
@@ -96,7 +102,7 @@ function parse_arguments()
 			;;
 	esac
 
-	while getopts 'a:g:h' opt
+	while getopts 'a:dg:h' opt
 	do
 		case "$opt" in
 			a)
@@ -113,6 +119,10 @@ function parse_arguments()
 						fatal_error "invalid architecture '$OPTARG', expected 'i686' or 'x86_64'"
 						;;
 				esac
+				;;
+			d)
+				BUILD_FLAGS=$DEBUG_CFLAGS
+				BUILD_MODE="debug"
 				;;
 			g)
 				case "$OPTARG" in
@@ -144,11 +154,12 @@ function parse_arguments()
 	GTK_NAME="gtk${GTK}"
 	WORKDIR=`pwd`
 	SRCDIR=$(realpath $(dirname $(dirname "${BASH_SOURCE[0]}")))
-	BUILDDIR="$WORKDIR/$TARGET_NAME/$GTK_NAME/build"
-	PREFIX="$WORKDIR/$TARGET_NAME/$GTK_NAME/prefix"
-	STAGEDIR="$WORKDIR/$TARGET_NAME/$GTK_NAME/stage"
-	GENSTAMP="$WORKDIR/$TARGET_NAME/$GTK_NAME/autogen.stamp"
-	CONFSTAMP="$WORKDIR/$TARGET_NAME/$GTK_NAME/autoconf.stamp"
+	BASEDIR="$WORKDIR/$TARGET_NAME/$GTK_NAME/$BUILD_MODE"
+	BUILDDIR="$BASEDIR/build"
+	PREFIX="$BASEDIR/prefix"
+	STAGEDIR="$BASEDIR/stage"
+	GENSTAMP="$BASEDIR/autogen.stamp"
+	CONFSTAMP="$BASEDIR/autoconf.stamp"
 }
 
 #
@@ -406,7 +417,14 @@ function generate_installer()
 	# convert msys2-style paths to windows-style paths
 	local stage_dir=$(echo "$STAGEDIR" | sed -e 's/\/c\//C:\\\\/g' -e 's/\//\\\\/g')
 	local src_dir=$(echo "$SRCDIR" | sed -e 's/\/c\//C:\\\\/g' -e 's/\//\\\\/g')
-	local work_dir=$(echo "$WORKDIR" | sed -e 's/\/c\//C:\\\\/g' -e 's/\//\\\\/g')
+	local out_dir=$(echo "$WORKDIR" | sed -e 's/\/c\//C:\\\\/g' -e 's/\//\\\\/g')
+	local out_suffix="${TARGET_NAME}-${GTK_NAME}"
+
+	if [ "$BUILD_MODE" = "debug" ]
+	then
+		out_suffix="${out_suffix}-debug"
+	fi
+
 	# replace some variables in the NSIS script
 	sed \
 		-e "s|@@bits@@|$BITS|" \
@@ -414,7 +432,8 @@ function generate_installer()
 		-e "s|@@gtk@@|gtk$GTK|" \
 		-e "s|@@stagedir@@|$stage_dir|" \
 		-e "s|@@srcdir@@|$src_dir|" \
-		-e "s|@@workdir@@|$work_dir|" \
+		-e "s|@@out_dir@@|$out_dir|" \
+		-e "s|@@out_suffix@@|$out_suffix|" \
 			"$SRCDIR/scripts/win32-installer-msys2.nsi.in" \
 				> "$BUILDDIR/win32-installer-msys2.nsi"
 	"$NSIS_PREFIX/makensis.exe" "$BUILDDIR/win32-installer-msys2.nsi"
