@@ -93,15 +93,12 @@ function setup_environment()
 	pacman --noconfirm --needed -S \
 		msys/autoconf \
 		msys/automake \
-		msys/pkgconfig \
-		msys/libtool \
 		msys/intltool \
-		msys/gettext \
-		msys/glib2-devel \
 		msys/make \
-		$MINGW/$ARCH-gcc \
-		$MINGW/$ARCH-glib2 \
+		$MINGW/$ARCH-docutils \
+		$MINGW/$ARCH-doxygen \
 		$MINGW/$ARCH-gtk3 \
+		$MINGW/$ARCH-libtool \
 		$MINGW/$ARCH-toolchain
 	mkdir -p "$PREFIX" "$BUILDDIR" "$STAGEDIR"
 }
@@ -112,14 +109,11 @@ function setup_environment()
 function configure_source_code()
 {
 	pushd "$BUILDDIR"
-		PKG_CONFIG_PATH=$PCDIR \
 		CPPFLAGS="-DGEANY_WIN32_INSTALLER" \
 			"$SRCDIR/configure" \
 				--prefix="$PREFIX" \
 				--target="$TARGET" \
-				--enable-gtk3 \
-				--disable-html-docs \
-				--disable-api-docs
+				--enable-gtk3
 	popd
 }
 
