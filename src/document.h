@@ -75,6 +75,7 @@ GeanyFilePrefs;
  **/
 typedef struct GeanyDocument
 {
+	GObject base_;
 	/** Flag used to check if this document is valid when iterating @ref documents_array. */
 	gboolean		 is_valid;
 	gint			 index;		/**< Index in the documents array. */
@@ -117,6 +118,15 @@ typedef struct GeanyDocument
 	struct GeanyDocumentPrivate *priv;	/* should be last, append fields before this item */
 }
 GeanyDocument;
+
+typedef struct
+{
+	GObjectClass base_class_;
+}
+GeanyDocumentClass;
+
+#define GEANY_TYPE_DOCUMENT (geany_document_get_type())
+GType geany_document_get_type(void);
 
 extern GPtrArray *documents_array;
 

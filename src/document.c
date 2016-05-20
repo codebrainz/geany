@@ -107,6 +107,11 @@ GeanyFilePrefs file_prefs;
 GPtrArray *documents_array = NULL;
 
 
+G_DEFINE_TYPE(GeanyDocument, geany_document, G_TYPE_OBJECT)
+static void geany_document_class_init(GeanyDocumentClass *klass) {}
+static void geany_document_init(GeanyDocument *self) {}
+
+
 /* an undo action, also used for redo actions */
 typedef struct
 {
@@ -401,16 +406,12 @@ GeanyDocument *document_get_current(void)
 
 void document_init_doclist(void)
 {
-	documents_array = g_ptr_array_new();
+	documents_array = g_ptr_array_new_with_free_func(g_object_unref);
 }
 
 
 void document_finalize(void)
 {
-	guint i;
-
-	for (i = 0; i < documents_array->len; i++)
-		g_free(documents[i]);
 	g_ptr_array_free(documents_array, TRUE);
 }
 
@@ -658,7 +659,7 @@ static GeanyDocument *document_create(const gchar *utf8_filename)
 	new_idx = document_get_new_idx();
 	if (new_idx == -1)	/* expand the array, no free places */
 	{
-		doc = g_new0(GeanyDocument, 1);
+		doc = g_object_new(GEANY_TYPE_DOCUMENT, NULL);
 
 		new_idx = documents_array->len;
 		g_ptr_array_add(documents_array, doc);
@@ -769,9 +770,7 @@ static gboolean remove_page(guint page_num)
 	document_undo_clear(doc);
 
 	g_free(doc->priv);
-
-	/* reset document settings to defaults for re-use */
-	memset(doc, 0, sizeof(GeanyDocument));
+	doc->priv = NULL;
 
 	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook)) == 0)
 	{
