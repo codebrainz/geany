@@ -108,8 +108,112 @@ GPtrArray *documents_array = NULL;
 
 
 G_DEFINE_TYPE(GeanyDocument, geany_document, G_TYPE_OBJECT)
-static void geany_document_class_init(GeanyDocumentClass *klass) {}
-static void geany_document_init(GeanyDocument *self) {}
+
+
+static void geany_document_class_init(GeanyDocumentClass *klass)
+{
+	g_signal_new("activate", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+	g_signal_new("before-save", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+	g_signal_new("close", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+	g_signal_new("filetype-set", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 1, G_TYPE_POINTER);
+	g_signal_new("new", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+	g_signal_new("open", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+	g_signal_new("reload", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+	g_signal_new("save", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST,
+		0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+}
+
+
+static void geany_document_activate_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "activate");
+}
+
+
+static void geany_document_before_save_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "before-save");
+}
+
+
+static void geany_document_close_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "close");
+}
+
+
+static void geany_document_filetype_set_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyFiletype *old_filetype, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "filetype-set", old_filetype);
+}
+
+
+static void geany_document_new_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "new");
+}
+
+
+static void geany_document_open_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "open");
+}
+
+
+static void geany_document_reload_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "reload");
+}
+
+
+static void geany_document_save_proxy(GObject *unused,
+	GeanyDocument *doc, GeanyDocument *self)
+{
+	if (doc == self)
+		g_signal_emit_by_name(self, "save");
+}
+
+
+static void geany_document_init(GeanyDocument *self)
+{
+	g_signal_connect(geany_object, "document-activate",
+		G_CALLBACK(geany_document_activate_proxy), self);
+	g_signal_connect(geany_object, "document-before-save",
+		G_CALLBACK(geany_document_before_save_proxy), self);
+	g_signal_connect(geany_object, "document-close",
+		G_CALLBACK(geany_document_close_proxy), self);
+	g_signal_connect(geany_object, "document-filetype-set",
+		G_CALLBACK(geany_document_filetype_set_proxy), self);
+	g_signal_connect(geany_object, "document-new",
+		G_CALLBACK(geany_document_new_proxy), self);
+	g_signal_connect(geany_object, "document-open",
+		G_CALLBACK(geany_document_open_proxy), self);
+	g_signal_connect(geany_object, "document-reload",
+		G_CALLBACK(geany_document_reload_proxy), self);
+	g_signal_connect(geany_object, "document-save",
+		G_CALLBACK(geany_document_save_proxy), self);
+}
 
 
 /* an undo action, also used for redo actions */
