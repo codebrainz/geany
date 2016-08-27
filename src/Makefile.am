@@ -41,9 +41,11 @@ geany_include_HEADERS = \
 	document.h \
 	editor.h \
 	encodings.h \
+	featureprovider.h \
 	filetypes.h \
 	geany.h \
 	gtkcompat.h \
+	highlighter.h \
 	highlighting.h \
 	keybindings.h \
 	main.h \
@@ -73,12 +75,14 @@ libgeany_la_SOURCES = \
 	document.c document.h \
 	editor.c editor.h \
 	encodings.c encodings.h \
+	featureprovider.c featureprovider.h \
 	filetypes.c filetypes.h \
 	geanyentryaction.c geanyentryaction.h \
 	geanymenubuttonaction.c geanymenubuttonaction.h \
 	geanyobject.c geanyobject.h \
 	geanywraplabel.c geanywraplabel.h \
 	gtkcompat.h \
+	highlighter.c highlighter.h \
 	highlighting.c highlighting.h \
 	highlightingmappings.h \
 	keybindings.c keybindings.h \
