@@ -54,3 +54,27 @@ gboolean geany_feature_provider_deactivate(GeanyFeatureProvider *self, GeanyFile
 	g_return_val_if_fail(iface->deactivate != NULL, FALSE);
 	return iface->deactivate(self, ft, error);
 }
+
+
+GeanyFiletypeFeature geany_feature_provider_get_filetype_feature(GeanyFeatureProvider *self)
+{
+	GeanyFiletypeFeature feature = 0;
+	g_return_val_if_fail(GEANY_IS_FEATURE_PROVIDER(self), 0);
+	g_object_get(self, "feature", &feature, NULL);
+	return feature;
+}
+
+
+void geany_feature_provider_set_filetype_feature(GeanyFeatureProvider *self,
+	GeanyFiletypeFeature feature)
+{
+	GeanyFiletypeFeature old_feature = 0;
+	g_return_if_fail(GEANY_IS_FEATURE_PROVIDER(self));
+	g_return_if_fail(feature >=0 && feature < GEANY_NUM_FILETYPE_FEATURES);
+	old_feature = geany_feature_provider_get_filetype_feature(self);
+	if (feature != old_feature)
+	{
+		g_object_set(self, "feature", feature, NULL);
+		g_object_notify(G_OBJECT(self), "feature");
+	}
+}

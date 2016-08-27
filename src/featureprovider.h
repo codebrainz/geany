@@ -12,6 +12,8 @@ G_BEGIN_DECLS
 
 #define GEANY_TYPE_FILETYPE_FEATURE (geany_filetype_feature_get_type())
 #define GEANY_TYPE_FEATURE_PROVIDER (geany_feature_provider_get_type())
+
+
 G_DECLARE_INTERFACE(GeanyFeatureProvider, geany_feature_provider, GEANY, FEATURE_PROVIDER, GObject)
 
 
@@ -53,8 +55,14 @@ struct _GeanyFeatureProviderInterface
 GType geany_filetype_feature_get_type(void) G_GNUC_CONST;
 
 
+#ifdef GEANY_PRIVATE
+
 gboolean geany_feature_provider_activate(GeanyFeatureProvider *self, GeanyFiletypeID ft, GError **error);
 gboolean geany_feature_provider_deactivate(GeanyFeatureProvider *self, GeanyFiletypeID ft, GError **error);
+GeanyFiletypeFeature geany_feature_provider_get_filetype_feature(GeanyFeatureProvider *self);
+void geany_feature_provider_set_filetype_feature(GeanyFeatureProvider *self, GeanyFiletypeFeature feature);
+
+#endif
 
 
 G_END_DECLS
