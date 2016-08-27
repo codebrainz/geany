@@ -37,6 +37,7 @@
 #include "document.h" /* GeanyDocument */
 #include "editor.h"	/* GeanyEditor, GeanyIndentType */
 #include "filetypes.h" /* GeanyFiletype */
+#include "geanyvala.h"
 
 #include "gtkcompat.h"
 

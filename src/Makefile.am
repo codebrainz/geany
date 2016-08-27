@@ -22,6 +22,10 @@ AM_CPPFLAGS = \
 	@GTK_CFLAGS@ @GTHREAD_CFLAGS@ \
 	$(MAC_INTEGRATION_CFLAGS)
 
+AM_VALAFLAGS = \
+	--vapi=geanyvala-1.0.vapi \
+	--header=geanyvala.h --use-header
+
 bin_PROGRAMS = geany
 lib_LTLIBRARIES = libgeany.la
 
@@ -43,6 +47,7 @@ geany_include_HEADERS = \
 	encodings.h \
 	filetypes.h \
 	geany.h \
+	geanyvala.h \
 	gtkcompat.h \
 	highlighting.h \
 	keybindings.h \
@@ -88,6 +93,7 @@ libgeany_la_SOURCES = \
 	msgwindow.c msgwindow.h \
 	navqueue.c navqueue.h \
 	notebook.c notebook.h \
+	placeholder.vala \
 	plugins.c plugins.h \
 	pluginutils.c pluginutils.h \
 	prefs.c prefs.h \
@@ -117,6 +123,7 @@ endif
 
 libgeany_la_CFLAGS  = $(AM_CPPFLAGS) @LIBGEANY_CFLAGS@
 libgeany_la_LDFLAGS = @LIBGEANY_LDFLAGS@
+libgeany_la_VALAFLAGS = $(AM_VALAFLAGS)
 
 libgeany_la_LIBADD = \
 	$(top_builddir)/scintilla/libscintilla.la \
@@ -125,6 +132,8 @@ libgeany_la_LIBADD = \
 	@GTHREAD_LIBS@ \
 	$(MAC_INTEGRATION_LIBS) \
 	$(INTLLIBS)
+
+geanyvala.h: placeholder.vala
 
 # tell automake we have a C++ file so it uses the C++ linker we need for Scintilla
 nodist_EXTRA_libgeany_la_SOURCES = dummy1.cxx

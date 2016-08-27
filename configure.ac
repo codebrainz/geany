@@ -35,6 +35,8 @@ GEANY_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LN_S
 
+AM_PROG_VALAC
+
 # autoscan start
 
 # Checks for header files.
