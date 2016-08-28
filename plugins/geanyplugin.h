@@ -40,6 +40,7 @@
 #include "editor.h"
 #include "encodings.h"
 #include "filetypes.h"
+#include "ftplugins.h"
 #include "geany.h"
 #include "geanyfunctions.h"
 #include "highlighting.h"
