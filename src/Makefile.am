@@ -78,12 +78,14 @@ libgeany_la_SOURCES = \
 	document.c document.h \
 	editor.c editor.h \
 	encodings.c encodings.h \
+	featureprovider.vala \
 	filetypes.c filetypes.h \
 	geanyentryaction.c geanyentryaction.h \
 	geanymenubuttonaction.c geanymenubuttonaction.h \
 	geanyobject.c geanyobject.h \
 	geanywraplabel.c geanywraplabel.h \
 	gtkcompat.h \
+	highlighter.vala \
 	highlighting.c highlighting.h \
 	highlightingmappings.h \
 	keybindings.c keybindings.h \
@@ -93,7 +95,6 @@ libgeany_la_SOURCES = \
 	msgwindow.c msgwindow.h \
 	navqueue.c navqueue.h \
 	notebook.c notebook.h \
-	placeholder.vala \
 	plugins.c plugins.h \
 	pluginutils.c pluginutils.h \
 	prefs.c prefs.h \

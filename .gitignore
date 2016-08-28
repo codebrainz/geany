@@ -89,8 +89,9 @@ Makefile.in
 /src/signallist.i
 /src/geanyvala-1.0.vapi
 /src/geanyvala.h
-/src/placeholder.c
 /src/*_vala.stamp
+/src/featureprovider.c
+/src/highlighter.c
 
 #-----------------------------------------------------------------------
 # /doc/
