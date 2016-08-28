@@ -32,6 +32,7 @@
 #include "app.h"
 #include "dialogs.h"
 #include "encodings.h"
+#include "ftplugins.h"
 #include "geanyobject.h"
 #include "geanywraplabel.h"
 #include "highlighting.h"
@@ -942,6 +943,7 @@ plugin_free(Plugin *plugin)
 	 * (but potentially loaded). Note that free_subplugins() might call us through recursion */
 	if (is_active_plugin(plugin))
 	{
+		geany_ftplugin_unload(&plugin->public);
 		if (unregister_proxy(plugin))
 			free_subplugins(plugin);
 		plugin_cleanup(plugin);

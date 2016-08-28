@@ -38,6 +38,7 @@
 #include "document.h"
 #include "encodingsprivate.h"
 #include "filetypes.h"
+#include "ftplugins.h"
 #include "geanyobject.h"
 #include "highlighting.h"
 #include "keybindings.h"
@@ -1169,6 +1170,7 @@ gint main_lib(gint argc, gchar **argv)
 	/* load any enabled plugins before we open any documents */
 	if (want_plugins)
 		plugins_load_active();
+	geany_ftplugin_init();
 #endif
 
 	ui_sidebar_show_hide();
@@ -1265,6 +1267,7 @@ static void do_main_quit(void)
 #endif
 
 #ifdef HAVE_PLUGINS
+	geany_ftplugin_finalize();
 	plugins_finalize();
 #endif
 

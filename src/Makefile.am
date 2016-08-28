@@ -42,6 +42,7 @@ geany_include_HEADERS = \
 	editor.h \
 	encodings.h \
 	filetypes.h \
+	ftplugins.h \
 	geany.h \
 	gtkcompat.h \
 	highlighting.h \
@@ -74,6 +75,7 @@ libgeany_la_SOURCES = \
 	editor.c editor.h \
 	encodings.c encodings.h \
 	filetypes.c filetypes.h \
+	ftplugins.c ftplugins.h \
 	geanyentryaction.c geanyentryaction.h \
 	geanymenubuttonaction.c geanymenubuttonaction.h \
 	geanyobject.c geanyobject.h \
