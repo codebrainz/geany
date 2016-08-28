@@ -92,6 +92,7 @@ Makefile.in
 /src/*_vala.stamp
 /src/featureprovider.c
 /src/highlighter.c
+/src/symbolprovider.c
 
 #-----------------------------------------------------------------------
 # /doc/

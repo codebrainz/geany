@@ -26,6 +26,12 @@ AM_VALAFLAGS = \
 	--vapi=geanyvala-1.0.vapi \
 	--header=geanyvala.h --use-header
 
+if GTK3
+AM_VALAFLAGS += --pkg=gtk+-3.0
+else
+AM_VALAFLAGS += --pkg=gtk+-2.0
+endif
+
 bin_PROGRAMS = geany
 lib_LTLIBRARIES = libgeany.la
 
@@ -106,6 +112,7 @@ libgeany_la_SOURCES = \
 	spawn.c spawn.h \
 	stash.c stash.h \
 	support.h \
+	symbolprovider.vala \
 	symbols.c symbols.h \
 	templates.c templates.h \
 	toolbar.c toolbar.h \
