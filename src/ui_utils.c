@@ -82,6 +82,7 @@ static GtkWidget* toolbar_popup_menu1 = NULL;
 static GtkWidget* edit_menu1 = NULL;
 static GtkWidget* prefs_dialog = NULL;
 static GtkWidget* project_dialog = NULL;
+static GtkWidget* ftplugins_dialog = NULL;
 
 static struct
 {
@@ -2442,12 +2443,14 @@ void ui_init_builder(void)
 	project_dialog = GTK_WIDGET(gtk_builder_get_object(builder, "project_dialog"));
 	toolbar_popup_menu1 = GTK_WIDGET(gtk_builder_get_object(builder, "toolbar_popup_menu1"));
 	window1 = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
+	ftplugins_dialog = GTK_WIDGET(gtk_builder_get_object(builder, "ftplugins_dialog"));
 
 	g_object_set_data(G_OBJECT(edit_menu1), "edit_menu1", edit_menu1);
 	g_object_set_data(G_OBJECT(prefs_dialog), "prefs_dialog", prefs_dialog);
 	g_object_set_data(G_OBJECT(project_dialog), "project_dialog", project_dialog);
 	g_object_set_data(G_OBJECT(toolbar_popup_menu1), "toolbar_popup_menu1", toolbar_popup_menu1);
 	g_object_set_data(G_OBJECT(window1), "window1", window1);
+	g_object_set_data(G_OBJECT(ftplugins_dialog), "ftplugins_dialog", ftplugins_dialog);
 
 	all_objects = gtk_builder_get_objects(builder);
 	for (iter = all_objects; iter != NULL; iter = g_slist_next(iter))
@@ -2585,6 +2588,8 @@ void ui_finalize_builder(void)
 		gtk_widget_destroy(toolbar_popup_menu1);
 	if (GTK_IS_WIDGET(window1))
 		gtk_widget_destroy(window1);
+	if (GTK_IS_WIDGET(ftplugins_dialog))
+		gtk_widget_destroy(ftplugins_dialog);
 }
 
 

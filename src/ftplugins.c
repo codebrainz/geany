@@ -2,6 +2,7 @@
 #include "document.h"
 #include "plugindata.h"
 #include "pluginprivate.h"
+#include "ui_utils.h"
 
 
 typedef struct
@@ -12,6 +13,7 @@ typedef struct
 	GeanyFtPluginFunc func;
 	gpointer user_data;
 	GDestroyNotify user_data_free;
+	gboolean enabled;
 }
 FtPluginProvider;
 
@@ -32,6 +34,7 @@ static FtPluginProvider *ftplugin_provider_new(GeanyPlugin *plugin,
 		provider->func = func;
 		provider->user_data = user_data;
 		provider->user_data_free = user_data_free;
+		provider->enabled = TRUE;
 	}
 	return provider;
 }
@@ -151,4 +154,25 @@ gboolean geany_ftplugin_highlight(GeanyFiletypeID ft, GeanyFiletypeFeature featu
 	GeanyDocument *doc, guint start, guint end)
 {
 	return FALSE;
+}
+
+
+static void on_ftplugins_combo_feature_changed(GtkComboBox *combo, gpointer user_data)
+{
+}
+
+
+static gint geany_ftplugin_run_dialog(GeanyFiletypeFeature initial_feature)
+{
+	GtkWidget *dialog = GTK_WIDGET(ui_builder_get_object("ftplugins_dialog"));
+
+	g_return_if_fail(GTK_IS_DIALOG(dialog));
+
+	GtkWidget *feature_combo = GTK_WIDGET(ui_builder_get_object("ftplugins_combo_feature"));
+	gtk_combo_box_set_active(GTK_COMBO_BOX(feature_combo), feature);
+	
+	
+	
+
+	return gtk_dialog_run(GTK_DIALOG(dialog));
 }
