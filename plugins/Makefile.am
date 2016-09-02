@@ -12,6 +12,7 @@ plugins_include_HEADERS = \
 
 demoplugin_la_LDFLAGS    = -module -avoid-version -no-undefined
 demoproxy_la_LDFLAGS     = -module -avoid-version -no-undefined
+docdata_la_LDFLAGS       = -module -avoid-version -no-undefined
 classbuilder_la_LDFLAGS  = -module -avoid-version -no-undefined
 htmlchars_la_LDFLAGS     = -module -avoid-version -no-undefined
 export_la_LDFLAGS        = -module -avoid-version -no-undefined
@@ -27,7 +28,8 @@ plugin_LTLIBRARIES = \
 	export.la \
 	saveactions.la \
 	filebrowser.la \
-	splitwindow.la
+	splitwindow.la \
+	docdata.la
 
 # Plugins not to be installed
 noinst_LTLIBRARIES = \
@@ -36,6 +38,7 @@ noinst_LTLIBRARIES = \
 
 demoplugin_la_SOURCES    = demoplugin.c
 demoproxy_la_SOURCES     = demoproxy.c
+docdata_la_SOURCES       = docdata.c
 classbuilder_la_SOURCES  = classbuilder.c
 htmlchars_la_SOURCES     = htmlchars.c
 export_la_SOURCES        = export.c
@@ -45,6 +48,7 @@ splitwindow_la_SOURCES   = splitwindow.c
 
 demoplugin_la_CFLAGS    = -DG_LOG_DOMAIN=\""Demoplugin"\" -DLOCALEDIR=\""$(LOCALEDIR)"\"
 demoproxy_la_CFLAGS     = -DG_LOG_DOMAIN=\""Demoproxy"\"
+docdata_la_CFLAGS       = -DG_LOG_DOMAIN=\""DocData"\"
 classbuilder_la_CFLAGS  = -DG_LOG_DOMAIN=\""Classbuilder"\"
 htmlchars_la_CFLAGS     = -DG_LOG_DOMAIN=\""HTMLChars"\"
 export_la_CFLAGS        = -DG_LOG_DOMAIN=\""Export"\"
@@ -54,6 +58,7 @@ splitwindow_la_CFLAGS   = -DG_LOG_DOMAIN=\""SplitWindow"\"
 
 demoplugin_la_LIBADD    = $(top_builddir)/src/libgeany.la $(GTK_LIBS)
 demoproxy_la_LIBADD     = $(top_builddir)/src/libgeany.la $(GTK_LIBS)
+docdata_la_LIBADD       = $(top_builddir)/src/libgeany.la $(GTK_LIBS)
 classbuilder_la_LIBADD  = $(top_builddir)/src/libgeany.la $(GTK_LIBS)
 htmlchars_la_LIBADD     = $(top_builddir)/src/libgeany.la $(GTK_LIBS)
 export_la_LIBADD        = $(top_builddir)/src/libgeany.la $(GTK_LIBS) -lm
