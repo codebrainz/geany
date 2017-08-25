@@ -37,6 +37,7 @@
 #include "msgwindow.h"
 #include "prefs.h"
 #include "sciwrappers.h"
+#include "settings.h"
 #include "support.h"
 #include "ui_utils.h"
 #include "utils.h"
@@ -648,7 +649,7 @@ void vte_apply_user_settings(void)
 {
 	PangoFontDescription *font_desc;
 
-	if (! ui_prefs.msgwindow_visible)
+	if (! settings_get_bool("msgwin-visible"))
 		return;
 
 	vf->vte_terminal_set_scrollback_lines(VTE_TERMINAL(vc->vte), vc->scrollback_lines);
@@ -1035,7 +1036,7 @@ void vte_send_selection_to_vte(void)
 	/* show the VTE */
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), MSG_VTE);
 	gtk_widget_grab_focus(vc->vte);
-	msgwin_show_hide(TRUE);
+	settings_set_bool("msgwin-visible", TRUE);
 
 	g_free(text);
 }
