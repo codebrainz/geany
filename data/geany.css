@@ -51,3 +51,15 @@
 #geany-terminal-dirty {
 	color: #ff0000;
 }
+
+/* don't have a border on the left or right edges so that scrollbars
+ * can be activated by moving mouse to edge and scrolling. Assumes the
+ * window manager theme will provide an outter border for non-maximized
+ * windows. */
+#GeanyMainWindow > box > paned > paned > notebook:first-child {
+  border-left: 0;
+}
+
+#GeanyMainWindow > box > paned > paned > notebook:last-child {
+  border-right: 0;
+}
